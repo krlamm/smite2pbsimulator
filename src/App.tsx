@@ -113,24 +113,29 @@ function App() {
       <div className="phase-indicator">
         Current Phase: {phase} - <span className={`team-name ${currentTeam === 'A' ? 'order' : 'chaos'}`}>{currentTeam === 'A' ? 'Order' : 'Chaos'}</span>'s turn
       </div>
-      <div className="teams-container">
+      <div className="main-content">
+        {/* Order (Team A) on the left */}
         <TeamDisplay 
           team="A"
           picks={picks.A}
           bans={bans.A}
         />
+
+        {/* Character pool in the middle */}
+        <CharacterGrid 
+          characters={characters}
+          onCharacterSelect={handleCharacterSelect}
+          picks={picks}
+          bans={bans}
+        />
+
+        {/* Chaos (Team B) on the right */}
         <TeamDisplay 
           team="B"
           picks={picks.B}
           bans={bans.B}
         />
       </div>
-      <CharacterGrid 
-        characters={characters}
-        onCharacterSelect={handleCharacterSelect}
-        picks={picks}
-        bans={bans}
-      />
     </div>
   );
 }

@@ -41,6 +41,8 @@ h1 {
   border-radius: 8px;
   background-color: #2a2a2a;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 260px;
+  flex-shrink: 0;
 }
 
 .team-A {
@@ -110,6 +112,7 @@ h1 {
   background-color: #2a2a2a;
   padding: 20px;
   border-radius: 8px;
+  flex: 1;
 }
 
 .role-filters {
@@ -206,4 +209,22 @@ h1 {
 
 .phase-indicator .team-name.chaos {
   color: #ff6666;
+}
+
+/* Layout container for teams and character grid */
+.main-content {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+}
+
+/* Ensure the character grid expands while side columns stay compact */
+.main-content .character-grid-container {
+  flex: 1;
+}
+
+/* Prevent team columns from shrinking and keep them a reasonable width */
+.team-display {
+  width: 260px;
+  flex-shrink: 0;
 } 
