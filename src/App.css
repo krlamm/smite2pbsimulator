@@ -284,4 +284,12 @@ h1 {
 .character-role.role-guardian { color: #27ae60; }
 .character-role.role-hunter { color: #8b4513; }
 .character-role.role-mage { color: #9b59b6; }
-.character-role.role-warrior { color: #e74c3c; } 
+.character-role.role-warrior { color: #e74c3c; }
+
+/* Highlight banned gods */
+.bans {
+  border: 2px solid #e74c3c;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #e74c3c; /* fill box with same red */
+} 
