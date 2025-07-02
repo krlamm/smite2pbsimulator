@@ -104,7 +104,9 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
           {/* Empty slots*/}
           {(() => {
             if (team === 'A') {
-              const empties = Math.max(0, 4 - (picks.length - 1));
+              // Protect against negative index when no picks have been made yet
+              const effectivePicked = Math.max(picks.length - 1, 0);
+              const empties = Math.max(0, 4 - effectivePicked);
               return [...Array(empties)].map((_, index) => (
                 <div key={`empty-pick-${index}`} className="pick-item empty">
                   <div className="empty-slot">?</div>
