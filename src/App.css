@@ -64,11 +64,13 @@ h1 {
   border-radius: 5px;
   overflow: hidden;
   transition: transform 0.2s;
+  height: 100px;
 }
 
 .ban-item img, .pick-item img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
