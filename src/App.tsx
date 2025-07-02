@@ -78,24 +78,33 @@ function App() {
 
   const handleCharacterSelect = (character: Character) => {
     if (phase === 'BAN') {
-      setBans(prev => ({
-        ...prev,
-        [currentTeam]: [...prev[currentTeam], character]
-      }));
+      setBans(prevBans => {
+        const updatedBans: TeamState = {
+          ...prevBans,
+          [currentTeam]: [...prevBans[currentTeam], character],
+        };
+
+        // If we've reached 6 total bans (3 per team), move to the PICK phase
+        const totalBans = updatedBans.A.length + updatedBans.B.length;
+        if (totalBans >= 6) {
+          setPhase('PICK');
+        }
+
+        return updatedBans;
+      });
     } else {
-      setPicks(prev => ({
-        ...prev,
-        [currentTeam]: [...prev[currentTeam], character]
-      }));
+      setPicks(prevPicks => {
+        const updatedPicks: TeamState = {
+          ...prevPicks,
+          [currentTeam]: [...prevPicks[currentTeam], character],
+        };
+
+        return updatedPicks;
+      });
     }
 
-    // Switch teams and possibly phase
-    if (bans.A.length + bans.B.length < 6) { // 3 bans per team
-      setCurrentTeam(currentTeam === 'A' ? 'B' : 'A');
-    } else if (picks.A.length + picks.B.length < 10) { // 5 picks per team
-      setPhase('PICK');
-      setCurrentTeam(currentTeam === 'A' ? 'B' : 'A');
-    }
+    // Hand the turn to the other team after every selection
+    setCurrentTeam(prevTeam => (prevTeam === 'A' ? 'B' : 'A'));
   };
 
   return (
