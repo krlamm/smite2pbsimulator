@@ -307,4 +307,16 @@ h1 {
   background-color: rgba(255, 102, 102, 0.25); /* semi-transparent light red */
   padding: 10px;
   border-radius: 6px;
+}
+
+/* First pick centered row for Order */
+.team-A .first-pick-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.team-A .first-pick-row .pick-item {
+  width: 100px;
+  height: 100px;
 } 

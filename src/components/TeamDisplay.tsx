@@ -65,44 +65,90 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
 
       <div className="picks">
         <h3>Picks</h3>
+
+        {/* Order gets first pick centered */}
+        {team === 'A' && (
+          <div className="first-pick-row">
+            {picks[0] ? (
+              <div className="pick-item">
+                {(() => {
+                  const char = picks[0];
+                  const isPlaceholder = char.image.includes('placeholder');
+                  const slug = char.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-');
+                  const candidateUrls: string[] = [
+                    `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`,
+                    `https://webcdn.hirezstudios.com/smite2/god-icons/${slug}.jpg`,
+                  ];
+                  const initialSrc = isPlaceholder ? candidateUrls[0] : char.image;
+                  return (
+                    <img
+                      src={initialSrc}
+                      alt={char.name}
+                      data-candidate-index={0}
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        const currentIndex = Number(img.dataset.candidateIndex) || 0;
+                        const nextIndex = currentIndex + 1;
+                        if (isPlaceholder && nextIndex < candidateUrls.length) {
+                          img.dataset.candidateIndex = String(nextIndex);
+                          img.src = candidateUrls[nextIndex];
+                        }
+                      }}
+                    />
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="pick-item empty"><div className="empty-slot">?</div></div>
+            )}
+          </div>
+        )}
+
+        {/* Remaining picks list */}
         <div className="pick-list">
-          {picks.slice(0, 5).map((character, index) => (
-            <div key={index} className="pick-item">
-              {(() => {
-                const isPlaceholder = character.image.includes('placeholder');
-                const slug = character.name
-                  .toLowerCase()
-                  .replace(/[^a-z0-9\s]/g, '')
-                  .trim()
-                  .replace(/\s+/g, '-');
+          {(() => {
+            // For Order, skip first pick already rendered; for Chaos, render all
+            const startIdx = team === 'A' ? 1 : 0;
+            return picks.slice(startIdx, 5).map((character, idx) => (
+              <div key={idx} className="pick-item">
+                {(() => {
+                  const isPlaceholder = character.image.includes('placeholder');
+                  const slug = character.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-');
 
-                const candidateUrls: string[] = [
-                  `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`,
-                  `https://webcdn.hirezstudios.com/smite2/god-icons/${slug}.jpg`,
-                ];
+                  const candidateUrls: string[] = [
+                    `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`,
+                    `https://webcdn.hirezstudios.com/smite2/god-icons/${slug}.jpg`,
+                  ];
 
-                const initialSrc = isPlaceholder ? candidateUrls[0] : character.image;
+                  const initialSrc = isPlaceholder ? candidateUrls[0] : character.image;
 
-                return (
-                  <img
-                    src={initialSrc}
-                    alt={character.name}
-                    data-candidate-index={0}
-                    onError={(e) => {
-                      const img = e.currentTarget as HTMLImageElement;
-                      const currentIndex = Number(img.dataset.candidateIndex) || 0;
-                      const nextIndex = currentIndex + 1;
-                      if (isPlaceholder && nextIndex < candidateUrls.length) {
-                        img.dataset.candidateIndex = String(nextIndex);
-                        img.src = candidateUrls[nextIndex];
-                      }
-                    }}
-                  />
-                );
-              })()}
-            </div>
-          ))}
-          {[...Array(remainingPicks)].map((_, index) => (
+                  return (
+                    <img
+                      src={initialSrc}
+                      alt={character.name}
+                      data-candidate-index={0}
+                      onError={(e) => {
+                        const img = e.currentTarget as HTMLImageElement;
+                        const currentIndex = Number(img.dataset.candidateIndex) || 0;
+                        const nextIndex = currentIndex + 1;
+                        if (isPlaceholder && nextIndex < candidateUrls.length) {
+                          img.dataset.candidateIndex = String(nextIndex);
+                          img.src = candidateUrls[nextIndex];
+                        }
+                      }}
+                    />
+                  );
+                })()}
+              </div>
+            ));
+          })()}
+
+          {/* Empty slots*/}
+          {[...Array(team === 'A' ? Math.max(0, 4 - (picks.length - 1)) : remainingPicks)].map((_, index) => (
             <div key={`empty-pick-${index}`} className="pick-item empty">
               <div className="empty-slot">?</div>
             </div>
