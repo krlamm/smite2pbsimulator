@@ -23,6 +23,11 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
     selectedRole === 'All' || character.role === selectedRole
   );
 
+  // Sort alphabetically when viewing all roles
+  const displayCharacters = selectedRole === 'All'
+    ? [...filteredCharacters].sort((a, b) => a.name.localeCompare(b.name))
+    : filteredCharacters;
+
   return (
     <div className="character-grid-container">
       <div className="role-filters">
@@ -37,7 +42,7 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
         ))}
       </div>
       <div className="character-grid">
-        {filteredCharacters.map(character => (
+        {displayCharacters.map(character => (
           <div
             key={character.id}
             className={`character-card ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
