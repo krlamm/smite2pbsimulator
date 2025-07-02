@@ -55,7 +55,7 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
               })()}
               <div className="ban-info">
                 <div className="character-name">{character.name}</div>
-                <div className="character-role">{character.role}</div>
+                <div className={`character-role role-${character.role.toLowerCase()}`}>{character.role}</div>
               </div>
             </div>
           ))}
@@ -106,7 +106,7 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
               })()}
               <div className="pick-info">
                 <div className="character-name">{character.name}</div>
-                <div className="character-role">{character.role}</div>
+                <div className={`character-role role-${character.role.toLowerCase()}`}>{character.role}</div>
               </div>
             </div>
           ))}

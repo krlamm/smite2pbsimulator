@@ -56,7 +56,7 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
             })()}
             <div className="character-info">
               <div className="character-name">{character.name}</div>
-              <div className="character-role">{character.role}</div>
+              <div className={`character-role role-${character.role.toLowerCase()}`}>{character.role}</div>
             </div>
           </div>
         ))}
