@@ -319,4 +319,16 @@ h1 {
 .team-A .first-pick-row .pick-item {
   width: 100px;
   height: 100px;
+}
+
+/* Chaos last pick row */
+.team-B .last-pick-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.team-B .last-pick-row .pick-item {
+  width: 100px;
+  height: 100px;
 } 
