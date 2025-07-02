@@ -21,7 +21,38 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
         <div className="ban-list">
           {bans.slice(0, 3).map((character, index) => (
             <div key={index} className="ban-item">
-              <img src={character.image} alt={character.name} />
+              {(() => {
+                const isPlaceholder = character.image.includes('placeholder');
+                const slug = character.name
+                  .toLowerCase()
+                  .replace(/[^a-z0-9\s]/g, '')
+                  .trim()
+                  .replace(/\s+/g, '-');
+
+                const candidateUrls: string[] = [
+                  `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`,
+                  `https://webcdn.hirezstudios.com/smite2/god-icons/${slug}.jpg`,
+                ];
+
+                const initialSrc = isPlaceholder ? candidateUrls[0] : character.image;
+
+                return (
+                  <img
+                    src={initialSrc}
+                    alt={character.name}
+                    data-candidate-index={0}
+                    onError={(e) => {
+                      const img = e.currentTarget as HTMLImageElement;
+                      const currentIndex = Number(img.dataset.candidateIndex) || 0;
+                      const nextIndex = currentIndex + 1;
+                      if (isPlaceholder && nextIndex < candidateUrls.length) {
+                        img.dataset.candidateIndex = String(nextIndex);
+                        img.src = candidateUrls[nextIndex];
+                      }
+                    }}
+                  />
+                );
+              })()}
               <div className="ban-info">
                 <div className="character-name">{character.name}</div>
                 <div className="character-role">{character.role}</div>
@@ -41,7 +72,38 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
         <div className="pick-list">
           {picks.slice(0, 5).map((character, index) => (
             <div key={index} className="pick-item">
-              <img src={character.image} alt={character.name} />
+              {(() => {
+                const isPlaceholder = character.image.includes('placeholder');
+                const slug = character.name
+                  .toLowerCase()
+                  .replace(/[^a-z0-9\s]/g, '')
+                  .trim()
+                  .replace(/\s+/g, '-');
+
+                const candidateUrls: string[] = [
+                  `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`,
+                  `https://webcdn.hirezstudios.com/smite2/god-icons/${slug}.jpg`,
+                ];
+
+                const initialSrc = isPlaceholder ? candidateUrls[0] : character.image;
+
+                return (
+                  <img
+                    src={initialSrc}
+                    alt={character.name}
+                    data-candidate-index={0}
+                    onError={(e) => {
+                      const img = e.currentTarget as HTMLImageElement;
+                      const currentIndex = Number(img.dataset.candidateIndex) || 0;
+                      const nextIndex = currentIndex + 1;
+                      if (isPlaceholder && nextIndex < candidateUrls.length) {
+                        img.dataset.candidateIndex = String(nextIndex);
+                        img.src = candidateUrls[nextIndex];
+                      }
+                    }}
+                  />
+                );
+              })()}
               <div className="pick-info">
                 <div className="character-name">{character.name}</div>
                 <div className="character-role">{character.role}</div>
