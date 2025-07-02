@@ -8,7 +8,7 @@ function App() {
   // Smite 2 Open Beta Roster (as of July 2025, OB13)
   const [characters] = useState<Character[]>([
     // Guardians
-    { id: 1, name: 'Ares', image: 'https://via.placeholder.com/100', role: 'Guardian' },
+    { id: 1, name: 'Ares', image: 'https://webcdn.hirezstudios.com/smite/god-icons/ares.jpg', role: 'Guardian' },
     { id: 2, name: 'Athena', image: 'https://via.placeholder.com/100', role: 'Guardian' },
     { id: 3, name: 'Bacchus', image: 'https://via.placeholder.com/100', role: 'Guardian' },
     { id: 4, name: 'Cabrakan', image: 'https://via.placeholder.com/100', role: 'Guardian' },
