@@ -141,6 +141,41 @@ h1 {
   color: #000;
 }
 
+.role-filter.role-assassin {
+  background-color: #ffd700; /* yellow */
+  color: #000;
+}
+.role-filter.role-guardian {
+  background-color: #27ae60; /* green */
+}
+.role-filter.role-hunter {
+  background-color: #8b4513; /* brown */
+}
+.role-filter.role-mage {
+  background-color: #9b59b6; /* purple */
+}
+.role-filter.role-warrior {
+  background-color: #e74c3c; /* red */
+}
+
+/* Maintain same colors when active */
+.role-filter.role-assassin.active {
+  background-color: #ffd700;
+  color: #000;
+}
+.role-filter.role-guardian.active {
+  background-color: #27ae60;
+}
+.role-filter.role-hunter.active {
+  background-color: #8b4513;
+}
+.role-filter.role-mage.active {
+  background-color: #9b59b6;
+}
+.role-filter.role-warrior.active {
+  background-color: #e74c3c;
+}
+
 .character-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* exactly five columns */

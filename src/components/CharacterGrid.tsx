@@ -29,7 +29,7 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
         {roles.map(role => (
           <button
             key={role}
-            className={`role-filter ${selectedRole === role ? 'active' : ''}`}
+            className={`role-filter role-${role.toLowerCase()} ${selectedRole === role ? 'active' : ''}`}
             onClick={() => setSelectedRole(role)}
           >
             {role}
