@@ -76,6 +76,9 @@ function App() {
   const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
   const [bans, setBans] = useState<TeamState>({ A: [], B: [] });
 
+  // Draft pick order for the PICK phase (10 total picks)
+  const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
+
   const handleCharacterSelect = (character: Character) => {
     if (phase === 'BAN') {
       setBans(prevBans => {
@@ -87,12 +90,20 @@ function App() {
         // If we've reached 6 total bans (3 per team), move to the PICK phase
         const totalBans = updatedBans.A.length + updatedBans.B.length;
         if (totalBans >= 6) {
+          // Switch to pick phase and reset to first pick (Order)
           setPhase('PICK');
+          setCurrentTeam(pickSequence[0]);
+        } else {
+          // Alternate bans
+          setCurrentTeam(prevTeam => (prevTeam === 'A' ? 'B' : 'A'));
         }
 
         return updatedBans;
       });
     } else {
+      // PICK PHASE
+      const totalPicksBefore = picks.A.length + picks.B.length; // 0-based index in sequence
+
       setPicks(prevPicks => {
         const updatedPicks: TeamState = {
           ...prevPicks,
@@ -101,10 +112,12 @@ function App() {
 
         return updatedPicks;
       });
-    }
 
-    // Hand the turn to the other team after every selection
-    setCurrentTeam(prevTeam => (prevTeam === 'A' ? 'B' : 'A'));
+      const totalPicksAfter = totalPicksBefore + 1;
+      if (totalPicksAfter < pickSequence.length) {
+        setCurrentTeam(pickSequence[totalPicksAfter]);
+      }
+    }
   };
 
   return (
