@@ -44,11 +44,11 @@ h1 {
 }
 
 .team-A {
-  border-left: 5px solid #3498db;
+  border-left: 5px solid #1abc9c;
 }
 
 .team-B {
-  border-left: 5px solid #e74c3c;
+  border-left: 5px solid #ff6666;
 }
 
 .ban-list, .pick-list {
@@ -187,4 +187,20 @@ h1 {
   .role-filters {
     flex-wrap: wrap;
   }
+}
+
+.team-A h2 {
+  color: #1abc9c; /* teal */
+}
+
+.team-B h2 {
+  color: #ff6666; /* light red */
+}
+
+.phase-indicator .team-name.order {
+  color: #1abc9c;
+}
+
+.phase-indicator .team-name.chaos {
+  color: #ff6666;
 } 
