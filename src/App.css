@@ -288,8 +288,23 @@ h1 {
 
 /* Highlight banned gods */
 .bans {
-  border: 2px solid #e74c3c;
+  border: 2px solid #c922ff; /* neon purple */
   padding: 10px;
   border-radius: 6px;
-  background-color: #e74c3c; /* fill box with same red */
+  background-color: rgba(201, 34, 255, 0.25); /* semi-transparent neon purple */
+}
+
+/* Highlight picks with team colors */
+.team-A .picks {
+  border: 2px solid #1abc9c; /* teal border for Order */
+  background-color: rgba(26, 188, 156, 0.25); /* semi-transparent teal */
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.team-B .picks {
+  border: 2px solid #ff6666; /* light red border for Chaos */
+  background-color: rgba(255, 102, 102, 0.25); /* semi-transparent light red */
+  padding: 10px;
+  border-radius: 6px;
 } 
