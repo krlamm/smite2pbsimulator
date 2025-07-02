@@ -43,7 +43,17 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
             className={`character-card ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
             onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
           >
-            <img src={character.image} alt={character.name} />
+            {(() => {
+              // If the image is still a placeholder, attempt to derive the official Smite icon URL
+              const isPlaceholder = character.image.includes('placeholder');
+              const slug = character.name
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '') // remove punctuation
+                .trim()
+                .replace(/\s+/g, '-');
+              const derivedUrl = `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`;
+              return <img src={isPlaceholder ? derivedUrl : character.image} alt={character.name} />;
+            })()}
             <div className="character-info">
               <div className="character-name">{character.name}</div>
               <div className="character-role">{character.role}</div>
