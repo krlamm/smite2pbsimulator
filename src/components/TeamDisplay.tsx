@@ -14,7 +14,7 @@ function TeamDisplay({ team, picks, bans }: TeamDisplayProps) {
 
   return (
     <div className={`team-display team-${team}`}>
-      <h2>Team {team}</h2>
+      <h2>{team === 'A' ? 'Order' : 'Chaos'}</h2>
       
       <div className="bans">
         <h3>Bans</h3>

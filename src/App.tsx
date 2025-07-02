@@ -111,7 +111,7 @@ function App() {
     <div className="app">
       <h1>Pick/Ban Simulator</h1>
       <div className="phase-indicator">
-        Current Phase: {phase} - Team {currentTeam}'s turn
+        Current Phase: {phase} - {(currentTeam === 'A' ? 'Order' : 'Chaos')}'s turn
       </div>
       <div className="teams-container">
         <TeamDisplay 
