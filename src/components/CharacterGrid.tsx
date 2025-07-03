@@ -9,7 +9,8 @@ interface CharacterGridProps {
 }
 
 function CharacterGrid({ characters, onCharacterSelect, picks, bans }: CharacterGridProps) {
-  const [selectedRole, setSelectedRole] = useState<string>('All');
+  // Initialize to null so no characters are shown on initial load
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const roles = ['All', 'Assassin', 'Guardian', 'Hunter', 'Mage', 'Warrior'];
 
   const isCharacterAvailable = (character: Character): boolean => {
@@ -19,8 +20,9 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
            !allBans.some(ban => ban.id === character.id);
   };
 
-  const filteredCharacters = characters.filter(character => 
-    selectedRole === 'All' || character.role === selectedRole
+  // Only filter characters if a role is selected (not null)
+  const filteredCharacters = characters.filter(character =>
+    selectedRole !== null && (selectedRole === 'All' || character.role === selectedRole)
   );
 
   // Sort alphabetically when viewing all roles
@@ -34,8 +36,10 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
         {roles.map(role => (
           <button
             key={role}
+            // Add 'active' class only if the current role matches selectedRole
             className={`role-filter role-${role.toLowerCase()} ${selectedRole === role ? 'active' : ''}`}
-            onClick={() => setSelectedRole(role)}
+            // Toggle selectedRole: if clicking active role, set to null (hide); else set to new role (show)
+            onClick={() => setSelectedRole(selectedRole === role ? null : role)}
           >
             {role}
           </button>
