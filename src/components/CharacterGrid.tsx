@@ -6,9 +6,18 @@ interface CharacterGridProps {
   onCharacterSelect: (character: Character) => void;
   picks: TeamState;
   bans: TeamState;
+  mode: 'standard' | 'freedom';
+  onDragStart: (e: React.DragEvent, character: Character) => void;
 }
 
-function CharacterGrid({ characters, onCharacterSelect, picks, bans }: CharacterGridProps) {
+function CharacterGrid({ 
+  characters, 
+  onCharacterSelect, 
+  picks, 
+  bans,
+  mode,
+  onDragStart 
+}: CharacterGridProps) {
   // Initialize to null so no characters are shown on initial load
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const roles = ['All', 'Jungle', 'Support', 'Carry', 'Mid', 'Solo'];
@@ -16,8 +25,8 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
   const isCharacterAvailable = (character: Character): boolean => {
     const allPicks = [...picks.A, ...picks.B];
     const allBans = [...bans.A, ...bans.B];
-    return !allPicks.some(pick => pick.id === character.id) && 
-           !allBans.some(ban => ban.id === character.id);
+    return !allPicks.some(pick => pick?.id === character.id) && 
+           !allBans.some(ban => ban?.id === character.id);
   };
 
   // Only filter characters if a role is selected (not null)
@@ -51,6 +60,8 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
             key={character.id}
             className={`character-card role-${character.role.toLowerCase()} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
             onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
+            draggable={mode === 'freedom' && isCharacterAvailable(character)}
+            onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
           >
             {(() => {
               // If the image is still a placeholder, attempt to derive the official Smite icon URL

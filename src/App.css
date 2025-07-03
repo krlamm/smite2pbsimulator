@@ -1,3 +1,53 @@
+/* Mode Toggle */
+.mode-toggle-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
+
+.mode-toggle {
+  background: #2a2a2a;
+  border-radius: 25px;
+  padding: 4px;
+  position: relative;
+  width: 300px;
+  height: 50px;
+  display: flex;
+  cursor: pointer;
+}
+
+.toggle-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  color: #666;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  font-size: 1.2em;
+}
+
+.toggle-option.active {
+  color: #fff;
+}
+
+.mode-toggle .slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: #1abc9c;
+  border-radius: 22px;
+  transition: transform 0.3s ease;
+}
+
+.mode-toggle.freedom .slider {
+  transform: translateX(100%);
+  background: #ff6666;
+}
+
 /* Main App Layout */
 .app {
   width: 100%;             /* 1200px → 75em */
@@ -86,7 +136,7 @@ h1 {
   background-color: #333;
   border-radius: 5px;
   overflow: hidden;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   height: 6.25em;             /* 100px → 6.25em */
 }
 
@@ -406,4 +456,29 @@ h1 {
 
 .phase-text.phase-ban {
     color: #9b59b6; /* Purple for BAN */
+}
+
+/* Drag and Drop Styles */
+.freedom .ban-item:empty, .freedom .pick-item:empty {
+  border: 2px dashed #666;
+  background-color: rgba(102, 102, 102, 0.2);
+  cursor: pointer;
+}
+
+.freedom .ban-item:empty:hover, .freedom .pick-item:empty:hover {
+  border-color: #999;
+  background-color: rgba(102, 102, 102, 0.3);
+}
+
+.character-card[draggable=true] {
+  cursor: grab;
+}
+
+.character-card[draggable=true]:active {
+  cursor: grabbing;
+}
+
+.freedom .ban-item.drag-over, .freedom .pick-item.drag-over {
+  border: 2px dashed #1abc9c;
+  background-color: rgba(26, 188, 156, 0.2);
 } 
