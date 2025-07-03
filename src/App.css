@@ -22,14 +22,20 @@ h1 {
 
 /* Phase Indicator */
 .phase-indicator {
-  text-align: center;
-  font-size: 1.5rem;
-  margin: 1.25em 0;            /* 20px → 1.25em */
-  padding: 0.625em;            /* 10px → 0.625em */
-  background-color: #2a2a2a;
-  border-radius: 5px;
-  font-weight: bold;
-  color: #ffd700;
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 1.25em 0;            /* 20px → 1.25em */
+    padding: 0.625em;            /* 10px → 0.625em */
+    background-color: #2a2a2a;
+    border-radius: 5px;
+}
+
+.phase-indicator .team-name.order {
+    color: #1abc9c;
+}
+
+.phase-indicator .team-name.chaos {
+    color: #ff6666;
 }
 
 /* Teams Container */
@@ -292,14 +298,6 @@ h1 {
   color: #ff6666; /* light red */
 }
 
-.phase-indicator .team-name.order {
-  color: #1abc9c;
-}
-
-.phase-indicator .team-name.chaos {
-  color: #ff6666;
-}
-
 /* Layout container for teams and character grid */
 .main-content {
   display: grid;
@@ -389,4 +387,12 @@ h1 {
   .team-display {
     min-width: 100%;
   }
+}
+
+.turn-text.order {
+    color: #1abc9c;
+}
+
+.turn-text.chaos {
+    color: #ff6666;
 } 
