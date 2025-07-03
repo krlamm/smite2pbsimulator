@@ -63,7 +63,7 @@ function App() {
     <div className="app">
       <h1>Pick/Ban Simulator</h1>
       <div className="phase-indicator">
-        Current Phase: {phase} - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>{currentTeam === 'A' ? 'Order' : 'Chaos'}'s turn</span>
+        Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>{currentTeam === 'A' ? 'Order' : 'Chaos'}'s turn</span>
       </div>
       <div className="main-content">
         {/* Order (Team A) on the left */}

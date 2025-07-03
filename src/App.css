@@ -395,4 +395,16 @@ h1 {
 
 .turn-text.chaos {
     color: #ff6666;
+}
+
+.phase-text {
+    font-weight: bold;
+}
+
+.phase-text.phase-pick {
+    color: #27ae60; /* Green for PICK */
+}
+
+.phase-text.phase-ban {
+    color: #9b59b6; /* Purple for BAN */
 } 
