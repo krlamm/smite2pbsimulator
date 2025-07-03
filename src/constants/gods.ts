@@ -10,6 +10,7 @@ export const gods = [
     { id: 8, name: 'Khepri', image: 'https://via.placeholder.com/100', role: 'Guardian' },
     { id: 9, name: 'Sobek', image: 'https://via.placeholder.com/100', role: 'Guardian' },
     { id: 10, name: 'Ymir', image: 'https://via.placeholder.com/100', role: 'Guardian' },
+    { id: 54, name: 'Yemoja', image: 'https://via.placeholder.com/100', role: 'Guardian' },
 
     // Mages
     { id: 11, name: 'Agni', image: 'https://via.placeholder.com/100', role: 'Mage' },
@@ -28,6 +29,8 @@ export const gods = [
     { id: 24, name: 'Sol', image: 'https://via.placeholder.com/100', role: 'Mage' },
     { id: 25, name: 'The Morrigan', image: 'https://via.placeholder.com/100', role: 'Mage' },
     { id: 26, name: 'Zeus', image: 'https://via.placeholder.com/100', role: 'Mage' },
+    { id: 55, name: 'Ra', image: 'https://via.placeholder.com/100', role: 'Mage' },
+    { id: 56, name: 'Vulcan', image: 'https://via.placeholder.com/100', role: 'Mage' },
 
     // Warriors
     { id: 27, name: 'Achilles', image: 'https://via.placeholder.com/100', role: 'Warrior' },
@@ -36,6 +39,9 @@ export const gods = [
     { id: 30, name: 'Chaac', image: 'https://via.placeholder.com/100', role: 'Warrior' },
     { id: 31, name: 'Guan Yu', image: 'https://via.placeholder.com/100', role: 'Warrior' },
     { id: 32, name: 'Mulan', image: 'https://via.placeholder.com/100', role: 'Warrior' },
+    { id: 57, name: 'Hercules', image: 'https://via.placeholder.com/100', role: 'Warrior' },
+    { id: 58, name: 'Odin', image: 'https://via.placeholder.com/100', role: 'Warrior' },
+    { id: 59, name: 'Sun Wukong', image: 'https://via.placeholder.com/100', role: 'Warrior' },
 
     // Assassins
     { id: 33, name: 'Aladdin', image: 'https://via.placeholder.com/100', role: 'Assassin' },
@@ -47,6 +53,9 @@ export const gods = [
     { id: 39, name: 'Nemesis', image: 'https://via.placeholder.com/100', role: 'Assassin' },
     { id: 40, name: 'Susano', image: 'https://via.placeholder.com/100', role: 'Assassin' },
     { id: 41, name: 'Thanatos', image: 'https://via.placeholder.com/100', role: 'Assassin' },
+    { id: 60, name: 'Hun Batz', image: 'https://via.placeholder.com/100', role: 'Assassin' },
+    { id: 61, name: 'Pele', image: 'https://via.placeholder.com/100', role: 'Assassin' },
+    { id: 62, name: 'Thor', image: 'https://via.placeholder.com/100', role: 'Assassin' },
 
     // Hunters
     { id: 42, name: 'Anhur', image: 'https://via.placeholder.com/100', role: 'Hunter' },
@@ -61,4 +70,4 @@ export const gods = [
     { id: 51, name: 'Neith', image: 'https://via.placeholder.com/100', role: 'Hunter' },
     { id: 52, name: 'Rama', image: 'https://via.placeholder.com/100', role: 'Hunter' },
     { id: 53, name: 'Ullr', image: 'https://via.placeholder.com/100', role: 'Hunter' }
-  ]
+]
