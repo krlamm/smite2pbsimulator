@@ -289,7 +289,7 @@ h1 {
 /* Layout container for teams and character grid */
 .main-content {
   display: grid;
-  grid-template-columns: 16em 1fr 16em; /* side columns fixed, center grows */
+  grid-template-columns: 20em 1fr 20em; /* side columns wider for focus */
   gap: 1.25em;                /* 20px → 1.25em */
   height: 100%;
 }
