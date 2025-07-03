@@ -1,11 +1,14 @@
 /* Main App Layout */
 .app {
-  max-width: 75em;             /* 1200px → 75em */
+  width: 100%;             /* 1200px → 75em */
   margin: 0 auto;
   padding: 1.25em;             /* 20px  → 1.25em */
   font-family: Arial, sans-serif;
   background-color: #1a1a1a;
   color: #ffffff;
+  min-height: 100vh;                 /* occupy full viewport height */
+  display: grid;
+  grid-template-rows: auto auto 1fr; /* header, phase-indicator, main */
 }
 
 h1 {
@@ -41,7 +44,7 @@ h1 {
   border-radius: 8px;
   background-color: #2a2a2a;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  width: 260px;
+  width: auto;
   flex-shrink: 0;
   min-width: 16em;            /* 256px ≈ 16em */
 }
@@ -125,10 +128,13 @@ h1 {
 /* Character Grid */
 .character-grid-container {
   background-color: #2a2a2a;
-  padding: 20px;
+  padding: 1.25em;
   border-radius: 8px;
   flex: 1;
-   scrollbar-color: #404040 #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  scrollbar-color: #404040 #2a2a2a;
 }
 
 .role-filters {
@@ -197,7 +203,8 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(8em, 1fr)); /* responsive */
   gap: 1em;                   /* 15px → 1em */
   margin-top: 1.25em;         /* 20px → 1.25em */
-  max-height: 31.25em;        /* 500px → 31.25em */
+  max-height: none;
+  flex: 1;
   overflow-y: auto;
   padding-right: 0.375em;     /* 6px  → 0.375em */
 }
@@ -283,6 +290,7 @@ h1 {
   display: grid;
   grid-template-columns: 16em 1fr 16em; /* side columns fixed, center grows */
   gap: 1.25em;                /* 20px → 1.25em */
+  height: 100%;
 }
 
 /* Ensure the character grid expands while side columns stay compact */
@@ -292,7 +300,7 @@ h1 {
 
 /* Prevent team columns from shrinking and keep them a reasonable width */
 .team-display {
-  width: 260px;
+  width: auto;
   flex-shrink: 0;
 }
 
@@ -355,4 +363,15 @@ h1 {
 .character-card.role-guardian { border-color: #27ae60; }
 .character-card.role-hunter  { border-color: #8b4513; }
 .character-card.role-mage    { border-color: #9b59b6; }
-.character-card.role-warrior { border-color: #e74c3c; } 
+.character-card.role-warrior { border-color: #e74c3c; }
+
+/* === Responsive: collapse to single column on narrow screens === */
+@media (max-width: 48em) {      /* 768px */
+  .main-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .team-display {
+    min-width: 100%;
+  }
+} 
