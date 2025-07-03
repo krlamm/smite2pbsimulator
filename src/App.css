@@ -309,11 +309,11 @@ h1 {
 }
 
 /* Role label colors under portraits */
-.character-role.role-assassin { color: #ffd700; }
-.character-role.role-guardian { color: #27ae60; }
-.character-role.role-hunter { color: #8b4513; }
-.character-role.role-mage { color: #9b59b6; }
-.character-role.role-warrior { color: #e74c3c; }
+.character-role.role-jungle { color: #ffd700; }
+.character-role.role-support { color: #27ae60; }
+.character-role.role-carry { color: #9b59b6; }
+.character-role.role-mid { color: #e74c3c; }
+.character-role.role-solo { color: #1e90ff; }
 
 /* Highlight banned gods */
 .bans {
@@ -363,11 +363,11 @@ h1 {
 }
 
 /* Add role-specific border colors */
-.character-card.role-assassin { border-color: #ffd700; }
-.character-card.role-guardian { border-color: #27ae60; }
-.character-card.role-hunter  { border-color: #8b4513; }
-.character-card.role-mage    { border-color: #9b59b6; }
-.character-card.role-warrior { border-color: #e74c3c; }
+.character-card.role-jungle { border-color: #ffd700; }
+.character-card.role-support { border-color: #27ae60; }
+.character-card.role-carry { border-color: #9b59b6; }
+.character-card.role-mid { border-color: #e74c3c; }
+.character-card.role-solo { border-color: #1e90ff; }
 
 /* === Responsive: collapse to single column on narrow screens === */
 @media (max-width: 48em) {      /* 768px */
