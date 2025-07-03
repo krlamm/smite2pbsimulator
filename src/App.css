@@ -223,11 +223,10 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(8em, 1fr)); /* responsive */
   gap: 1em;                   /* 15px → 1em */
   margin-top: 1.25em;         /* 20px → 1.25em */
-  max-height: none;
-  flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;         /* Force scrollbar to always show */
   padding-right: 0.375em;     /* 6px  → 0.375em */
   align-content: flex-start; /* pack rows, avoid stretching rows when fewer cards */
+  max-height: 70vh;          /* Set a percentage of viewport height */
 }
 
 .character-card {
