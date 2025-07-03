@@ -45,7 +45,7 @@ function CharacterGrid({ characters, onCharacterSelect, picks, bans }: Character
         {displayCharacters.map(character => (
           <div
             key={character.id}
-            className={`character-card ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
+            className={`character-card role-${character.role.toLowerCase()} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
             onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
           >
             {(() => {

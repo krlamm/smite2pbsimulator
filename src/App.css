@@ -203,6 +203,7 @@ h1 {
   transition: transform 0.2s;
   display: flex;
   flex-direction: column;
+  border: 3px solid transparent; /* base border for role outlines */
 }
 
 .character-card:hover {
@@ -226,6 +227,8 @@ h1 {
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: 2px;
   flex-grow: 1;
 }
 
@@ -337,4 +340,11 @@ h1 {
 .team-B .last-pick-row .pick-item {
   width: 100px;
   height: 100px;
-} 
+}
+
+/* Add role-specific border colors */
+.character-card.role-assassin { border-color: #ffd700; }
+.character-card.role-guardian { border-color: #27ae60; }
+.character-card.role-hunter  { border-color: #8b4513; }
+.character-card.role-mage    { border-color: #9b59b6; }
+.character-card.role-warrior { border-color: #e74c3c; } 
