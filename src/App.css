@@ -207,6 +207,7 @@ h1 {
   flex: 1;
   overflow-y: auto;
   padding-right: 0.375em;     /* 6px  → 0.375em */
+  align-content: flex-start; /* pack rows, avoid stretching rows when fewer cards */
 }
 
 .character-card {
