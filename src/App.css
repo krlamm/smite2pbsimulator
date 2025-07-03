@@ -201,6 +201,7 @@ h1 {
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s;
+  position: relative;
 }
 
 .character-card:hover {
@@ -222,6 +223,10 @@ h1 {
   padding: 8px;
   text-align: center;
   background: rgba(0, 0, 0, 0.8);
+  min-height: 48px; /* reserve space for up to two text lines */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Responsive Design */
