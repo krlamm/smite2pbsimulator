@@ -166,39 +166,50 @@ h1 {
   color: #000;
 }
 
-.role-filter.role-assassin {
-  background-color: #ffd700; /* yellow */
-  color: #000;
-}
-.role-filter.role-guardian {
-  background-color: #27ae60; /* green */
-}
-.role-filter.role-hunter {
-  background-color: #8b4513; /* brown */
-}
-.role-filter.role-mage {
-  background-color: #9b59b6; /* purple */
-}
-.role-filter.role-warrior {
-  background-color: #e74c3c; /* red */
+.role-filter.role-jungle {
+  background-color: #ffd700;
+  color: black;
 }
 
-/* Maintain same colors when active */
-.role-filter.role-assassin.active {
-  background-color: #ffd700;
-  color: #000;
-}
-.role-filter.role-guardian.active {
+.role-filter.role-support {
   background-color: #27ae60;
+  color: white;
 }
-.role-filter.role-hunter.active {
-  background-color: #8b4513;
-}
-.role-filter.role-mage.active {
+
+.role-filter.role-carry {
   background-color: #9b59b6;
+  color: white;
 }
-.role-filter.role-warrior.active {
+
+.role-filter.role-mid {
   background-color: #e74c3c;
+  color: white;
+}
+
+.role-filter.role-solo {
+  background-color: #1e90ff;
+  color: white;
+}
+
+/* Active states */
+.role-filter.role-jungle.active {
+  box-shadow: 0 0 10px #ffd700;
+}
+
+.role-filter.role-support.active {
+  box-shadow: 0 0 10px #27ae60;
+}
+
+.role-filter.role-carry.active {
+  box-shadow: 0 0 10px #9b59b6;
+}
+
+.role-filter.role-mid.active {
+  box-shadow: 0 0 10px #e74c3c;
+}
+
+.role-filter.role-solo.active {
+  box-shadow: 0 0 10px #1e90ff;
 }
 
 .character-grid {

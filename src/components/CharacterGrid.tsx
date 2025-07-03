@@ -11,7 +11,7 @@ interface CharacterGridProps {
 function CharacterGrid({ characters, onCharacterSelect, picks, bans }: CharacterGridProps) {
   // Initialize to null so no characters are shown on initial load
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const roles = ['All', 'Assassin', 'Guardian', 'Hunter', 'Mage', 'Warrior'];
+  const roles = ['All', 'Jungle', 'Support', 'Carry', 'Mid', 'Solo'];
 
   const isCharacterAvailable = (character: Character): boolean => {
     const allPicks = [...picks.A, ...picks.B];
