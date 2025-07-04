@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import './App.css';
 import './layout-fix.css';
+import './esports-layout.css';
 import CharacterGrid from './components/CharacterGrid';
 import TeamDisplay from './components/TeamDisplay';
+import EsportsTeamDisplay from './components/EsportsTeamDisplay';
 import ModeToggle from './components/ModeToggle';
+import BanArea from './components/BanArea';
 import { Character, TeamState } from './types';
 import { gods } from './constants/gods';
 
 function App() {
   // Mode state
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
+  const [layoutMode, setLayoutMode] = useState<'classic' | 'esports'>('esports');
   
   // Smite 2 Open Beta Roster (as of July 2025, OB13)
   const [characters] = useState<Character[]>(gods); 
@@ -76,7 +80,10 @@ function App() {
   // Handle drag over
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (e.currentTarget.classList.contains('ban-item') || e.currentTarget.classList.contains('pick-item')) {
+    if (e.currentTarget.classList.contains('ban-item') || 
+        e.currentTarget.classList.contains('pick-item') ||
+        e.currentTarget.classList.contains('ban-slot') ||
+        e.currentTarget.classList.contains('pick-slot')) {
       e.currentTarget.classList.add('drag-over');
     }
   };
@@ -133,35 +140,132 @@ function App() {
     }
   };
 
+  // Toggle between classic and esports layout
+  const toggleLayout = () => {
+    setLayoutMode(prevMode => prevMode === 'classic' ? 'esports' : 'classic');
+  };
+
+  // Render classic layout
+  if (layoutMode === 'classic') {
+    return (
+      <div className={`app ${mode}`}>
+        <h1>Pick/Ban Simulator</h1>
+        <button onClick={toggleLayout} style={{ position: 'absolute', top: '10px', right: '10px' }}>
+          Switch to Esports Layout
+        </button>
+        <ModeToggle mode={mode} onModeChange={setMode} />
+        <div className="phase-indicator" style={{ 
+          height: '2.5rem',
+          maxHeight: '2.5rem',
+          padding: '0.3em 0.5em',
+          margin: '0.5em 0',
+          fontSize: '0.9rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden'
+        }}>
+          {mode === 'standard' ? (
+            <>
+              Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
+              <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
+                {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
+              </span>
+            </>
+          ) : (
+            <span>Freedom Mode - Drag and drop any god to any position</span>
+          )}
+        </div>
+        <div className="main-content">
+          {/* Order (Team A) on the left */}
+          <TeamDisplay 
+            team="A"
+            picks={picks.A}
+            bans={bans.A}
+            mode={mode}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          />
+
+          {/* Character pool in the middle */}
+          <CharacterGrid 
+            characters={characters}
+            onCharacterSelect={handleCharacterSelect}
+            picks={picks}
+            bans={bans}
+            mode={mode}
+            onDragStart={handleDragStart}
+          />
+
+          {/* Chaos (Team B) on the right */}
+          <TeamDisplay 
+            team="B"
+            picks={picks.B}
+            bans={bans.B}
+            mode={mode}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Render esports layout
   return (
-    <div className={`app ${mode}`}>
-      <h1>Pick/Ban Simulator</h1>
-      <ModeToggle mode={mode} onModeChange={setMode} />
-      <div className="phase-indicator" style={{ 
-        height: '2.5rem',           // Fixed height
-        maxHeight: '2.5rem',        // Ensure it doesn't grow
-        padding: '0.3em 0.5em',     // Compact padding
-        margin: '0.5em 0',          // Reduced margin
-        fontSize: '0.9rem',         // Smaller font
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden'          // Hide overflow content
-      }}>
+    <div className={`app esports ${mode}`}>
+      <button onClick={toggleLayout} style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 100 }}>
+        Switch to Classic Layout
+      </button>
+      
+      {/* Esports Header */}
+      <div className="esports-header">
+        {/* Team A name container */}
+        <div className="esports-team-header team-a-header">
+          {/* Team name will be positioned below in CSS */}
+        </div>
+        
+        <div className="center-header">
+          <div className="tournament-logo">SMITE 2 PICK/BAN SIMULATOR</div>
+        </div>
+        
+        {/* Team B name container */}
+        <div className="esports-team-header team-b-header">
+          {/* Team name will be positioned below in CSS */}
+        </div>
+      </div>
+      
+      {/* Team names positioned below header */}
+      <div className="team-names-container">
+        <div className="team-name team-a">ORDER</div>
+        <div className="team-name team-b">CHAOS</div>
+      </div>
+      
+      {/* Mode Toggle - Centered above phase indicator */}
+      <div className="centered-mode-toggle">
+        <ModeToggle mode={mode} onModeChange={setMode} />
+      </div>
+      
+      {/* Phase Indicator */}
+      <div className="phase-indicator esports">
         {mode === 'standard' ? (
           <>
-            Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> - 
+            Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
             <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
-              {currentTeam === 'A' ? 'Order' : 'Chaos'}'s turn
+              {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
             </span>
           </>
         ) : (
           <span>Freedom Mode - Drag and drop any god to any position</span>
         )}
       </div>
-      <div className="main-content">
+      
+      {/* Main Content - Picks Section */}
+      <div className="esports-content">
         {/* Order (Team A) on the left */}
-        <TeamDisplay 
+        <EsportsTeamDisplay 
           team="A"
           picks={picks.A}
           bans={bans.A}
@@ -170,19 +274,23 @@ function App() {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         />
-
-        {/* Character pool in the middle */}
-        <CharacterGrid 
-          characters={characters}
-          onCharacterSelect={handleCharacterSelect}
-          picks={picks}
-          bans={bans}
-          mode={mode}
-          onDragStart={handleDragStart}
-        />
-
+        
+        {/* Center column with god selection grid */}
+        <div className="esports-center-column">
+          <div className="center-grid-container">
+            <CharacterGrid 
+              characters={characters}
+              onCharacterSelect={handleCharacterSelect}
+              picks={picks}
+              bans={bans}
+              mode={mode}
+              onDragStart={handleDragStart}
+            />
+          </div>
+        </div>
+        
         {/* Chaos (Team B) on the right */}
-        <TeamDisplay 
+        <EsportsTeamDisplay 
           team="B"
           picks={picks.B}
           bans={bans.B}
@@ -192,6 +300,16 @@ function App() {
           onDrop={handleDrop}
         />
       </div>
+      
+      {/* Ban Area - Now directly under the picks */}
+      <BanArea 
+        bansA={bans.A}
+        bansB={bans.B}
+        mode={mode}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      />
     </div>
   );
 }

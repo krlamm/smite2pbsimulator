@@ -1,0 +1,367 @@
+/* Esports Layout - Smite World Championship Style */
+:root {
+  --order-color: #00ccff;
+  --chaos-color: #ff3366;
+  --dark-blue: #0a1835;
+  --medium-blue: #142a5c;
+  --light-blue: #1d3b7d;
+  --gold: #ffd700;
+  --border-glow: 0 0 5px rgba(0, 240, 255, 0.7);
+  
+  /* Role colors */
+  --solo-color: #1e90ff;
+  --jungle-color: #ffd700;
+  --mid-color: #e74c3c;
+  --support-color: #27ae60;
+  --carry-color: #9b59b6;
+}
+
+/* Main app container */
+.app.esports {
+  background-image: linear-gradient(to bottom, #0a1835, #142a5c);
+  background-size: cover;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Roboto', 'Arial', sans-serif;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header section with score and timer */
+.esports-header {
+  background-color: var(--dark-blue);
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 2px solid var(--light-blue);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Team sections in header */
+.esports-team-header {
+  width: 30%;
+  display: flex;
+  align-items: center;
+}
+
+.team-a-header {
+  justify-content: flex-start;
+}
+
+.team-b-header {
+  justify-content: flex-end;
+}
+
+/* Team names container - positioned below header */
+.team-names-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 50px;
+  margin-top: 10px;
+}
+
+/* Team name styling */
+.team-name {
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.team-name.team-a {
+  color: var(--order-color);
+  text-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
+}
+
+.team-name.team-b {
+  color: var(--chaos-color);
+  text-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
+}
+
+/* Center section with tournament title */
+.center-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+}
+
+.tournament-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  text-align: center;
+}
+
+/* Main content area */
+.esports-content {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 160px - 120px); /* Adjusted for header+team names and ban area height */
+  margin-top: 10px;
+}
+
+/* Left and right columns for picks */
+.esports-team-column {
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* Center column with god selection grid */
+.esports-center-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* Center grid container */
+.center-grid-container {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--light-blue);
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+}
+
+/* Style for the character grid in the center column */
+.center-grid-container .character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  padding: 15px;
+  overflow-y: auto;
+  max-height: 100%;
+  align-content: start;
+}
+
+/* Remove the floating character grid container since it's now in the center */
+.character-grid-container.esports {
+  display: none;
+}
+
+/* Ban area is now positioned directly under the main content */
+
+/* Pick slots */
+.pick-slot {
+  width: 100%;
+  height: 18%;
+  margin: 5px 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.team-a .pick-slot {
+  border-color: var(--order-color);
+  box-shadow: var(--border-glow);
+}
+
+.team-b .pick-slot {
+  border-color: var(--chaos-color);
+  box-shadow: 0 0 5px rgba(255, 51, 102, 0.7);
+}
+
+/* Ban slots at bottom */
+.ban-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  margin-top: 0;
+  height: 110px;
+}
+
+.team-bans {
+  display: flex;
+}
+
+.ban-section-label {
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0 15px;
+}
+
+.team-a .ban-section-label {
+  color: var(--order-color);
+}
+
+.team-b .ban-section-label {
+  color: var(--chaos-color);
+}
+
+.ban-spacer {
+  width: 80px;
+}
+
+.ban-slot {
+  width: 60px;
+  height: 60px;
+  margin: 0 5px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ban-slot.portrait {
+  width: 45px;
+  height: 80px;
+}
+
+.team-a .ban-slot {
+  border-color: var(--order-color);
+  box-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
+}
+
+.team-b .ban-slot {
+  border-color: var(--chaos-color);
+  box-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
+}
+
+/* God card styles */
+.god-card {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.god-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.god-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px;
+  text-align: center;
+}
+
+.god-name {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Role styles */
+.role-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 5px 0;
+  text-transform: uppercase;
+}
+
+.role-solo { color: var(--solo-color); }
+.role-jungle { color: var(--jungle-color); }
+.role-mid { color: var(--mid-color); }
+.role-support { color: var(--support-color); }
+.role-carry { color: var(--carry-color); }
+
+/* Empty slot styling */
+.empty-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Character grid for selection */
+.character-grid-container.esports {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(10, 24, 53, 0.95);
+  height: 220px;
+  border-top: 2px solid var(--light-blue);
+  padding: 10px;
+  transition: transform 0.3s ease;
+  transform: translateY(220px);
+  z-index: 100;
+}
+
+.character-grid-container.esports.active {
+  transform: translateY(0);
+}
+
+.character-grid.esports {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+.character-grid .god-card {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Centered mode toggle */
+.centered-mode-toggle {
+  display: flex;
+  justify-content: center;
+  margin: 15px auto 5px auto;
+  position: relative;
+  z-index: 10;
+  width: 300px;
+}
+
+/* Phase indicator - positioned below mode toggle */
+.phase-indicator.esports {
+  position: relative;
+  margin: 10px auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid var(--light-blue);
+  box-shadow: var(--border-glow);
+  width: max-content;
+  max-width: 90%;
+  left: auto;
+  transform: none;
+}
+
+/* Phase text in esports layout */
+.phase-indicator.esports .phase-text.phase-ban {
+  color: #ff3333; /* Bright red for ban phase */
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+}
+
+.phase-indicator.esports .phase-text.phase-pick {
+  color: #1abc9c; /* Greenish-blue for pick phase */
+}
+
+/* Ban area is positioned directly under the picks */ 

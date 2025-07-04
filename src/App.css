@@ -446,16 +446,18 @@ h1 {
     color: #ff6666;
 }
 
+/* Phase text styles */
 .phase-text {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .phase-text.phase-pick {
-    color: #27ae60; /* Green for PICK */
+  color: #1abc9c; /* Greenish-blue for pick phase */
 }
 
 .phase-text.phase-ban {
-    color: #9b59b6; /* Purple for BAN */
+  color: #ff3333; /* Bright red for ban phase */
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
 }
 
 /* Drag and Drop Styles */
