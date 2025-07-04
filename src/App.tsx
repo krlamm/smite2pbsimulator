@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import './layout-fix.css';
 import CharacterGrid from './components/CharacterGrid';
 import TeamDisplay from './components/TeamDisplay';
 import ModeToggle from './components/ModeToggle';

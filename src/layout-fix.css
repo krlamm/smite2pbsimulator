@@ -1,0 +1,59 @@
+/* Fixed layout styles to prevent content shifting */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.mode-toggle-container {
+  margin-bottom: 0.5rem;
+}
+
+/* Fixed height for the main content area */
+.main-content {
+  display: grid;
+  grid-template-columns: 20em 1fr 20em;
+  gap: 1.25em;
+  height: calc(100vh - 150px); /* Fixed height based on viewport height */
+  min-height: 500px;
+  margin-top: 0.5rem;
+}
+
+/* Character grid container with fixed height */
+.character-grid-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.role-filters {
+  margin-bottom: 0.5rem;
+}
+
+/* Only make the character grid scrollable */
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  overflow-y: auto; /* Only this element scrolls */
+  padding-right: 5px;
+  flex: 1;
+  height: calc(100% - 50px); /* Leave room for the role filters */
+}
+
+/* Keep team displays fixed height without scrolling */
+.team-display {
+  overflow: visible; /* No scrolling */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure picks and bans sections don't overflow */
+.bans, .picks {
+  margin-bottom: 1rem;
+} 
