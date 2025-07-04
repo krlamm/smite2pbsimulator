@@ -154,17 +154,7 @@ function App() {
           Switch to Esports Layout
         </button>
         <ModeToggle mode={mode} onModeChange={setMode} />
-        <div className="phase-indicator" style={{ 
-          height: '2.5rem',
-          maxHeight: '2.5rem',
-          padding: '0.3em 0.5em',
-          margin: '0.5em 0',
-          fontSize: '0.9rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden'
-        }}>
+        <div className="phase-indicator">
           {mode === 'standard' ? (
             <>
               Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;

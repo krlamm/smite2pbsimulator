@@ -8,6 +8,7 @@ export const gods = [
     { id: 9, name: 'Sobek', image: 'https://via.placeholder.com/100', role: 'Support' },
     { id: 10, name: 'Ymir', image: 'https://via.placeholder.com/100', role: 'Support' },
     { id: 54, name: 'Yemoja', image: 'https://via.placeholder.com/100', role: 'Support' },
+    
 
     // Mid
     { id: 11, name: 'Agni', image: 'https://via.placeholder.com/100', role: 'Mid' },

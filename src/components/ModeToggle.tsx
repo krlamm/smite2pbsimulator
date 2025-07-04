@@ -19,7 +19,7 @@ function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
           className={`toggle-option ${mode === 'freedom' ? 'active' : ''}`}
           onClick={() => onModeChange('freedom')}
         >
-          Freedom
+          Free
         </div>
         <div className="slider"></div>
       </div>
@@ -27,4 +27,4 @@ function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   );
 }
 
-export default ModeToggle; 
+export default ModeToggle;

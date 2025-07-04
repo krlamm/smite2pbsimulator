@@ -1,5 +1,4 @@
-/* Mode Toggle */
-.mode-toggle-container {
+Mode Toggle .mode-toggle-container {
   display: flex;
   justify-content: center;
   margin-bottom: 1em;
@@ -10,10 +9,9 @@
   border-radius: 25px;
   padding: 4px;
   position: relative;
-  width: 300px;
-  height: 50px;
   display: flex;
   cursor: pointer;
+  width: 200px; /* Fixed width for the container */
 }
 
 .toggle-option {
@@ -36,30 +34,30 @@
   position: absolute;
   top: 4px;
   left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
+  width: 50%; /* Slider takes up half the width */
+  height: calc(100% - 8px); /* Full height minus padding */
   background: #1abc9c;
   border-radius: 22px;
   transition: transform 0.3s ease;
 }
 
 .mode-toggle.freedom .slider {
-  transform: translateX(100%);
+  transform: translateX(calc(100% - 8px)); /* Move slider to the right */
   background: #ff6666;
 }
 
 /* Main App Layout */
 .app {
-  width: 100%;             /* 1200px → 75em */
+  width: 100%; /* 1200px → 75em */
   margin: 0 auto;
-  padding: 1.25em;             /* 20px  → 1.25em */
+  padding: 1.25em; /* 20px  → 1.25em */
   font-family: Arial, sans-serif;
-  background-image: url('../public/bg-Jing.png'); /* Path to your image in public folder */
+  background-image: url("../public/bg-Jing.png"); /* Path to your image in public folder */
   background-size: cover; /* Cover the entire element */
   background-position: top center;
   background-repeat: no-repeat; /* Do not repeat the image */
   color: #ffffff;
-  min-height: 100vh;                 /* occupy full viewport height */
+  min-height: 100vh; /* occupy full viewport height */
   display: grid;
   grid-template-rows: auto auto 1fr; /* header, phase-indicator, main */
 }
@@ -67,25 +65,25 @@
 h1 {
   text-align: center;
   color: #ffd700;
-  margin-bottom: 1.875em;       /* 30px  → 1.875em */
+  margin-bottom: 1.875em; /* 30px  → 1.875em */
 }
 
 /* Phase Indicator */
 .phase-indicator {
-    text-align: center;
-    font-size: 1.5rem;
-    margin: 1.25em 0;            /* 20px → 1.25em */
-    padding: 0.625em;            /* 10px → 0.625em */
-    background-color: #2a2a2a;
-    border-radius: 5px;
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 1.25em 0; /* 20px → 1.25em */
+  padding: 0.625em; /* 10px → 0.625em */
+  background-color: #2a2a2a;
+  border-radius: 5px;
 }
 
 .phase-indicator .team-name.order {
-    color: #1abc9c;
+  color: #1abc9c;
 }
 
 .phase-indicator .team-name.chaos {
-    color: #ff6666;
+  color: #ff6666;
 }
 
 /* Teams Container */
@@ -105,7 +103,7 @@ h1 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   width: auto;
   flex-shrink: 0;
-  min-width: 16em;            /* 256px ≈ 16em */
+  min-width: 16em; /* 256px ≈ 16em */
 }
 
 .team-A {
@@ -120,7 +118,7 @@ h1 {
 .ban-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* always three across */
-  gap: 0.625em;               /* 10px → 0.625em */
+  gap: 0.625em; /* 10px → 0.625em */
   margin-top: 10px;
 }
 
@@ -131,23 +129,23 @@ h1 {
   margin-top: 10px;
 }
 
-.ban-item, .pick-item {
+.ban-item,
+.pick-item {
   position: relative;
   background-color: #333;
   border-radius: 5px;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
-  height: 6.25em;             /* 100px → 6.25em */
 }
 
-.ban-item img, .pick-item img {
-  width: 100%;
-  height: 100%;
+.ban-item img,
+.pick-item img {
   object-fit: cover;
   display: block;
 }
 
-.ban-info, .pick-info {
+.ban-info,
+.pick-info {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -162,7 +160,6 @@ h1 {
   font-size: 0.9em;
   color: #fff;
   line-height: 1.1;
-  max-height: 2.2em;          /* two lines max */
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -175,7 +172,6 @@ h1 {
 }
 
 .empty-slot {
-  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,16 +181,6 @@ h1 {
 }
 
 /* Character Grid */
-.character-grid-container {
-  background-color: transparent;
-  padding: 1.25em;
-  border-radius: 8px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  scrollbar-color: #404040 #2a2a2a;
-}
 
 .role-filters {
   display: flex;
@@ -268,17 +254,6 @@ h1 {
   box-shadow: 0 0 10px #1e90ff;
 }
 
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(8em, 1fr)); /* responsive */
-  gap: 1em;                   /* 15px → 1em */
-  margin-top: 1.25em;         /* 20px → 1.25em */
-  overflow-y: scroll;         /* Force scrollbar to always show */
-  padding-right: 0.375em;     /* 6px  → 0.375em */
-  align-content: flex-start; /* pack rows, avoid stretching rows when fewer cards */
-  max-height: 70vh;          /* Set a percentage of viewport height */
-}
-
 .character-card {
   background-color: #333;
   border-radius: 5px;
@@ -299,12 +274,6 @@ h1 {
   cursor: not-allowed;
 }
 
-.character-card img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
 .character-info {
   padding: 8px;
   text-align: center;
@@ -314,7 +283,7 @@ h1 {
   justify-content: center;
   gap: 2px;
   flex-grow: 1;
-  min-height: 3.5em;          /* reserve space for up to 2 lines */
+  min-height: 3.5em; /* reserve space for up to 2 lines */
 }
 
 /* Responsive Design */
@@ -322,11 +291,7 @@ h1 {
   .teams-container {
     flex-direction: column;
   }
-  
-  .character-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-  
+
   .role-filters {
     flex-wrap: wrap;
   }
@@ -334,9 +299,6 @@ h1 {
 
 @media (max-width: 1024px) {
   /* fall back to auto sizing on smaller screens */
-  .character-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
 }
 
 .team-A h2 {
@@ -350,28 +312,36 @@ h1 {
 /* Layout container for teams and character grid */
 .main-content {
   display: grid;
-  grid-template-columns: 20em 1fr 20em; /* side columns wider for focus */
-  gap: 1.25em;                /* 20px → 1.25em */
-  height: 100%;
-}
-
-/* Ensure the character grid expands while side columns stay compact */
-.main-content .character-grid-container {
-  flex: 1;
+  grid-template-columns: 20em 1fr 20em;
+  gap: 1.25em;
+  margin-top: 0.5rem;
 }
 
 /* Prevent team columns from shrinking and keep them a reasonable width */
 .team-display {
   width: auto;
   flex-shrink: 0;
+  overflow: visible; /* No scrolling */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Role label colors under portraits */
-.character-role.role-jungle { color: #ffd700; }
-.character-role.role-support { color: #27ae60; }
-.character-role.role-carry { color: #9b59b6; }
-.character-role.role-mid { color: #e74c3c; }
-.character-role.role-solo { color: #1e90ff; }
+.character-role.role-jungle {
+  color: #ffd700;
+}
+.character-role.role-support {
+  color: #27ae60;
+}
+.character-role.role-carry {
+  color: #9b59b6;
+}
+.character-role.role-mid {
+  color: #e74c3c;
+}
+.character-role.role-solo {
+  color: #1e90ff;
+}
 
 /* Highlight banned gods */
 .bans {
@@ -403,11 +373,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-.team-A .first-pick-row .pick-item {
-  width: 100px;
-  height: 100px;
-}
-
 /* Chaos last pick row */
 .team-B .last-pick-row {
   display: flex;
@@ -415,20 +380,26 @@ h1 {
   margin-top: 10px;
 }
 
-.team-B .last-pick-row .pick-item {
-  width: 100px;
-  height: 100px;
+/* Add role-specific border colors */
+.character-card.role-jungle {
+  border-color: #ffd700;
+}
+.character-card.role-support {
+  border-color: #27ae60;
+}
+.character-card.role-carry {
+  border-color: #9b59b6;
+}
+.character-card.role-mid {
+  border-color: #e74c3c;
+}
+.character-card.role-solo {
+  border-color: #1e90ff;
 }
 
-/* Add role-specific border colors */
-.character-card.role-jungle { border-color: #ffd700; }
-.character-card.role-support { border-color: #27ae60; }
-.character-card.role-carry { border-color: #9b59b6; }
-.character-card.role-mid { border-color: #e74c3c; }
-.character-card.role-solo { border-color: #1e90ff; }
-
 /* === Responsive: collapse to single column on narrow screens === */
-@media (max-width: 48em) {      /* 768px */
+@media (max-width: 48em) {
+  /* 768px */
   .main-content {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
@@ -439,11 +410,11 @@ h1 {
 }
 
 .turn-text.order {
-    color: #1abc9c;
+  color: #1abc9c;
 }
 
 .turn-text.chaos {
-    color: #ff6666;
+  color: #ff6666;
 }
 
 /* Phase text styles */
@@ -461,26 +432,29 @@ h1 {
 }
 
 /* Drag and Drop Styles */
-.freedom .ban-item:empty, .freedom .pick-item:empty {
+.freedom .ban-item:empty,
+.freedom .pick-item:empty {
   border: 2px dashed #666;
   background-color: rgba(102, 102, 102, 0.2);
   cursor: pointer;
 }
 
-.freedom .ban-item:empty:hover, .freedom .pick-item:empty:hover {
+.freedom .ban-item:empty:hover,
+.freedom .pick-item:empty:hover {
   border-color: #999;
   background-color: rgba(102, 102, 102, 0.3);
 }
 
-.character-card[draggable=true] {
+.character-card[draggable="true"] {
   cursor: grab;
 }
 
-.character-card[draggable=true]:active {
+.character-card[draggable="true"]:active {
   cursor: grabbing;
 }
 
-.freedom .ban-item.drag-over, .freedom .pick-item.drag-over {
+.freedom .ban-item.drag-over,
+.freedom .pick-item.drag-over {
   border: 2px dashed #1abc9c;
   background-color: rgba(26, 188, 156, 0.2);
-} 
+}
