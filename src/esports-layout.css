@@ -120,9 +120,9 @@
 /* Center section with tournament title */
 .center-header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   width: 40%;
 }
 
@@ -133,6 +133,12 @@
   color: var(--gold);
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   text-align: center;
+}
+
+.tournament-logo-red {
+    font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff3333;
 }
 
 /* Main content area */

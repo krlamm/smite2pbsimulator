@@ -219,8 +219,9 @@ function App() {
         
         <div className="center-header">
           <div className="tournament-logo">SMITE 2 PICK/BAN SIMULATOR</div>
+                  <div className="tournament-logo-red">BETA - NOT FINAL</div>
         </div>
-        
+
         {/* Team B name container */}
         <div className="esports-team-header team-b-header">
           {/* Team name will be positioned below in CSS */}
