@@ -61,8 +61,27 @@
 .team-names-container {
   display: flex;
   justify-content: space-between;
-  padding: 0 50px;
   margin-top: 10px;
+  position: relative;
+}
+
+/* Team name groups - for name and pick order */
+.team-name-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 15%;
+}
+
+/* Position the team name groups above their team columns */
+.team-name-group.team-a-group {
+  position: absolute;
+  left: 1.4%;
+}
+
+.team-name-group.team-b-group {
+  position: absolute;
+  right: 1.4%;
 }
 
 /* Team name styling */
@@ -71,6 +90,7 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
+  margin-bottom: 4px;
 }
 
 .team-name.team-a {
@@ -81,6 +101,22 @@
 .team-name.team-b {
   color: var(--chaos-color);
   text-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
+}
+
+/* Pick order styling */
+.pick-order {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pick-order.team-a {
+  color: var(--order-color);
+}
+
+.pick-order.team-b {
+  color: var(--chaos-color);
 }
 
 /* Center section with tournament title */
@@ -105,7 +141,7 @@
 .esports-content {
   display: flex;
   flex: 1;
-  height: calc(100vh - 160px - 120px); /* Adjusted for header+team names and ban area height */
+  height: calc(100vh - 180px - 120px); /* Adjusted for header+team names+pick order and ban area height */
   margin-top: 10px;
 }
 
