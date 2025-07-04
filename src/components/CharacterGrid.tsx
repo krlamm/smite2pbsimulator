@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Character, TeamState } from '../types';
+import { getGodImageUrl } from '../utils/imageUtils';
 
 interface CharacterGridProps {
   characters: Character[];
@@ -39,6 +40,7 @@ function CharacterGrid({
     ? [...filteredCharacters].sort((a, b) => a.name.localeCompare(b.name))
     : filteredCharacters;
 
+  console.log(displayCharacters);
   return (
     <div className="character-grid-container">
       <div className="role-filters">
@@ -63,17 +65,7 @@ function CharacterGrid({
             draggable={mode === 'freedom' && isCharacterAvailable(character)}
             onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
           >
-            {(() => {
-              // If the image is still a placeholder, attempt to derive the official Smite icon URL
-              const isPlaceholder = character.image.includes('placeholder');
-              const slug = character.name
-                .toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '') // remove punctuation
-                .trim()
-                .replace(/\s+/g, '-');
-              const derivedUrl = `https://webcdn.hirezstudios.com/smite/god-icons/${slug}.jpg`;
-              return <img src={isPlaceholder ? derivedUrl : character.image} alt={character.name} />;
-            })()}
+            <img src={getGodImageUrl(character)} alt={character.name} />
             <div className="character-info">
               <div className="character-name">{character.name}</div>
               <div className={`character-role role-${character.role.toLowerCase()}`}>{character.role}</div>

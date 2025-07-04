@@ -1,5 +1,6 @@
 import React from 'react';
 import { Character } from '../types';
+import { getGodImageUrl } from '../utils/imageUtils';
 
 interface TeamDisplayProps {
   team: 'A' | 'B';
@@ -8,9 +9,10 @@ interface TeamDisplayProps {
   mode: 'standard' | 'freedom';
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
+  onDragLeave?: (e: React.DragEvent) => void;
 }
 
-function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop }: TeamDisplayProps) {
+function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDragLeave }: TeamDisplayProps) {
   const emptyBanSlots = Array(3).fill(null);
   const emptyPickSlots = Array(5).fill(null);
 
@@ -25,13 +27,14 @@ function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop }: TeamDispla
             return (
               <div
                 key={index}
-                className="ban-item"
+                className={`ban-item ${mode === 'freedom' && !ban ? 'empty' : ''}`}
                 onDragOver={mode === 'freedom' ? onDragOver : undefined}
+                onDragLeave={mode === 'freedom' ? onDragLeave : undefined}
                 onDrop={mode === 'freedom' ? (e) => onDrop(e, team, 'ban', index) : undefined}
               >
                 {ban ? (
                   <>
-                    <img src={ban.image} alt={ban.name} />
+                    <img src={getGodImageUrl(ban)} alt={ban.name} />
                     <div className="ban-info">
                       <div className="character-name">{ban.name}</div>
                       <div className={`character-role role-${ban.role.toLowerCase()}`}>{ban.role}</div>
@@ -53,13 +56,14 @@ function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop }: TeamDispla
             return (
               <div
                 key={index}
-                className="pick-item"
+                className={`pick-item ${mode === 'freedom' && !pick ? 'empty' : ''}`}
                 onDragOver={mode === 'freedom' ? onDragOver : undefined}
+                onDragLeave={mode === 'freedom' ? onDragLeave : undefined}
                 onDrop={mode === 'freedom' ? (e) => onDrop(e, team, 'pick', index) : undefined}
               >
                 {pick ? (
                   <>
-                    <img src={pick.image} alt={pick.name} />
+                    <img src={getGodImageUrl(pick)} alt={pick.name} />
                     <div className="pick-info">
                       <div className="character-name">{pick.name}</div>
                       <div className={`character-role role-${pick.role.toLowerCase()}`}>{pick.role}</div>
