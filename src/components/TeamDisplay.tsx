@@ -37,7 +37,7 @@ function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDragLeave 
                     <img src={getGodImageUrl(ban)} alt={ban.name} />
                     <div className="ban-info">
                       <div className="character-name">{ban.name}</div>
-                      <div className={`character-role role-${ban.role.toLowerCase()}`}>{ban.role}</div>
+                      <div className={`character-role role-${ban.roles[0].toLowerCase()}`}>{ban.roles[0]}</div>
                     </div>
                   </>
                 ) : (
@@ -66,7 +66,7 @@ function TeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDragLeave 
                     <img src={getGodImageUrl(pick)} alt={pick.name} />
                     <div className="pick-info">
                       <div className="character-name">{pick.name}</div>
-                      <div className={`character-role role-${pick.role.toLowerCase()}`}>{pick.role}</div>
+                      <div className={`character-role role-${pick.roles[0].toLowerCase()}`}>{pick.roles[0]}</div>
                     </div>
                   </>
                 ) : (

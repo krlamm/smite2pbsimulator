@@ -11,13 +11,13 @@ interface CharacterGridProps {
   onDragStart: (e: React.DragEvent, character: Character) => void;
 }
 
-function CharacterGrid({ 
-  characters, 
-  onCharacterSelect, 
-  picks, 
+function CharacterGrid({
+  characters,
+  onCharacterSelect,
+  picks,
   bans,
   mode,
-  onDragStart 
+  onDragStart
 }: CharacterGridProps) {
   // Initialize to null so no characters are shown on initial load
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
@@ -26,14 +26,20 @@ function CharacterGrid({
   const isCharacterAvailable = (character: Character): boolean => {
     const allPicks = [...picks.A, ...picks.B];
     const allBans = [...bans.A, ...bans.B];
-    return !allPicks.some(pick => pick?.id === character.id) && 
-           !allBans.some(ban => ban?.id === character.id);
+    return !allPicks.some(pick => pick?.id === character.id) &&
+      !allBans.some(ban => ban?.id === character.id);
   };
 
   // Only filter characters if a role is selected (not null)
-  const filteredCharacters = characters.filter(character =>
-    selectedRole !== null && (selectedRole === 'All' || character.role === selectedRole)
-  );
+  const filteredCharacters = characters.filter(character => {
+    if (selectedRole == null) return false;
+
+    if (selectedRole === 'All') return true;
+    for (const role of character.roles) {
+      if (role === selectedRole) return true;
+    }
+    return false;
+  });
 
   // Sort alphabetically when viewing all roles
   const displayCharacters = selectedRole === 'All'
@@ -57,21 +63,24 @@ function CharacterGrid({
         ))}
       </div>
       <div className="character-grid">
-        {displayCharacters.map(character => (
-          <div
-            key={character.id}
-            className={`character-card role-${character.role.toLowerCase()} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
-            onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
-            draggable={mode === 'freedom' && isCharacterAvailable(character)}
-            onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
-          >
-            <img src={getGodImageUrl(character)} alt={character.name} />
-            <div className="character-info">
-              <div className="character-name">{character.name}</div>
-              <div className={`character-role role-${character.role.toLowerCase()}`}>{character.role}</div>
+        {displayCharacters.map(character => {
+          const role = selectedRole ? selectedRole : character.roles[0];
+          return (
+            <div
+              key={character.id}
+              className={`character-card role-${role.toLowerCase()} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
+              onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
+              draggable={mode === 'freedom' && isCharacterAvailable(character)}
+              onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
+            >
+              <img src={getGodImageUrl(character)} alt={character.name} />
+              <div className="character-info">
+                <div className="character-name">{character.name}</div>
+                <div className={`character-role role-${role.toLowerCase()}`}>{role}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   );

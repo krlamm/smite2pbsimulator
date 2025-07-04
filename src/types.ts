@@ -2,7 +2,7 @@ export interface Character {
   id: number;
   name: string;
   image: string;
-  role: string;
+  roles: string[];
 }
 
 export interface TeamState {
