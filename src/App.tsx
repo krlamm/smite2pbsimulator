@@ -136,7 +136,17 @@ function App() {
     <div className={`app ${mode}`}>
       <h1>Pick/Ban Simulator</h1>
       <ModeToggle mode={mode} onModeChange={setMode} />
-      <div className="phase-indicator">
+      <div className="phase-indicator" style={{ 
+        height: '2.5rem',           // Fixed height
+        maxHeight: '2.5rem',        // Ensure it doesn't grow
+        padding: '0.3em 0.5em',     // Compact padding
+        margin: '0.5em 0',          // Reduced margin
+        fontSize: '0.9rem',         // Smaller font
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'          // Hide overflow content
+      }}>
         {mode === 'standard' ? (
           <>
             Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> - 
