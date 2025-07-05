@@ -36,7 +36,7 @@ function App() {
     
     if (!audio) {
       // Create and cache the audio if not already cached
-      audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
+      audio = new Audio(`${process.env.PUBLIC_URL}/audio/${name}.ogg`);
       audio.preload = 'auto';
       
       setAudioCache(prev => new Map(prev).set(name, audio!));
