@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import './App.css';
 import './layout-fix.css';
 import './esports-layout.css';
 import CharacterGrid from './components/CharacterGrid';
-import TeamDisplay from './components/TeamDisplay';
 import EsportsTeamDisplay from './components/EsportsTeamDisplay';
 import ModeToggle from './components/ModeToggle';
 import BanArea from './components/BanArea';
 import { Character, TeamState } from './types';
 import { gods } from './constants/gods';
+import MuteButton from './components/MuteButton';
 
 function App() {
   // Mode state
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
-  const [layoutMode, setLayoutMode] = useState<'classic' | 'esports'>('esports');
-  
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+
   // Smite 2 Open Beta Roster (as of July 2025, OB13)
-  const [characters] = useState<Character[]>(gods); 
-  
+  const [characters] = useState<Character[]>(gods);
+
   const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
   const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
   const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
@@ -26,7 +25,22 @@ function App() {
   // Draft pick order for the PICK phase (10 total picks)
   const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
 
+  const playAudio = (name: string) => {
+    if (isMuted) return; // Don't play if muted
+    
+    const audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+    });
+  };
+
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+  };
+
   const handleCharacterSelect = (character: Character) => {
+    console.log(character)
+    playAudio(character.name)
     if (mode === 'freedom') {
       // In freedom mode, we'll handle this differently with drag and drop
       return;
@@ -54,6 +68,7 @@ function App() {
       });
     } else {
       // PICK PHASE
+
       const totalPicksBefore = picks.A.length + picks.B.length;
 
       setPicks(prevPicks => {
@@ -80,10 +95,10 @@ function App() {
   // Handle drag over
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (e.currentTarget.classList.contains('ban-item') || 
-        e.currentTarget.classList.contains('pick-item') ||
-        e.currentTarget.classList.contains('ban-slot') ||
-        e.currentTarget.classList.contains('pick-slot')) {
+    if (e.currentTarget.classList.contains('ban-item') ||
+      e.currentTarget.classList.contains('pick-item') ||
+      e.currentTarget.classList.contains('ban-slot') ||
+      e.currentTarget.classList.contains('pick-slot')) {
       e.currentTarget.classList.add('drag-over');
     }
   };
@@ -98,17 +113,17 @@ function App() {
   // Handle drop
   const handleDrop = (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => {
     e.preventDefault();
-    
+
     // Remove drag-over class
     if (e.currentTarget.classList.contains('drag-over')) {
       e.currentTarget.classList.remove('drag-over');
     }
-    
+
     const characterId = parseInt(e.dataTransfer.getData('characterId'));
     const character = characters.find(c => c.id === characterId);
-    
+
     if (!character) return;
-    
+
     if (type === 'ban') {
       setBans(prevBans => {
         const newBans = { ...prevBans };
@@ -140,93 +155,30 @@ function App() {
     }
   };
 
-  // Toggle between classic and esports layout
-  const toggleLayout = () => {
-    setLayoutMode(prevMode => prevMode === 'classic' ? 'esports' : 'classic');
-  };
-
-  // Render classic layout
-  if (layoutMode === 'classic') {
-    return (
-      <div className={`app ${mode}`}>
-        <h1>Pick/Ban Simulator</h1>
-        <button onClick={toggleLayout} style={{ position: 'absolute', top: '10px', right: '10px' }}>
-          Switch to Esports Layout
-        </button>
-        <ModeToggle mode={mode} onModeChange={setMode} />
-        <div className="phase-indicator">
-          {mode === 'standard' ? (
-            <>
-              Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
-              <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
-                {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
-              </span>
-            </>
-          ) : (
-            <span>Freedom Mode - Drag and drop any god to any position</span>
-          )}
-        </div>
-        <div className="main-content">
-          {/* Order (Team A) on the left */}
-          <TeamDisplay 
-            team="A"
-            picks={picks.A}
-            bans={bans.A}
-            mode={mode}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          />
-
-          {/* Character pool in the middle */}
-          <CharacterGrid 
-            characters={characters}
-            onCharacterSelect={handleCharacterSelect}
-            picks={picks}
-            bans={bans}
-            mode={mode}
-            onDragStart={handleDragStart}
-          />
-
-          {/* Chaos (Team B) on the right */}
-          <TeamDisplay 
-            team="B"
-            picks={picks.B}
-            bans={bans.B}
-            mode={mode}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Render esports layout
   return (
     <div className={`app esports ${mode}`}>
-      <button onClick={toggleLayout} style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 100 }}>
-        Switch to Classic Layout
-      </button>
-      
       {/* Esports Header */}
       <div className="esports-header">
         {/* Team A name container */}
         <div className="esports-team-header team-a-header">
           {/* Team name will be positioned below in CSS */}
         </div>
-        
+
         <div className="center-header">
           <div className="tournament-logo">SMITE 2 PICK/BAN SIMULATOR</div>
+          <div className="beta-text">BETA - NOT FINAL</div>
         </div>
-        
+
+        <div className="header-controls">
+          <MuteButton isMuted={isMuted} onToggle={toggleMute} />
+        </div>
+
         {/* Team B name container */}
         <div className="esports-team-header team-b-header">
           {/* Team name will be positioned below in CSS */}
         </div>
       </div>
-      
+
       {/* Team names positioned below header */}
       <div className="team-names-container">
         <div className="team-name-group team-a-group">
@@ -238,12 +190,12 @@ function App() {
           <div className="pick-order team-b">2ND PICK</div>
         </div>
       </div>
-      
+
       {/* Mode Toggle - Centered above phase indicator */}
       <div className="centered-mode-toggle">
         <ModeToggle mode={mode} onModeChange={setMode} />
       </div>
-      
+
       {/* Phase Indicator */}
       <div className="phase-indicator esports">
         {mode === 'standard' ? (
@@ -257,11 +209,11 @@ function App() {
           <span>Freedom Mode - Drag and drop any god to any position</span>
         )}
       </div>
-      
+
       {/* Main Content - Picks Section */}
       <div className="esports-content">
         {/* Order (Team A) on the left */}
-        <EsportsTeamDisplay 
+        <EsportsTeamDisplay
           team="A"
           picks={picks.A}
           bans={bans.A}
@@ -270,11 +222,11 @@ function App() {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         />
-        
+
         {/* Center column with god selection grid */}
         <div className="esports-center-column">
           <div className="center-grid-container">
-            <CharacterGrid 
+            <CharacterGrid
               characters={characters}
               onCharacterSelect={handleCharacterSelect}
               picks={picks}
@@ -284,9 +236,9 @@ function App() {
             />
           </div>
         </div>
-        
+
         {/* Chaos (Team B) on the right */}
-        <EsportsTeamDisplay 
+        <EsportsTeamDisplay
           team="B"
           picks={picks.B}
           bans={bans.B}
@@ -296,9 +248,9 @@ function App() {
           onDrop={handleDrop}
         />
       </div>
-      
+
       {/* Ban Area - Now directly under the picks */}
-      <BanArea 
+      <BanArea
         bansA={bans.A}
         bansB={bans.B}
         mode={mode}
@@ -310,4 +262,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

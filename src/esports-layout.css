@@ -1,4 +1,6 @@
-/* Esports Layout - Smite World Championship Style */
+/* ========================================
+   CSS VARIABLES
+======================================== */
 :root {
   --order-color: #00ccff;
   --chaos-color: #ff3366;
@@ -6,7 +8,7 @@
   --medium-blue: #142a5c;
   --light-blue: #1d3b7d;
   --gold: #ffd700;
-  --border-glow: 0 0 5px rgba(0, 240, 255, 0.7);
+  --border-glow: 0 0 3px rgba(0, 240, 255, 0.7);
   
   /* Role colors */
   --solo-color: #1e90ff;
@@ -16,7 +18,9 @@
   --carry-color: #9b59b6;
 }
 
-/* Main app container */
+/* ========================================
+   MAIN APP CONTAINER
+======================================== */
 .app.esports {
   background-image: linear-gradient(to bottom, #0a1835, #142a5c);
   background-size: cover;
@@ -27,9 +31,12 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
-/* Header section with score and timer */
+/* ========================================
+   HEADER SECTION
+======================================== */
 .esports-header {
   background-color: var(--dark-blue);
   display: flex;
@@ -40,7 +47,6 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Team sections in header */
 .esports-team-header {
   width: 30%;
   display: flex;
@@ -55,7 +61,34 @@
   justify-content: flex-end;
 }
 
-/* Team names container - positioned below header */
+.center-header {
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
+  text-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+}
+
+.center-header .beta-text {
+  color: var(--chaos-color);
+  font-size: 24px;
+  text-shadow: var(--border-glow);
+}
+
+.tournament-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  text-align: center;
+}
+
+/* ========================================
+   TEAM NAMES
+======================================== */
 .team-names-container {
   display: flex;
   justify-content: space-between;
@@ -63,7 +96,6 @@
   position: relative;
 }
 
-/* Team name groups - for name and pick order */
 .team-name-group {
   display: flex;
   flex-direction: column;
@@ -71,7 +103,6 @@
   width: 15%;
 }
 
-/* Position the team name groups above their team columns */
 .team-name-group.team-a-group {
   position: absolute;
   left: 1.4%;
@@ -82,7 +113,6 @@
   right: 1.4%;
 }
 
-/* Team name styling */
 .team-name {
   font-size: 28px;
   font-weight: bold;
@@ -101,7 +131,6 @@
   text-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
 }
 
-/* Pick order styling */
 .pick-order {
   font-size: 14px;
   font-weight: bold;
@@ -117,25 +146,99 @@
   color: var(--chaos-color);
 }
 
-/* Center section with tournament title */
-.center-header {
+/* ========================================
+   MODE TOGGLE
+======================================== */
+.centered-mode-toggle {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin: 15px auto 5px auto;
+  position: relative;
+  z-index: 10;
+  width: 300px;
+}
+
+.mode-toggle {
+  background: #2a2a2a;
+  border-radius: 25px;
+  padding: 4px;
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  width: 200px;
+}
+
+.toggle-option {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 40%;
-}
-
-.tournament-logo {
-  font-size: 1.5rem;
+  z-index: 1;
+  color: #666;
   font-weight: bold;
-  letter-spacing: 2px;
-  color: var(--gold);
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  text-align: center;
+  transition: color 0.3s ease;
+  font-size: 1.2em;
 }
 
-/* Main content area */
+.toggle-option.active {
+  color: #fff;
+}
+
+.mode-toggle .slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 50%;
+  height: calc(100% - 8px);
+  background: #1abc9c;
+  border-radius: 22px;
+  transition: transform 0.3s ease;
+}
+
+.mode-toggle.freedom .slider {
+  transform: translateX(calc(100% - 8px));
+  background: #ff6666;
+}
+
+/* ========================================
+   PHASE INDICATOR
+======================================== */
+.phase-indicator.esports {
+  position: relative;
+  margin: 10px auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid var(--light-blue);
+  box-shadow: var(--border-glow);
+  width: max-content;
+  max-width: 90%;
+  font-size: 1.5rem;
+}
+
+.phase-indicator.esports .phase-text.phase-ban {
+  color: #ff3333;
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+  font-weight: bold;
+}
+
+.phase-indicator.esports .phase-text.phase-pick {
+  color: #1abc9c;
+  font-weight: bold;
+}
+
+.turn-text.order {
+  color: #1abc9c;
+}
+
+.turn-text.chaos {
+  color: #ff6666;
+}
+
+/* ========================================
+   MAIN CONTENT LAYOUT
+======================================== */
 .esports-content {
   display: flex;
   flex: 1;
@@ -143,50 +246,237 @@
   gap: 1em;
 }
 
-/* Left and right columns for picks */
 .esports-team-column {
   display: flex;
   flex-direction: column;
   width: 15em;
 }
 
-/* Center column with god selection grid */
 .esports-center-column {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Center grid container */
 .center-grid-container {
   flex: 1;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 5px;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   border: 2px solid var(--light-blue);
-  overflow-y: auto;
   box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
 }
 
+/* ========================================
+   CHARACTER GRID
+======================================== */
 .character-grid-container {
   padding: 1em 0;
 }
 
-/* Style for the character grid in the center column */
 .center-grid-container .character-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.75rem; /* spacing between cards */
-  padding: 2em
+  gap: 0.75rem;
+  padding: 2em;
 }
 
-.center-grid-container .character-grid .character-card {
-  min-height: fit-content;
+.character-card {
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid transparent;
 }
 
-/* Pick slots */
+.character-card:hover {
+  transform: translateY(-0.125em) scale(1.05);
+}
+
+.character-card.unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.character-card[draggable="true"] {
+  cursor: grab;
+}
+
+.character-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.character-info {
+  padding: 8px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  flex-grow: 1;
+  min-height: 3.5em;
+}
+
+.character-name {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #fff;
+  line-height: 1.1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.character-role {
+  font-size: 0.8em;
+  color: #ffd700;
+}
+
+/* ========================================
+   ROLE FILTERS
+======================================== */
+.role-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.role-filter {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #404040;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-filter:hover {
+  background-color: #505050;
+}
+
+.role-filter.active {
+  background-color: #ffd700;
+  color: #000;
+}
+
+/* ========================================
+   ROLE-SPECIFIC STYLING
+======================================== */
+/* Role filter colors */
+.role-filter.role-jungle {
+  background-color: var(--jungle-color);
+  color: black;
+}
+
+.role-filter.role-support {
+  background-color: var(--support-color);
+  color: white;
+}
+
+.role-filter.role-carry {
+  background-color: var(--carry-color);
+  color: white;
+}
+
+.role-filter.role-mid {
+  background-color: var(--mid-color);
+  color: white;
+}
+
+.role-filter.role-solo {
+  background-color: var(--solo-color);
+  color: white;
+}
+
+/* Active role filter glow */
+.role-filter.role-jungle.active {
+  box-shadow: 0 0 10px var(--jungle-color);
+}
+
+.role-filter.role-support.active {
+  box-shadow: 0 0 10px var(--support-color);
+}
+
+.role-filter.role-carry.active {
+  box-shadow: 0 0 10px var(--carry-color);
+}
+
+.role-filter.role-mid.active {
+  box-shadow: 0 0 10px var(--mid-color);
+}
+
+.role-filter.role-solo.active {
+  box-shadow: 0 0 10px var(--solo-color);
+}
+
+/* Character card role borders */
+.character-card.role-jungle {
+  border-color: var(--jungle-color);
+}
+
+.character-card.role-support {
+  border-color: var(--support-color);
+}
+
+.character-card.role-carry {
+  border-color: var(--carry-color);
+}
+
+.character-card.role-mid {
+  border-color: var(--mid-color);
+}
+
+.character-card.role-solo {
+  border-color: var(--solo-color);
+}
+
+/* Character role text colors */
+.character-role.role-jungle {
+  color: var(--jungle-color);
+}
+
+.character-role.role-support {
+  color: var(--support-color);
+}
+
+.character-role.role-carry {
+  color: var(--carry-color);
+}
+
+.character-role.role-mid {
+  color: var(--mid-color);
+}
+
+.character-role.role-solo {
+  color: var(--solo-color);
+}
+
+/* General role label colors */
+.role-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 5px 0;
+  text-transform: uppercase;
+}
+
+.role-solo { color: var(--solo-color); }
+.role-jungle { color: var(--jungle-color); }
+.role-mid { color: var(--mid-color); }
+.role-support { color: var(--support-color); }
+.role-carry { color: var(--carry-color); }
+
+/* ========================================
+   PICK SLOTS
+======================================== */
 .pick-slot {
   height: 100%;
   margin: .5em 0;
@@ -200,10 +490,6 @@
   position: relative;
 }
 
-.pick-slot .god-card {
-  /* width: 100%; */
-}
-
 .team-a .pick-slot {
   border-color: var(--order-color);
   box-shadow: var(--border-glow);
@@ -214,7 +500,9 @@
   box-shadow: 0 0 5px rgba(255, 51, 102, 0.7);
 }
 
-/* Ban slots at bottom */
+/* ========================================
+   BAN AREA
+======================================== */
 .ban-area {
   display: flex;
   justify-content: center;
@@ -257,7 +545,7 @@
   justify-content: center;
   overflow: hidden;
   min-width: 128px;
-  min-height: 128px
+  min-height: 128px;
 }
 
 .team-a .ban-slot {
@@ -270,7 +558,9 @@
   box-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
 }
 
-/* God card styles */
+/* ========================================
+   GOD CARDS & SLOTS
+======================================== */
 .god-card {
   width: 100%;
 }
@@ -284,64 +574,42 @@
   font-weight: bold;
 }
 
-/* Role styles */
-.role-label {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 5px 0;
-  text-transform: uppercase;
-}
-
-.role-solo { color: var(--solo-color); }
-.role-jungle { color: var(--jungle-color); }
-.role-mid { color: var(--mid-color); }
-.role-support { color: var(--support-color); }
-.role-carry { color: var(--carry-color); }
-
-/* Empty slot styling */
 .empty-slot {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: rgba(255, 255, 255, 0.3);
+  background-color: #404040;
+  color: #666;
+  font-size: 2em;
 }
 
-
-/* Centered mode toggle */
-.centered-mode-toggle {
-  display: flex;
-  justify-content: center;
-  margin: 15px auto 5px auto;
-  position: relative;
-  z-index: 10;
-  width: 300px;
+/* ========================================
+   DRAG AND DROP
+======================================== */
+.freedom .ban-slot:empty,
+.freedom .pick-slot:empty {
+  border: 2px dashed #666;
+  background-color: rgba(102, 102, 102, 0.2);
+  cursor: pointer;
 }
 
-/* Phase indicator - positioned below mode toggle */
-.phase-indicator.esports {
-  position: relative;
-  margin: 10px auto;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px 20px;
-  border-radius: 20px;
-  text-align: center;
-  border: 1px solid var(--light-blue);
-  box-shadow: var(--border-glow);
-  width: max-content;
-  max-width: 90%;
-  left: auto;
-  transform: none;
+.freedom .ban-slot:empty:hover,
+.freedom .pick-slot:empty:hover {
+  border-color: #999;
+  background-color: rgba(102, 102, 102, 0.3);
 }
 
-/* Phase text in esports layout */
-.phase-indicator.esports .phase-text.phase-ban {
-  color: #ff3333; /* Bright red for ban phase */
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+.freedom .ban-slot.drag-over,
+.freedom .pick-slot.drag-over {
+  border: 2px dashed #1abc9c;
+  background-color: rgba(26, 188, 156, 0.2);
 }
 
-.phase-indicator.esports .phase-text.phase-pick {
-  color: #1abc9c; /* Greenish-blue for pick phase */
-}
-
-/* Ban area is positioned directly under the picks */ 
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+@media (max-width: 768px) {
+  .role-filters {
+    flex-wrap: wrap;
+  }
+} 
