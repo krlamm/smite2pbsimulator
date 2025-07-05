@@ -14,6 +14,9 @@ function App() {
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
+  // Audio cache for reliable playback
+  const [audioCache, setAudioCache] = useState<Map<string, HTMLAudioElement>>(new Map());
+
   // Smite 2 Open Beta Roster (as of July 2025, OB13)
   const [characters] = useState<Character[]>(gods);
 
@@ -28,10 +31,43 @@ function App() {
   const playAudio = (name: string) => {
     if (isMuted) return; // Don't play if muted
     
-    const audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
-    audio.play().catch(error => {
-      console.error('Error playing audio:', error);
-    });
+    // Check if audio is already cached
+    let audio = audioCache.get(name);
+    
+    if (!audio) {
+      // Create and cache the audio if not already cached
+      audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
+      audio.preload = 'auto';
+      
+      setAudioCache(prev => new Map(prev).set(name, audio!));
+      
+      // Wait for it to be fully loaded before playing
+      const playWhenReady = () => {
+        // Ensure we're at the beginning and audio is ready
+        audio!.currentTime = 0;
+        audio!.play().catch(error => {
+          console.error('Error playing audio:', error);
+        });
+      };
+
+      // Use 'loadeddata' event which fires when audio is fully loaded
+      if (audio.readyState >= 2) {
+        // Audio is already loaded enough to play
+        playWhenReady();
+      } else {
+        // Wait for audio to be ready
+        audio.addEventListener('loadeddata', playWhenReady, { once: true });
+        
+        // Fallback in case loadeddata doesn't fire
+        audio.addEventListener('canplaythrough', playWhenReady, { once: true });
+      }
+    } else {
+      // Audio is cached and ready, play immediately
+      audio.currentTime = 0; // Reset to beginning
+      audio.play().catch(error => {
+        console.error('Error playing audio:', error);
+      });
+    }
   };
 
   const toggleMute = () => {
@@ -123,6 +159,9 @@ function App() {
     const character = characters.find(c => c.id === characterId);
 
     if (!character) return;
+
+    // Play audio for drag and drop as well
+    playAudio(character.name);
 
     if (type === 'ban') {
       setBans(prevBans => {
