@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/smite2pbsimulator/static/css/main.9e8d8d2f.css",
-    "main.js": "/smite2pbsimulator/static/js/main.cb777a93.js",
+    "main.js": "/smite2pbsimulator/static/js/main.2ac811ae.js",
     "index.html": "/smite2pbsimulator/index.html",
     "main.9e8d8d2f.css.map": "/smite2pbsimulator/static/css/main.9e8d8d2f.css.map",
-    "main.cb777a93.js.map": "/smite2pbsimulator/static/js/main.cb777a93.js.map"
+    "main.2ac811ae.js.map": "/smite2pbsimulator/static/js/main.2ac811ae.js.map"
   },
   "entrypoints": [
     "static/css/main.9e8d8d2f.css",
-    "static/js/main.cb777a93.js"
+    "static/js/main.2ac811ae.js"
   ]
 }
