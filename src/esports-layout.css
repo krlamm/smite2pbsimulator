@@ -620,7 +620,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #404040;
   color: #666;
   font-size: 2em;
 }
