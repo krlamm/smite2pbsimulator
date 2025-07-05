@@ -57,7 +57,7 @@ html, body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
+  height: 100vh;
 }
 
 /* ========================================
@@ -275,7 +275,7 @@ html, body {
 .esports-team-column {
   display: flex;
   flex-direction: column;
-  width: 15em;
+  width: 20em;
 }
 
 .esports-center-column {
@@ -504,15 +504,15 @@ html, body {
    PICK SLOTS
 ======================================== */
 .pick-slot {
-  max-height: 100%;
+  height: 100%;
   margin: .5em 0;
-  background-color: rgba(0, 0, 0, 0.4);
   border: 2px solid;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background-repeat: no-repeat;
   position: relative;
 }
 
@@ -596,7 +596,7 @@ html, body {
 
 .god-card {
   width: 100%;
-  max-height: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   padding-right: 1em;
