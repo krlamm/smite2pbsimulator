@@ -173,6 +173,7 @@ function App() {
           <MuteButton isMuted={isMuted} onToggle={toggleMute} />
         </div>
 
+
         {/* Team B name container */}
         <div className="esports-team-header team-b-header">
           {/* Team name will be positioned below in CSS */}
