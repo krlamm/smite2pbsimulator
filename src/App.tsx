@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './layout-fix.css';
+// import './layout-fix.css';
 import './esports-layout.css';
 import CharacterGrid from './components/CharacterGrid';
 import EsportsTeamDisplay from './components/EsportsTeamDisplay';
@@ -172,7 +172,6 @@ function App() {
         <div className="header-controls">
           <MuteButton isMuted={isMuted} onToggle={toggleMute} />
         </div>
-
 
         {/* Team B name container */}
         <div className="esports-team-header team-b-header">
