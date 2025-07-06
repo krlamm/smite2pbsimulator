@@ -3,8 +3,9 @@ import { Character } from '../types';
 import { getGodImageUrl } from '../utils/imageUtils';
 
 interface BanAreaProps {
-  bansA: Character[];
-  bansB: Character[];
+  // HIGHLIGHTED CHANGE: Allow Character | null in the arrays
+  bansA: (Character | null)[];
+  bansB: (Character | null)[];
   mode: 'standard' | 'freedom';
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
@@ -12,17 +13,18 @@ interface BanAreaProps {
 }
 
 function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAreaProps) {
-  const emptyBanSlots = Array(3).fill(null);
+  // HIGHLIGHTED CHANGE: Corrected to 4, matching your UI and App.tsx initialization
+  const emptyBanSlots = Array(4).fill(null);
 
   return (
     <div className="ban-area">
       {/* Ban Section Label */}
       <div className="ban-section-label team-a">BANS</div>
-      
+
       {/* Team A Bans */}
       <div className="team-bans team-a">
         {emptyBanSlots.map((_, index) => {
-          const ban = bansA[index];
+          const ban = bansA[index]; // ban will now correctly be Character | null
           return (
             <div
               key={`ban-a-${index}`}
@@ -48,11 +50,11 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
 
       {/* Spacer */}
       <div className="ban-spacer"></div>
-      
+
       {/* Team B Bans */}
       <div className="team-bans team-b">
         {emptyBanSlots.map((_, index) => {
-          const ban = bansB[index];
+          const ban = bansB[index]; // ban will now correctly be Character | null
           return (
             <div
               key={`ban-b-${index}`}
@@ -75,11 +77,11 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
           );
         })}
       </div>
-      
+
       {/* Ban Section Label */}
       <div className="ban-section-label team-b">BANS</div>
     </div>
   );
 }
 
-export default BanArea; 
+export default BanArea;

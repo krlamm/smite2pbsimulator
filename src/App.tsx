@@ -22,25 +22,28 @@ function App() {
 
   const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
   const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
+
+  // HIGHLIGHTED CHANGE: REVERTED PICKS INITIALIZATION to original appending behavior
   const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
-  const [bans, setBans] = useState<TeamState>({ A: [], B: [] });
+  // BANS INITIALIZATION: This was already correct for fixed slots and remains
+  const [bans, setBans] = useState<TeamState>({ A: Array(4).fill(null), B: Array(4).fill(null) }); // Assuming 4 ban slots per team
 
   // Draft pick order for the PICK phase (10 total picks)
   const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
 
   const playAudio = (name: string) => {
     if (isMuted) return; // Don't play if muted
-    
+
     // Check if audio is already cached
     let audio = audioCache.get(name);
-    
+
     if (!audio) {
       // Create and cache the audio if not already cached
       audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
       audio.preload = 'auto';
-      
+
       setAudioCache(prev => new Map(prev).set(name, audio!));
-      
+
       // Wait for it to be fully loaded before playing
       const playWhenReady = () => {
         // Ensure we're at the beginning and audio is ready
@@ -57,7 +60,7 @@ function App() {
       } else {
         // Wait for audio to be ready
         audio.addEventListener('loadeddata', playWhenReady, { once: true });
-        
+
         // Fallback in case loadeddata doesn't fire
         audio.addEventListener('canplaythrough', playWhenReady, { once: true });
       }
@@ -84,14 +87,22 @@ function App() {
 
     if (phase === 'BAN') {
       setBans(prevBans => {
-        const updatedBans: TeamState = {
-          ...prevBans,
-          [currentTeam]: [...prevBans[currentTeam], character],
-        };
+        const updatedBans: TeamState = { ...prevBans };
+        // This logic is good for BAN phase: Find first empty slot and place character there
+        const targetTeamBans = [...prevBans[currentTeam]]; // Create a mutable copy
+        const firstEmptyIndex = targetTeamBans.findIndex(slot => slot === null);
 
-        // If we've reached 6 total bans (3 per team), move to the PICK phase
-        const totalBans = updatedBans.A.length + updatedBans.B.length;
-        if (totalBans >= 6) {
+        if (firstEmptyIndex !== -1) {
+          targetTeamBans[firstEmptyIndex] = character; // Place character in first empty slot
+        } else {
+          console.warn(`All ban slots for team ${currentTeam} are full.`);
+          return prevBans; // Return previous state if no slot is available
+        }
+        updatedBans[currentTeam] = targetTeamBans; // Update the team's bans
+
+        // If we've reached 8 total bans (4 per team), move to the PICK phase
+        const totalBans = updatedBans.A.filter(Boolean).length + updatedBans.B.filter(Boolean).length;
+        if (totalBans >= 8) { // Corrected to 8 assuming 4 bans per team
           // Switch to pick phase and reset to first pick (Order)
           setPhase('PICK');
           setCurrentTeam(pickSequence[0]);
@@ -104,15 +115,14 @@ function App() {
       });
     } else {
       // PICK PHASE
-
-      const totalPicksBefore = picks.A.length + picks.B.length;
+      // HIGHLIGHTED CHANGE: REVERTED PICK LOGIC to original appending behavior
+      const totalPicksBefore = picks.A.length + picks.B.length; // Uses .length as it appends
 
       setPicks(prevPicks => {
         const updatedPicks: TeamState = {
           ...prevPicks,
-          [currentTeam]: [...prevPicks[currentTeam], character],
+          [currentTeam]: [...prevPicks[currentTeam], character], // Appends character
         };
-
         return updatedPicks;
       });
 
@@ -166,28 +176,24 @@ function App() {
     if (type === 'ban') {
       setBans(prevBans => {
         const newBans = { ...prevBans };
-        // Create a new array if it doesn't exist
-        if (!Array.isArray(newBans[team])) {
-          newBans[team] = [];
-        }
-        // Create a copy of the array
+        // This logic is good for BAN phase: Use spread to copy and set at index
         const teamBans = [...newBans[team]];
-        // Set the character at the specific index
         teamBans[index] = character;
         newBans[team] = teamBans;
         return newBans;
       });
     } else {
+      // HIGHLIGHTED CHANGE: REVERTED PICK DRAG/DROP LOGIC to original appending behavior
       setPicks(prevPicks => {
         const newPicks = { ...prevPicks };
-        // Create a new array if it doesn't exist
-        if (!Array.isArray(newPicks[team])) {
-          newPicks[team] = [];
-        }
-        // Create a copy of the array
+        // This assumes you want to add to the end when dropping on a pick slot
+        // If you intended to replace a specific pick slot by index, this might need re-evaluation
         const teamPicks = [...newPicks[team]];
-        // Set the character at the specific index
-        teamPicks[index] = character;
+        if (index >= 0 && index < teamPicks.length) { // Check if index is valid for replacement
+          teamPicks[index] = character;
+        } else { // Otherwise, append if out of bounds or for new picks
+          teamPicks.push(character);
+        }
         newPicks[team] = teamPicks;
         return newPicks;
       });

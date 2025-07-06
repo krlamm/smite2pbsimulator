@@ -268,6 +268,7 @@ html, body {
 .esports-content {
   display: flex;
   flex: 1;
+  flex-grow: 6; /* Adjusted: Takes 6 parts of flexible vertical space (for smaller ban area) */
   overflow-y: auto;
   padding: 0 2em;
   gap: 1em;
@@ -540,10 +541,15 @@ html, body {
   padding: 10px 20px;
   background-color: rgba(0, 0, 0, 0.3);
   margin-top: 0;
+  flex-grow: 1;
 }
 
 .team-bans {
   display: flex;
+  justify-content: center;
+  gap: 20px; /* Adjusted: Increased space between ban slots */
+  flex: 1;
+  flex-wrap: nowrap;
 }
 
 .ban-section-label {
@@ -566,7 +572,7 @@ html, body {
 }
 
 .ban-slot {
-  margin: 0 5px;
+  margin: 0;
   background-color: rgba(0, 0, 0, 0.4);
   border: 2px solid;
   border-radius: 5px;
@@ -574,8 +580,13 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  width: 100px;
-  height: 100px;
+  /* Adjusted: Dynamic sizing for square slots to be much bigger */
+  flex: 0 0 12vh; /* Base size increased to 12% of viewport height */
+  aspect-ratio: 1 / 1;
+  min-width: 60px;
+  min-height: 60px;
+  max-width: 160px; /* Max size increased to allow for bigger slots */
+  max-height: 160px;
 }
 
 .team-a .ban-slot {
@@ -593,62 +604,56 @@ html, body {
 ======================================== */
 
 .god-card {
-  position: relative; /* Essential for absolute positioning of children */
+  position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* Ensures content is clipped to the card boundaries */
-  display: block; /* Remove flex from parent to let children position freely */
-  /* Removed: justify-content, align-items, padding-right from here as they conflict with absolute positioning */
+  overflow: hidden;
+  display: block;
 }
 
 .god-card img {
-  position: absolute; /* Image fills the entire god-card */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Image fills the box, cropping as needed */
-  object-position: top; /* Prioritize the top of the image (faces) */
-  z-index: 1; /* Place image behind text content */
-  display: block; /* Ensures consistent rendering */
+  object-fit: cover;
+  object-position: top;
+  z-index: 1;
+  display: block;
 }
 
 .god-name,
 .god-role {
-  position: absolute; /* Position names/roles at the bottom */
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   text-align: center;
-  z-index: 2; /* Place text above the image */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.0)); /* Semi-transparent fade background for readability */
-  padding: 1.5em 0.2em 0.2em 0.2em; /* Padding from top for fade, and around text */
-  margin: 0; /* Remove default margins */
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflowing text */
-  text-overflow: ellipsis; /* Add "..." for cut-off text */
+  z-index: 2;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.0));
+  padding: 1.5em 0.2em 0.2em 0.2em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .god-name {
   font-size: 0.9em;
   font-weight: bold;
-  line-height: 1.1; /* Adjust line height for better spacing */
+  line-height: 1.1;
   color: #fff;
 }
 
 .god-role {
-  font-size: 0.75em; /* Slightly smaller for compactness */
-  margin-top: -0.5em; /* Adjust to bring role closer to name if needed */
+  font-size: 0.75em;
+  margin-top: -0.5em;
 }
 
 /* Remove specific team-b god-card style as general rules now apply */
 .esports-team-column.team-b .god-card {
   /* These properties are no longer needed as img/text are absolutely positioned */
-  /* flex-direction: column; */
-  /* padding-right: 0; */
-  /* padding-left: 0; */
-  /* justify-content: center; */
-  /* align-items: center; */
 }
 
 /* ========================================
