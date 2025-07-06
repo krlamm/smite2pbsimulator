@@ -19,7 +19,6 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
   return (
     <div className="ban-area">
       {/* Ban Section Label */}
-      <div className="ban-section-label team-a">BANS</div>
 
       {/* Team A Bans */}
       <div className="team-bans team-a">
@@ -49,7 +48,7 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
       </div>
 
       {/* Spacer */}
-      <div className="ban-spacer"></div>
+      <div className="ban-section-label team-b">BANS</div>
 
       {/* Team B Bans */}
       <div className="team-bans team-b">
@@ -79,7 +78,6 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
       </div>
 
       {/* Ban Section Label */}
-      <div className="ban-section-label team-b">BANS</div>
     </div>
   );
 }
