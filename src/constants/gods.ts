@@ -53,7 +53,14 @@ export const gods = [
         skins: [""],
         voiceLine: ""
     },
-
+    {
+        id: 63,
+        name: 'Aphrodite',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Aphrodite.png/720px-GodCard_Aphrodite.png?7859a',
+        roles: ['Support', 'Mid', 'Solo'],
+        skins: [""],
+        voiceLine: ""
+    },
     {
         id: 43,
         name: 'Apollo',
@@ -99,6 +106,14 @@ export const gods = [
         name: 'Bacchus',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Bacchus.png/720px-GodCard_Bacchus.png?b6c55',
         roles: ['Support', 'Solo'],
+        skins: [""],
+        voiceLine: ""
+    },
+    {
+        id: 64,
+        name: 'Baron Samedi',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Baron_Samedi.png/720px-GodCard_Baron_Samedi.png?75202',
+        roles: ['Support', 'Solo', 'Mid'],
         skins: [""],
         voiceLine: ""
     },
@@ -179,6 +194,22 @@ export const gods = [
         name: 'Guan Yu',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Guan_Yu.png/720px-GodCard_Guan_Yu.png?ac80c',
         roles: ['Solo', 'Support'],
+        skins: [""],
+        voiceLine: ""
+    },
+    {
+        id: 65,
+        name: 'Hades',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Hades.png/720px-GodCard_Hades.png?75202',
+        roles: ['Solo', 'Support', 'Mid'],
+        skins: [""],
+        voiceLine: ""
+    },    
+    {
+        id: 66,
+        name: 'Hecate',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Hecate.png/720px-GodCard_Hecate.png?75202',
+        roles: ['Support', 'Mid'],
         skins: [""],
         voiceLine: ""
     },
@@ -279,6 +310,14 @@ export const gods = [
         voiceLine: ""
     },
     {
+        id: 67,
+        name: 'Mordred',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Mordred.png/720px-GodCard_Mordred.png?b6c55',
+        roles: ['Solo', 'Jungle'],
+        skins: [""],
+        voiceLine: ""
+    },
+    {
         id: 51,
         name: 'Neith',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Neith.png/720px-GodCard_Neith.png?e757b',
@@ -323,6 +362,14 @@ export const gods = [
         name: 'Poseidon',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Poseidon.png/720px-GodCard_Poseidon.png?dcbb5',
         roles: ['Mid', 'Carry',"Jungle"],
+        skins: [""],
+        voiceLine: ""
+    },
+    {
+        id: 68,
+        name: 'Princess Bari',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Rama.png/720px-GodCard_Rama.png?cc9cb',
+        roles: ['Carry', 'Mid'],
         skins: [""],
         voiceLine: ""
     },
@@ -391,6 +438,14 @@ export const gods = [
         voiceLine: ""
     },
     {
+        id: 69,
+        name: 'The Morrigan',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_The_Morrigan.png/720px-GodCard_The_Morrigan.png?75202',
+        roles: ['Carry', 'Mid', 'Support', 'Solo', 'Jungle'],
+        skins: [""],
+        voiceLine: ""
+    },
+    {
         id: 62,
         name: 'Thor',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Thor.png/720px-GodCard_Thor.png?e757b',
@@ -439,3 +494,12 @@ export const gods = [
         voiceLine: ""
     }
 ]
+export const roles = 
+    {
+        'solo': "image url",
+        'support': "image url",
+        'jungle': "image url",
+        'mid': "image url",
+        'carry': "image url",
+        'all': "image url"
+    }
