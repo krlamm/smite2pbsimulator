@@ -64,11 +64,15 @@ function CharacterGrid({
       </div>
       <div className="character-grid">
         {displayCharacters.map(character => {
-          const role = selectedRole ? selectedRole : character.roles[0];
+          // Highlighted change starts here
+          const displayedCardRole = selectedRole === 'All' ? character.roles[0] : (selectedRole || character.roles[0]);
+          // Highlighted change ends here
           return (
             <div
               key={character.id}
-              className={`character-card role-${role.toLowerCase()} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
+              // Highlighted change starts here
+              className={`character-card role-${displayedCardRole?.toLowerCase() || 'all'} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
+              // Highlighted change ends here
               onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
               draggable={mode === 'freedom' && isCharacterAvailable(character)}
               onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
@@ -76,7 +80,9 @@ function CharacterGrid({
               <img src={getGodImageUrl(character)} alt={character.name} />
               <div className="character-info">
                 <div className="character-name">{character.name}</div>
-                <div className={`character-role role-${role.toLowerCase()}`}>{role}</div>
+                {/* Highlighted change starts here */}
+                <div className={`character-role role-${displayedCardRole?.toLowerCase() || 'all'}`}>{displayedCardRole}</div>
+                {/* Highlighted change ends here */}
               </div>
             </div>
           )
@@ -86,4 +92,4 @@ function CharacterGrid({
   );
 }
 
-export default CharacterGrid; 
+export default CharacterGrid;
