@@ -25,7 +25,7 @@ code {
 
 html, body {
   overflow: hidden;
-} 
+}
 
 :root {
   --order-color: #00ccff;
@@ -35,7 +35,7 @@ html, body {
   --light-blue: #1d3b7d;
   --gold: #ffd700;
   --border-glow: 0 0 3px rgba(0, 240, 255, 0.7);
-  
+
   /* Role colors */
   --solo-color: #1e90ff;
   --jungle-color: #ffd700;
@@ -544,6 +544,7 @@ html, body {
 
 .team-bans {
   display: flex;
+  /* Add gap between ban slots if desired, e.g., gap: 10px; */
 }
 
 .ban-section-label {
@@ -565,6 +566,7 @@ html, body {
   width: 80px;
 }
 
+/* HIGHLIGHTED CHANGE: REFINED BAN-SLOT STYLING */
 .ban-slot {
   margin: 0 5px;
   background-color: rgba(0, 0, 0, 0.4);
@@ -573,9 +575,10 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  min-width: 128px;
-  min-height: 128px;
+  overflow: hidden; /* CRITICAL: Ensure content outside bounds is hidden */
+  width: 100px;   /* Fixed width for consistent sizing */
+  height: 100px;  /* Fixed height for consistent sizing */
+  /* Replaced min-width/min-height with fixed width/height for more control */
 }
 
 .team-a .ban-slot {
@@ -589,27 +592,35 @@ html, body {
 }
 
 /* ========================================
-   GOD CARDS & SLOTS
+   GOD CARDS & SLOTS - REFINED FOR BAN AREA
 ======================================== */
 
-.esports-team-column.team-b .god-card {
-  flex-direction: row-reverse;
-  padding-right: 0;
-  padding-left: 1em;
-}
-
-.god-card {
+/* Target god-card specifically within ban-slot for precise control */
+.ban-slot .god-card {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding-right: 1em;
-  align-items: end;
+  display: flex; /* Use flex to center the image */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  padding: 0; /* Remove any padding that might conflict */
+  /* If god-name is uncommented later, you might set flex-direction: column; here */
 }
 
-.god-card img {
-  object-fit: cover;
+/* Target image specifically within god-card inside ban-slot */
+.ban-slot .god-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This will ensure the image fills the space, cropping if aspect ratios differ */
+  display: block; /* Removes any default inline-block spacing */
 }
+
+/* Ensure other god-card rules don't interfere with ban-slots */
+/* If you have general .god-card rules like flex-direction: row-reverse; on .esports-team-column.team-b .god-card,
+   ensure they do NOT apply to items within .ban-slot.
+   You might need to add a more specific override for ban-slots if you see issues:
+   .ban-slot .god-card { flex-direction: column; }
+*/
+
 
 .god-name {
   font-size: 0.9rem;
@@ -653,4 +664,4 @@ html, body {
   .role-filters {
     flex-wrap: wrap;
   }
-} 
+}
