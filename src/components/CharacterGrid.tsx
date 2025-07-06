@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Character, TeamState } from '../types';
 import { getGodImageUrl } from '../utils/imageUtils';
+import RoleSelector from './RoleSelector';
 
 interface CharacterGridProps {
   characters: Character[];
@@ -49,18 +50,21 @@ function CharacterGrid({
   console.log(displayCharacters);
   return (
     <div className="character-grid-container">
-      <div className="role-filters">
-        {roles.map(role => (
-          <button
-            key={role}
-            // Add 'active' class only if the current role matches selectedRole
-            className={`role-filter role-${role.toLowerCase()} ${selectedRole === role ? 'active' : ''}`}
-            // Toggle selectedRole: if clicking active role, set to null (hide); else set to new role (show)
-            onClick={() => setSelectedRole(selectedRole === role ? null : role)}
-          >
-            {role}
-          </button>
-        ))}
+      <div className="grid-header">
+        <RoleSelector />
+        <div className="role-filters">
+          {roles.map(role => (
+            <button
+              key={role}
+              // Add 'active' class only if the current role matches selectedRole
+              className={`role-filter role-${role.toLowerCase()} ${selectedRole === role ? 'active' : ''}`}
+              // Toggle selectedRole: if clicking active role, set to null (hide); else set to new role (show)
+              onClick={() => setSelectedRole(selectedRole === role ? null : role)}
+            >
+              {role}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="character-grid">
         {displayCharacters.map(character => {
