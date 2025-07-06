@@ -271,7 +271,7 @@ html, body {
 .esports-team-column {
   display: flex;
   flex-direction: column;
-  width: min(128px, 15%);
+  width: min(164px, 15%);
   gap: .25em;
 }
 
@@ -299,6 +299,7 @@ html, body {
 ======================================== */
 .character-grid-container {
   padding: 1em 0;
+  scrollbar-color: var(--dark-blue);
 }
 
 .center-grid-container .character-grid {
