@@ -230,30 +230,28 @@ function App() {
           <div className="team-name team-a">ORDER</div>
           <div className="pick-order team-a">1ST PICK</div>
         </div>
+        {/* Mode Toggle - Centered above phase indicator */}
+        <ModeToggle mode={mode} onModeChange={setMode} />
+        {/* Phase Indicator */}
+        <div className="phase-indicator esports">
+          {mode === 'standard' ? (
+            <>
+              Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
+              <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
+                {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
+              </span>
+            </>
+          ) : (
+            <span>Freedom Mode - Drag and drop any god to any position</span>
+          )}
+        </div>
         <div className="team-name-group team-b-group">
           <div className="team-name team-b">CHAOS</div>
           <div className="pick-order team-b">2ND PICK</div>
         </div>
       </div>
 
-      {/* Mode Toggle - Centered above phase indicator */}
-      <div className="centered-mode-toggle">
-        <ModeToggle mode={mode} onModeChange={setMode} />
-      </div>
 
-      {/* Phase Indicator */}
-      <div className="phase-indicator esports">
-        {mode === 'standard' ? (
-          <>
-            Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
-            <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
-              {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
-            </span>
-          </>
-        ) : (
-          <span>Freedom Mode - Drag and drop any god to any position</span>
-        )}
-      </div>
 
       {/* Main Content - Picks Section */}
       <div className="esports-content">
@@ -279,6 +277,14 @@ function App() {
               mode={mode}
               onDragStart={handleDragStart}
             />
+            <BanArea
+              bansA={bans.A}
+              bansB={bans.B}
+              mode={mode}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            />
           </div>
         </div>
 
@@ -295,14 +301,7 @@ function App() {
       </div>
 
       {/* Ban Area - Now directly under the picks */}
-      <BanArea
-        bansA={bans.A}
-        bansB={bans.B}
-        mode={mode}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      />
+
     </div>
   );
 }

@@ -7,7 +7,6 @@ interface ModeToggleProps {
 
 function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
-    <div className="mode-toggle-container">
       <div className={`mode-toggle ${mode}`}>
         <div 
           className={`toggle-option ${mode === 'standard' ? 'active' : ''}`}
@@ -23,7 +22,6 @@ function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
         </div>
         <div className="slider"></div>
       </div>
-    </div>
   );
 }
 
