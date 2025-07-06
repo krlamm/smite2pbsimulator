@@ -13,8 +13,8 @@ interface BanAreaProps {
 }
 
 function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAreaProps) {
-  // HIGHLIGHTED CHANGE: Corrected to 4, matching your UI and App.tsx initialization
-  const emptyBanSlots = Array(4).fill(null);
+  // HIGHLIGHTED CHANGE: Corrected to 3, to render only 3 ban slots per team
+  const emptyBanSlots = Array(3).fill(null);
 
   return (
     <div className="ban-area">

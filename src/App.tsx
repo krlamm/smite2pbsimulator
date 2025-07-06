@@ -25,8 +25,8 @@ function App() {
 
   // HIGHLIGHTED CHANGE: REVERTED PICKS INITIALIZATION to original appending behavior
   const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
-  // BANS INITIALIZATION: This was already correct for fixed slots and remains
-  const [bans, setBans] = useState<TeamState>({ A: Array(4).fill(null), B: Array(4).fill(null) }); // Assuming 4 ban slots per team
+  // HIGHLIGHTED CHANGE: BANS INITIALIZATION - Now 3 ban slots per team
+  const [bans, setBans] = useState<TeamState>({ A: Array(3).fill(null), B: Array(3).fill(null) }); // Changed to 3 ban slots per team
 
   // Draft pick order for the PICK phase (10 total picks)
   const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
@@ -100,9 +100,9 @@ function App() {
         }
         updatedBans[currentTeam] = targetTeamBans; // Update the team's bans
 
-        // If we've reached 8 total bans (4 per team), move to the PICK phase
+        // HIGHLIGHTED CHANGE: If we've reached 6 total bans (3 per team), move to the PICK phase
         const totalBans = updatedBans.A.filter(Boolean).length + updatedBans.B.filter(Boolean).length;
-        if (totalBans >= 8) { // Corrected to 8 assuming 4 bans per team
+        if (totalBans >= 6) { // Corrected from 8 to 6, for 3 bans per team
           // Switch to pick phase and reset to first pick (Order)
           setPhase('PICK');
           setCurrentTeam(pickSequence[0]);
