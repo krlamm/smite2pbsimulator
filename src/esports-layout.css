@@ -66,7 +66,7 @@ html, body {
 .esports-header {
   background-color: var(--dark-blue);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 0 20px;
   border-bottom: 2px solid var(--light-blue);
@@ -74,8 +74,8 @@ html, body {
 }
 
 .esports-team-header {
-  width: 30%;
-  display: flex;
+  width: auto;
+  display: none;
   align-items: center;
 }
 
@@ -90,11 +90,17 @@ html, body {
 .center-header {
   display: flex;
   flex-direction: row;
-  gap: 3em;
+  gap: 1em;
   text-wrap: nowrap;
   align-items: center;
   justify-content: center;
   width: 40%;
+}
+
+.beta-info-and-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .center-header .beta-text {

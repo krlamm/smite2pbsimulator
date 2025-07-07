@@ -223,28 +223,17 @@ function App() {
     <div className={`app esports ${mode}`}>
       {/* Esports Header */}
       <div className="esports-header">
-        {/* Team A name container */}
-        <div className="esports-team-header team-a-header">
-          {/* Team name will be positioned below in CSS */}
-        </div>
-
         <div className="center-header">
           <div className="tournament-logo">SMITE 2 PICK/BAN SIMULATOR</div>
-          <div className="beta-text">BETA - NOT FINAL</div>
-        </div>
-
-        <div className="header-controls">
-          <MuteButton 
-            isMuted={isMuted} 
-            onToggle={toggleMute} 
-            volume={volume} // Pass volume state
-            onVolumeChange={handleVolumeChange} // Pass volume change handler
-          />
-        </div>
-
-        {/* Team B name container */}
-        <div className="esports-team-header team-b-header">
-          {/* Team name will be positioned below in CSS */}
+          <div className="beta-info-and-controls">
+            <div className="beta-text">BETA - NOT FINAL</div>
+            <MuteButton 
+              isMuted={isMuted} 
+              onToggle={toggleMute} 
+              volume={volume} // Pass volume state
+              onVolumeChange={handleVolumeChange} // Pass volume change handler
+            />
+          </div>
         </div>
       </div>
 
