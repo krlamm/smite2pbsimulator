@@ -38,6 +38,8 @@ function App() {
   // State for editable team names
   const [teamAName, setTeamAName] = useState('ORDER');
   const [teamBName, setTeamBName] = useState('CHAOS');
+  const [teamAColor, setTeamAColor] = useState('#1abc9c'); // Default color for Team A (Order)
+  const [teamBColor, setTeamBColor] = useState('#ff6666'); // Default color for Team B (Chaos)
 
   // Refs for contentEditable divs
   // const teamANameRef = useRef<HTMLDivElement>(null);
@@ -299,7 +301,7 @@ function App() {
         <div className="phase-indicator esports">
           {mode === 'standard' ? (
             <>
-              Current Phase - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
+              Current Phase - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`} style={{ color: currentTeam === 'A' ? teamAColor : teamBColor }}>
                 {currentTeam === 'A' ? `${teamAName.toUpperCase()}` : `${teamBName.toUpperCase()}`}
               </span> - <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span>
             </>
