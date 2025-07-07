@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import './layout-fix.css';
 import './esports-layout.css';
 import CharacterGrid from './components/CharacterGrid';
@@ -8,6 +8,7 @@ import BanArea from './components/BanArea';
 import { Character, TeamState } from './types';
 import { gods } from './constants/gods';
 import MuteButton from './components/MuteButton';
+import EditableTeamName from './components/EditableTeamName';
 
 function App() {
   // Mode state
@@ -33,6 +34,27 @@ function App() {
 
   // Draft pick order for the PICK phase (10 total picks)
   const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
+
+  // State for editable team names
+  const [teamAName, setTeamAName] = useState('ORDER');
+  const [teamBName, setTeamBName] = useState('CHAOS');
+
+  // Refs for contentEditable divs
+  // const teamANameRef = useRef<HTMLDivElement>(null);
+  // const teamBNameRef = useRef<HTMLDivElement>(null);
+
+  // Use useEffect to set initial content and handle external changes (e.g., undo)
+  // useEffect(() => {
+  //   if (teamANameRef.current && teamANameRef.current.textContent !== teamAName) {
+  //     teamANameRef.current.textContent = teamAName;
+  //   }
+  // }, [teamAName]);
+
+  // useEffect(() => {
+  //   if (teamBNameRef.current && teamBNameRef.current.textContent !== teamBName) {
+  //     teamBNameRef.current.textContent = teamBName;
+  //   }
+  // }, [teamBName]);
 
   const playAudio = (name: string) => {
     if (isMuted) return; // Don't play if muted
@@ -260,12 +282,10 @@ function App() {
       {/* Team names positioned below header */}
       <div className="team-names-container">
         <div className="team-name-group team-a-group">
-          <div 
-            className="team-name team-a" 
-            contentEditable="true" 
-            suppressContentEditableWarning={true}
-            spellCheck="false"
-          >ORDER</div>
+          <EditableTeamName
+            initialName={teamAName}
+            onNameChange={setTeamAName}
+          />
           <div className="pick-order team-a">1ST PICK</div>
         </div>
         {/* Mode Toggle - Centered above phase indicator */}
@@ -280,7 +300,7 @@ function App() {
             <>
               Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
               <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
-                {currentTeam === 'A' ? 'ORDER\'S TURN' : 'CHAOS\'S TURN'}
+                {currentTeam === 'A' ? `${teamAName.toUpperCase()}'S TURN` : `${teamBName.toUpperCase()}'S TURN`}
               </span>
             </>
           ) : (
@@ -288,12 +308,10 @@ function App() {
           )}
         </div>
         <div className="team-name-group team-b-group">
-          <div 
-            className="team-name team-b" 
-            contentEditable="true" 
-            suppressContentEditableWarning={true}
-            spellCheck="false"
-          >CHAOS</div>
+          <EditableTeamName
+            initialName={teamBName}
+            onNameChange={setTeamBName}
+          />
           <div className="pick-order team-b">2ND PICK</div>
         </div>
       </div>
