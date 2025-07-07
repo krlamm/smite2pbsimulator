@@ -277,6 +277,36 @@ html, body {
 }
 
 /* ========================================
+   UNDO BUTTON
+======================================== */
+.undo-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px; /* Adjust width as needed to align with other elements */
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.undo-button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.undo-button:hover {
+  background-color: #555;
+  border-color: #777;
+}
+
+/* ========================================
    MAIN CONTENT LAYOUT
 ======================================== */
 .esports-content {

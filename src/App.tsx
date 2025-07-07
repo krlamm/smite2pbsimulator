@@ -24,7 +24,9 @@ function App() {
   const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
   const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
 
-  // HIGHLIGHTED CHANGE: REVERTED PICKS INITIALIZATION to original appending behavior
+  // History state to store snapshots of picks, bans, phase, and currentTeam
+  const [history, setHistory] = useState<{ picks: TeamState; bans: TeamState; phase: 'BAN' | 'PICK'; currentTeam: 'A' | 'B' }[]>([]);
+
   const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
   // HIGHLIGHTED CHANGE: BANS INITIALIZATION - Now 3 ban slots per team
   const [bans, setBans] = useState<TeamState>({ A: Array(3).fill(null), B: Array(3).fill(null) }); // Changed to 3 ban slots per team
@@ -103,6 +105,9 @@ function App() {
       // In freedom mode, we'll handle this differently with drag and drop
       return;
     }
+
+    // Save current state to history before making changes
+    setHistory(prev => [...prev, { picks, bans, phase, currentTeam }]);
 
     if (phase === 'BAN') {
       setBans(prevBans => {
@@ -189,6 +194,9 @@ function App() {
 
     if (!character) return;
 
+    // Save current state to history before making changes
+    setHistory(prev => [...prev, { picks, bans, phase, currentTeam }]);
+
     // Play audio for drag and drop as well
     playAudio(character.name);
 
@@ -216,6 +224,18 @@ function App() {
         newPicks[team] = teamPicks;
         return newPicks;
       });
+    }
+  };
+
+  const handleUndo = () => {
+    if (history.length > 0) {
+      const lastState = history.pop();
+      if (lastState) {
+        setPicks(lastState.picks);
+        setBans(lastState.bans);
+        setPhase(lastState.phase);
+        setCurrentTeam(lastState.currentTeam);
+      }
     }
   };
 
@@ -250,6 +270,10 @@ function App() {
         </div>
         {/* Mode Toggle - Centered above phase indicator */}
         <ModeToggle mode={mode} onModeChange={setMode} />
+        {/* Undo Button */}
+        <div className="undo-button-container">
+          <button className="undo-button" onClick={handleUndo}>UNDO</button>
+        </div>
         {/* Phase Indicator */}
         <div className="phase-indicator esports">
           {mode === 'standard' ? (
