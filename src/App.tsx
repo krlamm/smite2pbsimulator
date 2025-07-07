@@ -227,7 +227,12 @@ function App() {
       {/* Team names positioned below header */}
       <div className="team-names-container">
         <div className="team-name-group team-a-group">
-          <div className="team-name team-a">ORDER</div>
+          <div 
+            className="team-name team-a" 
+            contentEditable="true" 
+            suppressContentEditableWarning={true}
+            spellCheck="false"
+          >ORDER</div>
           <div className="pick-order team-a">1ST PICK</div>
         </div>
         {/* Mode Toggle - Centered above phase indicator */}
@@ -246,7 +251,12 @@ function App() {
           )}
         </div>
         <div className="team-name-group team-b-group">
-          <div className="team-name team-b">CHAOS</div>
+          <div 
+            className="team-name team-b" 
+            contentEditable="true" 
+            suppressContentEditableWarning={true}
+            spellCheck="false"
+          >CHAOS</div>
           <div className="pick-order team-b">2ND PICK</div>
         </div>
       </div>

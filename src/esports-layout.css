@@ -136,6 +136,24 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 4px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-name:hover {
+  background: rgba(0, 0, 0, 0.3);
+  cursor: text;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.team-name:focus {
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 1px var(--light-blue);
+  border-color: var(--light-blue);
 }
 
 .team-name.team-a {
