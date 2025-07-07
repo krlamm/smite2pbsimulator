@@ -39,7 +39,7 @@ function App() {
 
     if (!audio) {
       // Create and cache the audio if not already cached
-      audio = new Audio(`/smite2pbsimulator/${name}.ogg`);
+      audio = new Audio(`${name}.ogg`);
       audio.preload = 'auto';
 
       setAudioCache(prev => new Map(prev).set(name, audio!));
@@ -251,10 +251,18 @@ function App() {
         </div>
       </div>
 
-
-
       {/* Main Content - Picks Section */}
       <div className="esports-content">
+        {/* Ban Area - Now at the top level */}
+        <BanArea
+          bansA={bans.A}
+          bansB={bans.B}
+          mode={mode}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        />
+        
         {/* Order (Team A) on the left */}
         <EsportsTeamDisplay
           team="A"
@@ -277,14 +285,6 @@ function App() {
               mode={mode}
               onDragStart={handleDragStart}
             />
-            <BanArea
-              bansA={bans.A}
-              bansB={bans.B}
-              mode={mode}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            />
           </div>
         </div>
 
@@ -299,9 +299,6 @@ function App() {
           onDrop={handleDrop}
         />
       </div>
-
-      {/* Ban Area - Now directly under the picks */}
-
     </div>
   );
 }

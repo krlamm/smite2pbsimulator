@@ -130,8 +130,6 @@ html, body {
   width: 15%;
 }
 
-
-
 .team-name {
   font-size: 28px;
   font-weight: bold;
@@ -235,7 +233,6 @@ html, body {
   align-items: center;
 }
 
-
 .phase-indicator.esports .phase-text.phase-ban {
   color: #ff3333;
   text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
@@ -261,11 +258,12 @@ html, body {
 .esports-content {
   display: flex;
   flex: 1;
-  flex-grow: 6; /* Adjusted: Takes 6 parts of flexible vertical space (for smaller ban area) */
+  flex-grow: 6;
   overflow-y: auto;
   padding: 0 1em;
   gap: 1em;
   width: 100%;
+  position: relative;
 }
 
 .esports-team-column {
@@ -283,30 +281,33 @@ html, body {
 }
 
 .center-grid-container {
+  margin-top: calc(15vh + 80px);
   flex: 1;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 5px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   border: 2px solid var(--light-blue);
   box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+  padding: 10px;
 }
 
 /* ========================================
    CHARACTER GRID
 ======================================== */
 .character-grid-container {
-  padding: 1em 0;
-  scrollbar-color: var(--dark-blue);
+  flex: 1;
+  overflow-y: auto;
+  padding: 1em;
+  scroll-padding-top: 10px;
 }
 
 .center-grid-container .character-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.75rem;
-  padding: 2em;
+  gap: 1rem;
+  padding: 1rem;
   justify-content: center;
 }
 
@@ -369,7 +370,6 @@ html, body {
 /* ========================================
    ROLE FILTERS
 ======================================== */
-
 
 .grid-header {
   display: flex;
@@ -537,14 +537,22 @@ html, body {
    BAN AREA
 ======================================== */
 .ban-area {
+  position: fixed;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px 20px; /* Adjusted: Reduced vertical padding */
-  background-color: rgba(0, 0, 0, 0.3);
-  margin-top: 0;
-  /* Removed: flex-grow: 1; */
-  height: 15vh; /* New: Fixed height for the ban container */
+  padding: 15px 20px;
+  background-color: var(--dark-blue);
+  border: 2px solid var(--light-blue);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+  width: 70%;
+  height: 15vh;
+  min-height: 120px;
 }
 
 .team-bans {
@@ -553,8 +561,8 @@ html, body {
   gap: 20px;
   flex: 1;
   flex-wrap: nowrap;
-  height: 100%; /* New: Make team-bans take full height of ban-area */
-  align-items: center; /* New: Vertically center ban slots within team-bans */
+  height: 100%;
+  align-items: center;
 }
 
 .ban-section-label {
@@ -585,13 +593,12 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  /* Removed: flex: 0 0 12vh; */
-  height: 90%; /* New: Takes 90% of parent's height */
-  aspect-ratio: 1 / 1; /* Retains square aspect ratio */
+  height: 90%;
+  aspect-ratio: 1 / 1;
   min-width: 60px;
   min-height: 60px;
-  max-width: 160px;
-  max-height: 160px;
+  max-width: 120px;
+  max-height: 120px;
 }
 
 .team-a .ban-slot {
@@ -689,5 +696,17 @@ html, body {
 @media (max-width: 768px) {
   .role-filters {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-height: 800px) {
+  .ban-area {
+    min-height: 100px;
+    padding: 10px 20px;
+  }
+  
+  .center-grid-container {
+    margin-top: calc(15vh + 100px);
+    padding: 15px;
   }
 }
