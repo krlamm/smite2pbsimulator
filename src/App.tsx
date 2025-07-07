@@ -299,10 +299,9 @@ function App() {
         <div className="phase-indicator esports">
           {mode === 'standard' ? (
             <>
-              Current Phase: <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span> -&nbsp;
-              <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
-                {currentTeam === 'A' ? `${teamAName.toUpperCase()}'S TURN` : `${teamBName.toUpperCase()}'S TURN`}
-              </span>
+              Current Phase - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`}>
+                {currentTeam === 'A' ? `${teamAName.toUpperCase()}` : `${teamBName.toUpperCase()}`}
+              </span> - <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span>
             </>
           ) : (
             <span>Freedom Mode - Drag and drop any god to any position</span>
