@@ -115,3 +115,48 @@
 .mute-button:active {
   transform: scale(0.95);
 }
+
+.mute-button-container {
+  position: relative;
+  display: flex; /* Ensures the button and slider are in a row */
+  align-items: center;
+}
+
+.volume-slider {
+  position: absolute;
+  left: 60px; /* Position to the right of the button (button width 50px + some margin) */
+  width: 100px; /* Adjust slider width as needed */
+  height: 8px; /* Adjust slider height as needed */
+  -webkit-appearance: none;
+  appearance: none;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s ease-in-out;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5; /* Ensure slider is above other elements */
+}
+
+.volume-slider:hover {
+  opacity: 1;
+}
+
+/* Slider thumb styles */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1abc9c;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1abc9c;
+  cursor: pointer;
+}

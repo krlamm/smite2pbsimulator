@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import './layout-fix.css';
 import './esports-layout.css';
 import CharacterGrid from './components/CharacterGrid';
@@ -13,6 +13,7 @@ function App() {
   // Mode state
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(0.5); // New volume state, default to 50%
 
   // Audio cache for reliable playback
   const [audioCache, setAudioCache] = useState<Map<string, HTMLAudioElement>>(new Map());
@@ -41,6 +42,7 @@ function App() {
       // Create and cache the audio if not already cached
       audio = new Audio(`${name}.ogg`);
       audio.preload = 'auto';
+      audio.volume = volume; // Set initial volume
 
       setAudioCache(prev => new Map(prev).set(name, audio!));
 
@@ -48,6 +50,7 @@ function App() {
       const playWhenReady = () => {
         // Ensure we're at the beginning and audio is ready
         audio!.currentTime = 0;
+        audio!.volume = volume; // Ensure volume is set before playing cached audio
         audio!.play().catch(error => {
           console.error('Error playing audio:', error);
         });
@@ -67,15 +70,31 @@ function App() {
     } else {
       // Audio is cached and ready, play immediately
       audio.currentTime = 0; // Reset to beginning
+      audio.volume = volume; // Ensure volume is set before playing cached audio
       audio.play().catch(error => {
         console.error('Error playing audio:', error);
       });
     }
   };
 
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+    // Update volume for all cached audio elements
+    audioCache.forEach(audio => {
+      audio.volume = newVolume;
+    });
+  };
+
   const toggleMute = () => {
     setIsMuted(prev => !prev);
   };
+
+  useEffect(() => {
+    // When isMuted changes, adjust volume of all cached audio elements
+    audioCache.forEach(audio => {
+      audio.volume = isMuted ? 0 : volume;
+    });
+  }, [isMuted, volume, audioCache]);
 
   const handleCharacterSelect = (character: Character) => {
     console.log(character)
@@ -215,7 +234,12 @@ function App() {
         </div>
 
         <div className="header-controls">
-          <MuteButton isMuted={isMuted} onToggle={toggleMute} />
+          <MuteButton 
+            isMuted={isMuted} 
+            onToggle={toggleMute} 
+            volume={volume} // Pass volume state
+            onVolumeChange={handleVolumeChange} // Pass volume change handler
+          />
         </div>
 
         {/* Team B name container */}
