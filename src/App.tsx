@@ -285,6 +285,7 @@ function App() {
           <EditableTeamName
             initialName={teamAName}
             onNameChange={setTeamAName}
+            team="A"
           />
           <div className="pick-order team-a">1ST PICK</div>
         </div>
@@ -311,6 +312,7 @@ function App() {
           <EditableTeamName
             initialName={teamBName}
             onNameChange={setTeamBName}
+            team="B"
           />
           <div className="pick-order team-b">2ND PICK</div>
         </div>

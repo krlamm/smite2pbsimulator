@@ -3,9 +3,10 @@ import React, { useRef, useEffect } from 'react';
 interface EditableTeamNameProps {
   initialName: string;
   onNameChange: (newName: string) => void;
+  team: 'A' | 'B';
 }
 
-const EditableTeamName: React.FC<EditableTeamNameProps> = ({ initialName, onNameChange }) => {
+const EditableTeamName: React.FC<EditableTeamNameProps> = ({ initialName, onNameChange, team }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const EditableTeamName: React.FC<EditableTeamNameProps> = ({ initialName, onName
 
   return (
     <div
-      className="team-name"
+      className={`team-name team-${team.toLowerCase()}`}
       contentEditable="true"
       suppressContentEditableWarning={true}
       spellCheck="false"
