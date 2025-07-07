@@ -35,9 +35,9 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
               {ban ? (
                 <div className="god-card">
                   <img src={getGodImageUrl(ban)} alt={ban.name} />
-                  {/* <div className="god-info">
-                    <div className="god-name">{ban.name}</div>
-                  </div> */}
+                  <div className="god-info">
+                    <div className="god-name picked-god-name">{ban.name}</div>
+                  </div>
                 </div>
               ) : (
                 <div className="empty-slot">?</div>
@@ -65,9 +65,9 @@ function BanArea({ bansA, bansB, mode, onDragOver, onDrop, onDragLeave }: BanAre
               {ban ? (
                 <div className="god-card">
                   <img src={getGodImageUrl(ban)} alt={ban.name} />
-                  {/* <div className="god-info">
-                    <div className="god-name">{ban.name}</div>
-                  </div> */}
+                  <div className="god-info">
+                    <div className="god-name picked-god-name">{ban.name}</div>
+                  </div>
                 </div>
               ) : (
                 <div className="empty-slot">?</div>

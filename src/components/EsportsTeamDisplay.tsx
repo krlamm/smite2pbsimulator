@@ -31,7 +31,7 @@ function EsportsTeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDra
             {pick ? (
               <div className="god-card">
                 <img src={getGodImageUrl(pick)} alt={pick.name} />
-                <div className="god-name">{pick.name}</div>
+                <div className="god-name picked-god-name">{pick.name}</div>
               </div>
             ) : (
               <div className="empty-slot">?</div>

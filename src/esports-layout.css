@@ -771,3 +771,32 @@ html, body {
     padding: 15px;
   }
 }
+
+.esports-team-column .god-card {
+  background-color: #333;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+  text-align: center;
+  position: relative;
+}
+
+.esports-team-column .god-name {
+  color: #ffd700;
+  background: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: auto;
+  text-align: center;
+  padding: 0 5px;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.esports-team-column .god-name.picked-god-name {
+  color: white;
+  font-size: 2em;
+  opacity: 0.8;
+}
