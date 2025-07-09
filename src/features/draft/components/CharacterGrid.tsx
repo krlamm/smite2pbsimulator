@@ -21,7 +21,7 @@ const getRoleTextColor = (role: string) => {
 
 function CharacterGrid() {
   const { characters, picks, bans, mode, handleCharacterSelect, handleDragStart } = useDraftContext();
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<string | null>('All');
 
   const isCharacterAvailable = (character: Character): boolean => {
     const allPicks = [...picks.A, ...picks.B];

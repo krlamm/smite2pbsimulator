@@ -69,7 +69,7 @@ const DraftControls: React.FC<DraftControlsProps> = ({
             </span>
           </>
         ) : (
-          <span>Freedom Mode - Drag and drop any god to any position</span>
+          <span>Free Mode - Drag any god to any position</span>
         )}
       </div>
       <div className="flex flex-col items-center w-1/6">

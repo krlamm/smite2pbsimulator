@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './index.css';
 import { DraftProvider } from './features/draft/context/DraftContext';
+import { AudioProvider } from './features/layout/context/AudioContext';
 import MainLayout from './features/layout/components/MainLayout';
 
 function App() {
@@ -11,18 +12,20 @@ function App() {
   const [teamBColor, setTeamBColor] = useState('#ff6666');
 
   return (
-    <DraftProvider mode={mode}>
-      <MainLayout
-        teamAName={teamAName}
-        onTeamANameChange={setTeamAName}
-        teamBName={teamBName}
-        onTeamBNameChange={setTeamBName}
-        teamAColor={teamAColor}
-        teamBColor={teamBColor}
-        mode={mode}
-        setMode={setMode}
-      />
-    </DraftProvider>
+    <AudioProvider>
+      <DraftProvider mode={mode}>
+        <MainLayout
+          teamAName={teamAName}
+          onTeamANameChange={setTeamAName}
+          teamBName={teamBName}
+          onTeamBNameChange={setTeamBName}
+          teamAColor={teamAColor}
+          teamBColor={teamBColor}
+          mode={mode}
+          setMode={setMode}
+        />
+      </DraftProvider>
+    </AudioProvider>
   );
 }
 

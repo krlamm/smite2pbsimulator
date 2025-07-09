@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Character, TeamState } from '../../../types';
 import { gods } from '../../../constants/gods';
-import { useAudio } from '../../layout/hooks/useAudio';
+import { useAudioContext } from '../../layout/context/AudioContext';
 
 const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
 
@@ -10,11 +10,12 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
   const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
   const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
   const [history, setHistory] = useState<{ picks: TeamState; bans: TeamState; phase: 'BAN' | 'PICK'; currentTeam: 'A' | 'B' }[]>([]);
-  const [picks, setPicks] = useState<TeamState>({ A: [], B: [] });
+  const [picks, setPicks] = useState<TeamState>({ A: Array(5).fill(null), B: Array(5).fill(null) });
   const [bans, setBans] = useState<TeamState>({ A: Array(3).fill(null), B: Array(3).fill(null) });
-  const { playAudio } = useAudio();
+  const { playAudio } = useAudioContext();
 
   const handleCharacterSelect = (character: Character) => {
+    playAudio(character.name);
     if (mode === 'freedom') {
       return;
     }
@@ -45,12 +46,18 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
         return updatedBans;
       });
     } else {
-      const totalPicksBefore = picks.A.length + picks.B.length;
+      const totalPicksBefore = picks.A.filter(Boolean).length + picks.B.filter(Boolean).length;
 
-      setPicks(prevPicks => ({
-        ...prevPicks,
-        [currentTeam]: [...prevPicks[currentTeam], character],
-      }));
+      setPicks(prevPicks => {
+        const newPicks = { ...prevPicks };
+        const teamPicks = [...newPicks[currentTeam]];
+        const firstEmptyIndex = teamPicks.findIndex(slot => slot === null);
+        if (firstEmptyIndex !== -1) {
+          teamPicks[firstEmptyIndex] = character;
+        }
+        newPicks[currentTeam] = teamPicks;
+        return newPicks;
+      });
 
       const totalPicksAfter = totalPicksBefore + 1;
       if (totalPicksAfter < pickSequence.length) {
@@ -90,6 +97,7 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
 
     if (!character) return;
 
+    playAudio(character.name);
     setHistory(prev => [...prev, { picks, bans, phase, currentTeam }]);
 
     if (type === 'ban') {
@@ -104,11 +112,7 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
       setPicks(prevPicks => {
         const newPicks = { ...prevPicks };
         const teamPicks = [...newPicks[team]];
-        if (index >= 0 && index < teamPicks.length) {
-          teamPicks[index] = character;
-        } else {
-          teamPicks.push(character);
-        }
+        teamPicks[index] = character;
         newPicks[team] = teamPicks;
         return newPicks;
       });
@@ -128,7 +132,7 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
   };
 
   const handleClear = () => {
-    setPicks({ A: [], B: [] });
+    setPicks({ A: Array(5).fill(null), B: Array(5).fill(null) });
     setBans({ A: Array(3).fill(null), B: Array(3).fill(null) });
     setPhase('BAN');
     setCurrentTeam('A');

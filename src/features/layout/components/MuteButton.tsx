@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAudio } from '../hooks/useAudio';
+import { useAudioContext } from '../context/AudioContext';
 
 const MuteButton: React.FC = () => {
-  const { isMuted, toggleMute, volume, handleVolumeChange } = useAudio();
+  const { isMuted, toggleMute, volume, handleVolumeChange } = useAudioContext();
 
   return (
     <div className="flex items-center gap-2.5">
