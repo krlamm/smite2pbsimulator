@@ -1,6 +1,7 @@
 import React from 'react';
 import { Character } from '../../../types';
 import { useDraftContext } from '../context/DraftContext';
+import { getGodImageUrl } from '../../../utils/imageUtils';
 
 interface BanAreaProps {
   bansA: (Character | null)[];
@@ -20,7 +21,7 @@ const BanArea: React.FC<BanAreaProps> = ({ bansA, bansB }) => {
           onDragLeave={mode === 'freedom' ? handleDragLeave : undefined}
           onDrop={mode === 'freedom' ? (e) => handleDrop(e, team, 'ban', index) : undefined}
         >
-          {ban && <img src={ban.icon} alt={ban.name} className="w-full h-full object-cover" />}
+          {ban && <img src={getGodImageUrl(ban)} alt={ban.name} className="w-full h-full object-cover" />}
         </div>
       ))}
     </div>

@@ -127,6 +127,14 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     }
   };
 
+  const handleClear = () => {
+    setPicks({ A: [], B: [] });
+    setBans({ A: Array(3).fill(null), B: Array(3).fill(null) });
+    setPhase('BAN');
+    setCurrentTeam('A');
+    setHistory([]);
+  };
+
   return {
     mode,
     characters,
@@ -140,5 +148,6 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     handleDragLeave,
     handleDrop,
     handleUndo,
+    handleClear,
   };
 };

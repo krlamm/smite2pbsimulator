@@ -24,7 +24,7 @@ const DraftControls: React.FC<DraftControlsProps> = ({
   mode,
   setMode,
 }) => {
-  const { handleUndo, currentTeam, phase } = useDraftContext();
+  const { handleUndo, handleClear, currentTeam, phase } = useDraftContext();
 
   return (
     <div className="flex justify-center items-center py-2.5 px-5 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 flex-wrap gap-[30px]">
@@ -33,12 +33,18 @@ const DraftControls: React.FC<DraftControlsProps> = ({
         <div className="text-sm font-bold uppercase tracking-wider text-order">1ST PICK</div>
       </div>
       <ModeToggle mode={mode} onModeChange={setMode} />
-      <div className="flex justify-center items-center w-52 mx-auto relative z-10">
+      <div className="flex justify-center items-center w-52 mx-auto relative z-10 gap-4">
         <button
           className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
           onClick={handleUndo}
         >
           UNDO
+        </button>
+        <button
+          className="bg-red-700 text-white border border-red-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
+          onClick={handleClear}
+        >
+          CLEAR
         </button>
       </div>
       <div className="bg-black/70 p-4 rounded-full text-center border border-light-blue shadow-border-glow text-2xl flex justify-center items-center">
