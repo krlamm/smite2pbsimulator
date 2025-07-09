@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import './layout-fix.css';
-import './esports-layout.css';
+import './index.css';
 import CharacterGrid from './components/CharacterGrid';
 import EsportsTeamDisplay from './components/EsportsTeamDisplay';
 import ModeToggle from './components/ModeToggle';
@@ -264,13 +263,13 @@ function App() {
   };
 
   return (
-    <div className={`app esports ${mode}`}>
+    <div className={` bg-gradient-to-b from-dark-blue to-medium-blue text-white font-sans overflow-hidden flex flex-col h-screen ${mode}`}>
       {/* Esports Header */}
-      <div className="esports-header">
-        <div className="center-header">
-          <div className="tournament-logo">SMITE 2 PICK/BAN SIMULATOR</div>
-          <div className="beta-info-and-controls">
-            <div className="beta-text">BETA - NOT FINAL</div>
+      <div className="bg-dark-blue flex justify-center items-center px-5 border-b-2 border-light-blue shadow-lg">
+        <div className="flex flex-row gap-4 whitespace-nowrap items-center justify-center w-2/5">
+          <div className="text-2xl font-bold tracking-[2px] text-gold text-center shadow-[0_0_10px_rgba(255,215,0,0.5)]">SMITE 2 PICK/BAN SIMULATOR</div>
+          <div className="flex items-center gap-2.5">
+            <div className="text-chaos text-2xl shadow-border-glow">BETA - NOT FINAL</div>
             <MuteButton 
               isMuted={isMuted} 
               onToggle={toggleMute} 
@@ -282,54 +281,46 @@ function App() {
       </div>
 
       {/* Team names positioned below header */}
-      <div className="team-names-container">
-        <div className="team-name-group team-a-group">
+      <div className="flex justify-center items-center py-2.5 px-5 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 flex-wrap gap-[30px]">
+        <div className="flex flex-col items-center w-1/6">
           <EditableTeamName
             initialName={teamAName}
             onNameChange={setTeamAName}
             team="A"
           />
-          <div className="pick-order team-a">1ST PICK</div>
+          <div className="text-sm font-bold uppercase tracking-wider text-order">1ST PICK</div>
         </div>
         {/* Mode Toggle - Centered above phase indicator */}
         <ModeToggle mode={mode} onModeChange={setMode} />
         {/* Undo Button */}
-        <div className="undo-button-container">
-          <button className="undo-button" onClick={handleUndo}>UNDO</button>
+        <div className="flex justify-center items-center w-52 mx-auto relative z-10">
+          <button className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400" onClick={handleUndo}>UNDO</button>
         </div>
         {/* Phase Indicator */}
-        <div className="phase-indicator esports">
+        <div className="bg-black/70 p-4 rounded-full text-center border border-light-blue shadow-border-glow text-2xl flex justify-center items-center">
           {mode === 'standard' ? (
             <>
-              Current Phase - <span className={`turn-text ${currentTeam === 'A' ? 'order' : 'chaos'}`} style={{ color: currentTeam === 'A' ? teamAColor : teamBColor }}>
+              Current Phase - <span className={`turn-text ${currentTeam === 'A' ? 'text-teal-400' : 'text-red-500'}`} style={{ color: currentTeam === 'A' ? teamAColor : teamBColor }}>
                 {currentTeam === 'A' ? `${teamAName.toUpperCase()}` : `${teamBName.toUpperCase()}`}
-              </span> - <span className={`phase-text phase-${phase.toLowerCase()}`}>{phase}</span>
+              </span> - <span className={`phase-text ${phase === 'BAN' ? 'text-red-500 shadow-[0_0_5px_rgba(255,51,51,0.5)] font-bold' : 'text-teal-400 font-bold'}`}>{phase}</span>
             </>
           ) : (
             <span>Freedom Mode - Drag and drop any god to any position</span>
           )}
         </div>
-        <div className="team-name-group team-b-group">
+        <div className="flex flex-col items-center w-1/6">
           <EditableTeamName
             initialName={teamBName}
             onNameChange={setTeamBName}
             team="B"
           />
-          <div className="pick-order team-b">2ND PICK</div>
+          <div className="text-sm font-bold uppercase tracking-wider text-chaos">2ND PICK</div>
         </div>
       </div>
 
       {/* Main Content - Picks Section */}
-      <div className="esports-content">
-        {/* Ban Area - Now at the top level */}
-        <BanArea
-          bansA={bans.A}
-          bansB={bans.B}
-          mode={mode}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        />
+      <div className="flex overflow-y-auto px-4 gap-4 h-full w-full relative">
+        
         
         {/* Order (Team A) on the left */}
         <EsportsTeamDisplay
@@ -338,13 +329,24 @@ function App() {
           bans={bans.A}
           mode={mode}
           onDragOver={handleDragOver}
+  
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         />
 
         {/* Center column with god selection grid */}
-        <div className="esports-center-column">
-          <div className="center-grid-container">
+        <div className="flex-1 flex flex-col">
+          {/* Ban Area - Now at the top level */}
+        <BanArea
+          bansA={bans.A}
+          bansB={bans.B}
+          mode={mode}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        />
+          <div className="flex-1 bg-black/30 rounded-md overflow-y-auto flex flex-col border-2 border-light-blue shadow-[0_0_10px_rgba(0,204,255,0.3)] p-2.5 lg:p-4">
+            
             <CharacterGrid
               characters={characters}
               onCharacterSelect={handleCharacterSelect}

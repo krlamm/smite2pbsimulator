@@ -12,6 +12,57 @@ interface CharacterGridProps {
   onDragStart: (e: React.DragEvent, character: Character) => void;
 }
 
+const getRoleClasses = (role: string) => {
+  switch (role.toLowerCase()) {
+    case 'jungle':
+      return 'bg-jungle text-black';
+    case 'support':
+      return 'bg-support text-white';
+    case 'carry':
+      return 'bg-carry text-white';
+    case 'mid':
+      return 'bg-mid text-white';
+    case 'solo':
+      return 'bg-solo text-white';
+    default:
+      return 'bg-gray-600 text-white';
+  }
+};
+
+const getRoleBorderColor = (role: string) => {
+  switch (role.toLowerCase()) {
+    case 'jungle':
+      return 'border-jungle';
+    case 'support':
+      return 'border-support';
+    case 'carry':
+      return 'border-carry';
+    case 'mid':
+      return 'border-mid';
+    case 'solo':
+      return 'border-solo';
+    default:
+      return 'border-transparent';
+  }
+};
+
+const getRoleTextColor = (role: string) => {
+  switch (role.toLowerCase()) {
+    case 'jungle':
+      return 'text-jungle';
+    case 'support':
+      return 'text-support';
+    case 'carry':
+      return 'text-carry';
+    case 'mid':
+      return 'text-mid';
+    case 'solo':
+      return 'text-solo';
+    default:
+      return 'text-gold';
+  }
+};
+
 function CharacterGrid({
   characters,
   onCharacterSelect,
@@ -49,15 +100,19 @@ function CharacterGrid({
 
   console.log(displayCharacters);
   return (
-    <div className="character-grid-container">
-      <div className="grid-header">
+    <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5">
+      <div className="flex justify-around mb-5">
         <RoleSelector />
-        <div className="role-filters">
+        <div className="flex justify-center gap-2.5 md:flex-wrap">
           {roles.map(role => (
             <button
               key={role}
               // Add 'active' class only if the current role matches selectedRole
-              className={`role-filter role-${role.toLowerCase()} ${selectedRole === role ? 'active' : ''}`}
+              className={`py-2 px-4 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-500 ${
+                selectedRole === role
+                  ? `shadow-[0_0_10px_var(--${role.toLowerCase()}-color)] bg-${role.toLowerCase()}-color text-white`
+                  : getRoleClasses(role)
+              }`}
               // Toggle selectedRole: if clicking active role, set to null (hide); else set to new role (show)
               onClick={() => setSelectedRole(selectedRole === role ? null : role)}
             >
@@ -66,7 +121,7 @@ function CharacterGrid({
           ))}
         </div>
       </div>
-      <div className="character-grid">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4 p-4 justify-center">
         {displayCharacters.map(character => {
           // Highlighted change starts here
           const displayedCardRole = selectedRole === 'All' ? character.roles[0] : (selectedRole || character.roles[0]);
@@ -75,17 +130,21 @@ function CharacterGrid({
             <div
               key={character.id}
               // Highlighted change starts here
-              className={`character-card role-${displayedCardRole?.toLowerCase() || 'all'} ${!isCharacterAvailable(character) ? 'unavailable' : ''}`}
+              className={`bg-gray-700 rounded-md overflow-hidden cursor-pointer transition-transform duration-200 flex flex-col border-3 ${getRoleBorderColor(
+                displayedCardRole
+              )} hover:transform hover:-translate-y-px hover:scale-105 ${
+                !isCharacterAvailable(character) ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               // Highlighted change ends here
               onClick={() => isCharacterAvailable(character) && onCharacterSelect(character)}
               draggable={mode === 'freedom' && isCharacterAvailable(character)}
               onDragStart={mode === 'freedom' ? (e) => onDragStart(e, character) : undefined}
             >
               <img src={getGodImageUrl(character)} alt={character.name} />
-              <div className="character-info">
-                <div className="character-name">{character.name}</div>
+              <div className="p-2 text-center bg-black/80 flex flex-col justify-center gap-0.5 flex-grow min-h-[3.5em]">
+                <div className="font-bold text-sm text-white leading-tight overflow-hidden">{character.name}</div>
                 {/* Highlighted change starts here */}
-                <div className={`character-role role-${displayedCardRole?.toLowerCase() || 'all'}`}>{displayedCardRole}</div>
+                <div className={`text-xs ${getRoleTextColor(displayedCardRole)}`}>{displayedCardRole}</div>
                 {/* Highlighted change ends here */}
               </div>
             </div>
