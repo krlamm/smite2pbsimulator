@@ -41,10 +41,11 @@ function CharacterGrid() {
     : filteredCharacters;
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5">
+    <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5 scrollbar-custom">
       <div className="flex justify-around mb-5">
         <div className="flex justify-center gap-2.5 md:flex-wrap">
-          {roles.map(role => (
+          {roles.map(role => {
+            return (
             <button
               key={role.name}
               className={`py-2 px-4 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-500 ${
@@ -56,7 +57,8 @@ function CharacterGrid() {
             >
               {role.name}
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4 p-4 justify-center">

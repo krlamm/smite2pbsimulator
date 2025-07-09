@@ -26,3 +26,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
 }
+
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-order) var(--color-dark-blue);
+}
