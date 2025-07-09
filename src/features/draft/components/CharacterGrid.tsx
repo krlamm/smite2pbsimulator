@@ -45,19 +45,21 @@ function CharacterGrid() {
       <div className="flex justify-around mb-5">
         <div className="flex justify-center gap-2.5 md:flex-wrap">
           {roles.map(role => {
+            const roleInfo = roles.find(r => r.name === role.name);
+            const isActive = selectedRole === role.name;
             return (
-            <button
-              key={role.name}
-              className={`py-2 px-4 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-500 ${
-                selectedRole === role.name
-                  ? `shadow-[0_0_10px_var(--${role.name.toLowerCase()}-color)] bg-${role.name.toLowerCase()}-color text-white`
-                  : getRoleClasses(role.name)
-              }`}
-              onClick={() => setSelectedRole(selectedRole === role.name ? null : role.name)}
-            >
-              {role.name}
-            </button>
-            );
+              <button
+                key={role.name}
+                className={`py-2 px-4 rounded-md cursor-pointer transition-all duration-200 border-2 ${
+                  isActive
+                    ? `${roleInfo?.classes} text-white shadow-[0_0_10px_var(--${role.name.toLowerCase()}-color)]`
+                    : `bg-gray-800/50 ${roleInfo?.borderColor} ${roleInfo?.textColor} hover:bg-gray-700/70`
+                }`}
+                onClick={() => setSelectedRole(selectedRole === role.name ? null : role.name)}
+              >
+                {role.name}
+              </button>
+            )
           })}
         </div>
       </div>
