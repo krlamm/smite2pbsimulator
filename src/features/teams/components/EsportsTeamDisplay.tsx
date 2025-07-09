@@ -1,18 +1,16 @@
 import React from 'react';
-import { Character } from '../types';
-import { getGodImageUrl } from '../utils/imageUtils';
+import { Character } from '../../../types';
+import { useDraftContext } from '../../draft/context/DraftContext';
+import { getGodImageUrl } from '../../../utils/imageUtils';
 
 interface EsportsTeamDisplayProps {
   team: 'A' | 'B';
-  picks: Character[];
-  bans: Character[];
-  mode: 'standard' | 'freedom';
-  onDragOver: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
-  onDragLeave?: (e: React.DragEvent) => void;
+  picks: (Character | null)[];
+  bans: (Character | null)[];
 }
 
-function EsportsTeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDragLeave }: EsportsTeamDisplayProps) {
+const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team, picks }) => {
+  const { mode, handleDragOver, handleDragLeave, handleDrop } = useDraftContext();
   const emptyPickSlots = Array(5).fill(null);
 
   return (
@@ -28,9 +26,9 @@ function EsportsTeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDra
                 ? 'border-order shadow-border-glow'
                 : 'border-chaos shadow-[0_0_5px_rgba(255,51,102,0.7)]'
             } ${mode === 'freedom' && !pick ? 'border-dashed border-gray-500 bg-gray-500/20 cursor-pointer hover:border-gray-400 hover:bg-gray-500/30' : ''}`}
-            onDragOver={mode === 'freedom' ? onDragOver : undefined}
-            onDragLeave={mode === 'freedom' ? onDragLeave : undefined}
-            onDrop={mode === 'freedom' ? (e) => onDrop(e, team, 'pick', index) : undefined}
+            onDragOver={mode === 'freedom' ? handleDragOver : undefined}
+            onDragLeave={mode === 'freedom' ? handleDragLeave : undefined}
+            onDrop={mode === 'freedom' ? (e) => handleDrop(e, team, 'pick', index) : undefined}
           >
             {pick ? (
               <>
@@ -45,6 +43,6 @@ function EsportsTeamDisplay({ team, picks, bans, mode, onDragOver, onDrop, onDra
       })}
     </div>
   );
-}
+};
 
-export default EsportsTeamDisplay; 
+export default EsportsTeamDisplay;

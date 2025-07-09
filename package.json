@@ -15,13 +15,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.11",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.6.0",
     "gh-pages": "^6.3.0",
+    "jsdom": "^26.1.0",
     "tailwindcss": "^4.1.11",
-    "vite": "^7.0.3"
+    "vite": "^7.0.3",
+    "vitest": "^3.2.4"
   }
 }
