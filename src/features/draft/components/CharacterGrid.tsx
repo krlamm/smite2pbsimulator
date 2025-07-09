@@ -75,8 +75,8 @@ function CharacterGrid() {
                 !isCharacterAvailable(character) ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               onClick={() => isCharacterAvailable(character) && handleCharacterSelect(character)}
-              draggable={mode === 'freedom' && isCharacterAvailable(character)}
-              onDragStart={mode === 'freedom' ? (e) => handleDragStart(e, character) : undefined}
+              draggable={isCharacterAvailable(character)}
+              onDragStart={(e) => handleDragStart(e, character)}
             >
               <img src={getGodImageUrl(character)} alt={character.name} />
               <div className="p-2 text-center bg-black/80 flex flex-col justify-center gap-0.5 flex-grow min-h-[3.5em]">

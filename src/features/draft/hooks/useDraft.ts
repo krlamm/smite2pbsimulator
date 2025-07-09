@@ -119,6 +119,34 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     }
   };
 
+  const handleStandardDrop = (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => {
+    e.preventDefault();
+    if (e.currentTarget.classList.contains('drag-over')) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+  
+    const characterId = parseInt(e.dataTransfer.getData('characterId'));
+    const character = characters.find(c => c.id === characterId);
+  
+    if (!character || currentTeam !== team) return;
+  
+    if (phase === 'BAN' && type === 'ban') {
+      const teamBans = bans[team];
+      const isSlotEmpty = teamBans[index] === null;
+      const nextEmptyIndex = teamBans.findIndex(slot => slot === null);
+      if (isSlotEmpty && index === nextEmptyIndex) {
+        handleCharacterSelect(character);
+      }
+    } else if (phase === 'PICK' && type === 'pick') {
+      const teamPicks = picks[team];
+      const isSlotEmpty = teamPicks[index] === null;
+      const nextEmptyIndex = teamPicks.findIndex(slot => slot === null);
+      if (isSlotEmpty && index === nextEmptyIndex) {
+        handleCharacterSelect(character);
+      }
+    }
+  };
+
   const handleUndo = () => {
     if (history.length > 0) {
       const lastState = history.pop();
@@ -151,6 +179,7 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     handleDragOver,
     handleDragLeave,
     handleDrop,
+    handleStandardDrop,
     handleUndo,
     handleClear,
   };

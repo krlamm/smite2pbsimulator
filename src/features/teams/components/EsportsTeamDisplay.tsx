@@ -10,7 +10,7 @@ interface EsportsTeamDisplayProps {
 }
 
 const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team, picks }) => {
-  const { mode, handleDragOver, handleDragLeave, handleDrop } = useDraftContext();
+  const { mode, handleDragOver, handleDragLeave, handleDrop, handleStandardDrop } = useDraftContext();
   const emptyPickSlots = Array(5).fill(null);
 
   return (
@@ -26,9 +26,9 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team, picks }) 
                 ? 'border-order shadow-border-glow'
                 : 'border-chaos shadow-[0_0_5px_rgba(255,51,102,0.7)]'
             } ${mode === 'freedom' && !pick ? 'border-dashed border-gray-500 bg-gray-500/20 cursor-pointer hover:border-gray-400 hover:bg-gray-500/30' : ''}`}
-            onDragOver={mode === 'freedom' ? handleDragOver : undefined}
-            onDragLeave={mode === 'freedom' ? handleDragLeave : undefined}
-            onDrop={mode === 'freedom' ? (e) => handleDrop(e, team, 'pick', index) : undefined}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => mode === 'freedom' ? handleDrop(e, team, 'pick', index) : handleStandardDrop(e, team, 'pick', index)}
           >
             {pick ? (
               <>

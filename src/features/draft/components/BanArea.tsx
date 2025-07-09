@@ -9,7 +9,7 @@ interface BanAreaProps {
 }
 
 const BanArea: React.FC<BanAreaProps> = ({ bansA, bansB }) => {
-  const { mode, handleDragOver, handleDragLeave, handleDrop } = useDraftContext();
+  const { mode, handleDragOver, handleDragLeave, handleDrop, handleStandardDrop } = useDraftContext();
 
   const renderBanSlots = (team: 'A' | 'B', bans: (Character | null)[]) => (
     <div className={`flex gap-2.5 ${team === 'A' ? 'justify-start' : 'justify-end'}`}>
@@ -17,9 +17,9 @@ const BanArea: React.FC<BanAreaProps> = ({ bansA, bansB }) => {
         <div
           key={index}
           className="w-16 h-16 bg-black/50 border-2 border-red-500 rounded-md flex items-center justify-center"
-          onDragOver={mode === 'freedom' ? handleDragOver : undefined}
-          onDragLeave={mode === 'freedom' ? handleDragLeave : undefined}
-          onDrop={mode === 'freedom' ? (e) => handleDrop(e, team, 'ban', index) : undefined}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => mode === 'freedom' ? handleDrop(e, team, 'ban', index) : handleStandardDrop(e, team, 'ban', index)}
         >
           {ban && <img src={getGodImageUrl(ban)} alt={ban.name} className="w-full h-full object-cover" />}
         </div>
