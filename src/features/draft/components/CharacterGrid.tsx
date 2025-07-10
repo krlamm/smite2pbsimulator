@@ -20,7 +20,7 @@ const getRoleTextColor = (role: string) => {
 };
 
 function CharacterGrid() {
-  const { characters, picks, bans, mode, handleCharacterSelect, handleDragStart } = useDraftContext();
+  const { characters, picks, bans, mode, handleCharacterSelect, handleDragStart, isMyTurn } = useDraftContext();
   const [selectedRole, setSelectedRole] = useState<string | null>('All');
 
   const isCharacterAvailable = (character: Character): boolean => {
@@ -39,6 +39,12 @@ function CharacterGrid() {
   const displayCharacters = selectedRole === 'All'
     ? [...filteredCharacters].sort((a, b) => a.name.localeCompare(b.name))
     : filteredCharacters;
+    
+  const canSelectCharacter = (character: Character) => {
+    // In online mode, it must be your turn. In local mode, you can always select.
+    const isTurn = isMyTurn === undefined ? true : isMyTurn;
+    return isCharacterAvailable(character) && isTurn;
+  }
 
   return (
     <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5 scrollbar-custom">
@@ -66,17 +72,16 @@ function CharacterGrid() {
       <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4 p-4 justify-center">
         {displayCharacters.map(character => {
           const displayedCardRole = selectedRole === 'All' ? character.roles[0] : (selectedRole || character.roles[0]);
+          const isSelectable = canSelectCharacter(character);
           return (
             <div
               key={character.id}
-              className={`bg-gray-700 rounded-md overflow-hidden cursor-pointer transition-transform duration-200 flex flex-col border-3 ${getRoleBorderColor(
+              className={`bg-gray-700 rounded-md overflow-hidden transition-transform duration-200 flex flex-col border-3 ${getRoleBorderColor(
                 displayedCardRole
-              )} hover:transform hover:-translate-y-px hover:scale-105 ${
-                !isCharacterAvailable(character) ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              onClick={() => isCharacterAvailable(character) && handleCharacterSelect(character)}
-              draggable={isCharacterAvailable(character)}
-              onDragStart={(e) => handleDragStart(e, character)}
+              )} ${!isCharacterAvailable(character) ? 'opacity-30 cursor-not-allowed' : ''} ${isSelectable ? 'cursor-pointer hover:transform hover:-translate-y-px hover:scale-105' : 'cursor-not-allowed grayscale'}`}
+              onClick={() => isSelectable && handleCharacterSelect(character)}
+              draggable={isSelectable}
+              onDragStart={(e) => isSelectable && handleDragStart(e, character)}
             >
               <img src={getGodImageUrl(character)} alt={character.name} />
               <div className="p-2 text-center bg-black/80 flex flex-col justify-center gap-0.5 flex-grow min-h-[3.5em]">

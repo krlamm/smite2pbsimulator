@@ -34,12 +34,13 @@ interface DraftProviderProps {
   // These are optional and only used for real-time mode
   initialState?: any; 
   draftId?: string;
+  currentUser?: any;
 }
 
-export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, initialState, draftId }) => {
+export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, initialState, draftId, currentUser }) => {
   // Conditionally use the correct hook based on whether this is a real-time draft
   const draft = draftId 
-    ? useFirestoreDraft({ mode, initialState, draftId })
+    ? useFirestoreDraft({ mode, initialState, draftId, currentUser })
     : useDraft({ mode });
 
   return <DraftContext.Provider value={draft as any}>{children}</DraftContext.Provider>;
