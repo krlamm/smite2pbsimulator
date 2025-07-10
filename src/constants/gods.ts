@@ -182,6 +182,14 @@ export const gods = [
         voiceLine: ""
     },
     {
+        id: 70,
+        name: 'Ganesha',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_Ganesha.png/720px-GodCard_Ganesha.png?57532',
+        roles: ['Support', 'Solo'],
+            skins: [""],
+        voiceLine: ""
+    },
+    {
         id: 7,
         name: 'Geb',
         image: 'https://wiki.smite2.com/images/thumb/GodCard_Geb.png/720px-GodCard_Geb.png?ac80c',

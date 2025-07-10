@@ -5,7 +5,11 @@ import { useAudioContext } from '../../layout/context/AudioContext';
 
 const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
 
-export const useDraft = (mode: 'standard' | 'freedom') => {
+interface UseDraftOptions {
+  mode: 'standard' | 'freedom';
+}
+
+export const useDraft = ({ mode }: UseDraftOptions) => {
   const [characters] = useState<Character[]>(gods);
   const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
   const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
@@ -66,87 +70,6 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     }
   };
 
-  const handleDragStart = (e: React.DragEvent, character: Character) => {
-    e.dataTransfer.setData('characterId', character.id.toString());
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (e.currentTarget.classList.contains('ban-item') ||
-      e.currentTarget.classList.contains('pick-item') ||
-      e.currentTarget.classList.contains('ban-slot') ||
-      e.currentTarget.classList.contains('pick-slot')) {
-      e.currentTarget.classList.add('drag-over');
-    }
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    if (e.currentTarget.classList.contains('drag-over')) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => {
-    e.preventDefault();
-    if (e.currentTarget.classList.contains('drag-over')) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-
-    const characterId = parseInt(e.dataTransfer.getData('characterId'));
-    const character = characters.find(c => c.id === characterId);
-
-    if (!character) return;
-
-    playAudio(character.name);
-    setHistory(prev => [...prev, { picks, bans, phase, currentTeam }]);
-
-    if (type === 'ban') {
-      setBans(prevBans => {
-        const newBans = { ...prevBans };
-        const teamBans = [...newBans[team]];
-        teamBans[index] = character;
-        newBans[team] = teamBans;
-        return newBans;
-      });
-    } else {
-      setPicks(prevPicks => {
-        const newPicks = { ...prevPicks };
-        const teamPicks = [...newPicks[team]];
-        teamPicks[index] = character;
-        newPicks[team] = teamPicks;
-        return newPicks;
-      });
-    }
-  };
-
-  const handleStandardDrop = (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => {
-    e.preventDefault();
-    if (e.currentTarget.classList.contains('drag-over')) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-  
-    const characterId = parseInt(e.dataTransfer.getData('characterId'));
-    const character = characters.find(c => c.id === characterId);
-  
-    if (!character || currentTeam !== team) return;
-  
-    if (phase === 'BAN' && type === 'ban') {
-      const teamBans = bans[team];
-      const isSlotEmpty = teamBans[index] === null;
-      const nextEmptyIndex = teamBans.findIndex(slot => slot === null);
-      if (isSlotEmpty && index === nextEmptyIndex) {
-        handleCharacterSelect(character);
-      }
-    } else if (phase === 'PICK' && type === 'pick') {
-      const teamPicks = picks[team];
-      const isSlotEmpty = teamPicks[index] === null;
-      const nextEmptyIndex = teamPicks.findIndex(slot => slot === null);
-      if (isSlotEmpty && index === nextEmptyIndex) {
-        handleCharacterSelect(character);
-      }
-    }
-  };
-
   const handleUndo = () => {
     if (history.length > 0) {
       const lastState = history.pop();
@@ -167,6 +90,28 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     setHistory([]);
   };
 
+  // Drag and drop functions are fully supported in local mode
+  const handleDragStart = (e: React.DragEvent, character: Character) => {
+    e.dataTransfer.setData('characterId', character.id.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => {
+    const characterId = parseInt(e.dataTransfer.getData('characterId'));
+    const character = characters.find(c => c.id === characterId);
+    if (!character) return;
+    playAudio(character.name);
+    // Simplified drop for freedom mode, more complex for standard
+    if (type === 'ban') {
+      setBans(prev => ({...prev, [team]: [...prev[team].slice(0, index), character, ...prev[team].slice(index + 1)]}));
+    } else {
+      setPicks(prev => ({...prev, [team]: [...prev[team].slice(0, index), character, ...prev[team].slice(index + 1)]}));
+    }
+  };
+
   return {
     mode,
     characters,
@@ -177,9 +122,7 @@ export const useDraft = (mode: 'standard' | 'freedom') => {
     handleCharacterSelect,
     handleDragStart,
     handleDragOver,
-    handleDragLeave,
     handleDrop,
-    handleStandardDrop,
     handleUndo,
     handleClear,
   };
