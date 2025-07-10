@@ -5,6 +5,7 @@ import { TeamState } from '../../../types';
 
 // Define a unified type for the context value, covering both hooks
 interface DraftContextValue {
+  draftId?: string;
   mode: 'standard' | 'freedom';
   characters: any[];
   phase: string;
@@ -14,6 +15,8 @@ interface DraftContextValue {
   handleCharacterSelect: (character: any) => void;
   handleUndo: () => void;
   handleClear: () => void;
+  handleReset?: () => void;
+  handleLeave?: () => Promise<void>;
   // Add other shared functions/state if necessary
 }
 
@@ -43,6 +46,11 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, in
     ? useFirestoreDraft({ mode, initialState, draftId, currentUser })
     : useDraft({ mode });
 
-  return <DraftContext.Provider value={draft as any}>{children}</DraftContext.Provider>;
+  const contextValue = {
+    ...draft,
+    draftId,
+  };
+
+  return <DraftContext.Provider value={contextValue as any}>{children}</DraftContext.Provider>;
 };
 

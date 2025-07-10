@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from './Header';
 import DraftControls from '../../draft/components/DraftControls';
 import CharacterGrid from '../../draft/components/CharacterGrid';
 import BanArea from '../../draft/components/BanArea';
 import EsportsTeamDisplay from '../../teams/components/EsportsTeamDisplay';
 import { useDraftContext } from '../../draft/context/DraftContext';
+import { useAudioContext } from '../context/AudioContext';
 
 interface MainLayoutProps {
   teamAName: string;
@@ -28,6 +29,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   setMode,
 }) => {
   const { bans, picks } = useDraftContext();
+  const { unlockAudio } = useAudioContext();
+
+  useEffect(() => {
+    const handleFirstClick = () => {
+      unlockAudio();
+      window.removeEventListener('click', handleFirstClick);
+    };
+
+    window.addEventListener('click', handleFirstClick);
+
+    return () => {
+      window.removeEventListener('click', handleFirstClick);
+    };
+  }, [unlockAudio]);
 
   return (
     <div className={`bg-gradient-to-b from-dark-blue to-medium-blue text-white font-sans overflow-hidden flex flex-col h-screen ${mode}`}>

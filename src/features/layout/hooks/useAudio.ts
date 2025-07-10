@@ -11,7 +11,8 @@ export const useAudio = () => {
     let audio = audioCache.get(name);
 
     if (!audio) {
-      audio = new Audio(`${name}.ogg`);
+      const formattedName = name.replace(/ /g, '%20');
+      audio = new Audio(`${formattedName}.ogg`);
       audio.preload = 'auto';
       audio.volume = volume;
 
