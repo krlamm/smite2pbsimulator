@@ -3,6 +3,7 @@ export interface Character {
   name: string;
   image: string;
   roles: string[];
+  position?: string;
 }
 
 export interface TeamState {

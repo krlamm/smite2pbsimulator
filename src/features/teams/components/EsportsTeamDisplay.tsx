@@ -32,7 +32,12 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team, picks }) 
           >
             {pick ? (
               <>
-                <img src={getGodImageUrl(pick)} alt={pick.name} className="absolute top-0 left-0 w-full h-full object-cover object-top z-10 block" />
+                <img 
+                  src={getGodImageUrl(pick)} 
+                  alt={pick.name} 
+                  className="absolute top-0 left-0 w-full h-full object-cover z-10 block"
+                  style={{ objectPosition: pick.position || 'center' }}
+                />
                 <div className="text-white text-2xl opacity-80 absolute bottom-0 left-0 right-0 h-auto text-center p-1.5 whitespace-normal break-words">{pick.name}</div>
               </>
             ) : (
