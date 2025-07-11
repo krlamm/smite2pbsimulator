@@ -75,6 +75,12 @@ const DraftControls: React.FC<DraftControlsProps> = ({
             </button>
           </>
         )}
+        <button
+          className="bg-blue-700 text-white border border-blue-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
+          onClick={() => navigate('/final-teams')}
+        >
+          FINAL TEAMS
+        </button>
       </div>
       <div className="bg-black/70 p-4 rounded-full text-center border border-light-blue shadow-border-glow text-2xl flex justify-center items-center">
         {mode === 'standard' ? (
