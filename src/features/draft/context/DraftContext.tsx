@@ -40,16 +40,20 @@ interface DraftProviderProps {
   currentUser?: any;
 }
 
-export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, initialState, draftId, currentUser }) => {
+export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, initialState, draftId, currentUser, teamAName, teamBName, teamAColor, teamBColor }) => {
   // Conditionally use the correct hook based on whether this is a real-time draft
-  const draft = draftId 
+  const draft = draftId
     ? useFirestoreDraft({ mode, initialState, draftId, currentUser })
     : useDraft({ mode });
 
   const contextValue = {
     ...draft,
     draftId,
-  };
+    teamAName,
+    teamBName,
+    teamAColor,
+    teamBColor,
+  }; // This is the corrected closing brace for contextValue
 
   return <DraftContext.Provider value={contextValue as any}>{children}</DraftContext.Provider>;
 };

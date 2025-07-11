@@ -8,6 +8,7 @@ import { AudioProvider } from './features/layout/context/AudioContext';
 import MainLayout from './features/layout/components/MainLayout';
 import LandingPage from './features/landing/LandingPage';
 import OnlineDraftLobby from './features/draft/components/OnlineDraftLobby';
+import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; // Add this import
 import './index.css';
 
 const LocalDraft = () => {
@@ -17,7 +18,13 @@ const LocalDraft = () => {
 
   return (
     <AudioProvider>
-      <DraftProvider mode={mode}>
+      <DraftProvider
+        mode={mode}
+        teamAName={teamAName}
+        teamBName={teamBName}
+        teamAColor="#1abc9c" // Pass teamAColor
+        teamBColor="#ff6666" // Pass teamBColor
+      >
         <MainLayout teamAName={teamAName} onTeamANameChange={setTeamAName} teamBName={teamBName} onTeamBNameChange={setTeamBName} teamAColor="#1abc9c" teamBColor="#ff6666" mode={mode} setMode={setMode} />
       </DraftProvider>
     </AudioProvider>
@@ -86,14 +93,25 @@ const RealtimeDraft = () => {
   const isUserInDraft = draftState.blueTeamUser?.uid === user.uid || draftState.redTeamUser?.uid === user.uid;
   const blueTeamName = draftState.blueTeamUser ? draftState.blueTeamUser.name : 'ORDER';
   const redTeamName = draftState.redTeamUser ? draftState.redTeamUser.name : 'CHAOS';
+  const teamAColor = "#1abc9c"; // Assuming these are fixed for online mode as well
+  const teamBColor = "#ff6666"; // Assuming these are fixed for online mode as well
 
   return (
     <AudioProvider>
-      <DraftProvider mode={draftState.mode} initialState={draftState} draftId={draftId} currentUser={user}>
+      <DraftProvider
+        mode={draftState.mode}
+        initialState={draftState}
+        draftId={draftId}
+        currentUser={user}
+        teamAName={blueTeamName}
+        teamBName={redTeamName}
+        teamAColor={teamAColor} // Pass teamAColor
+        teamBColor={teamBColor} // Pass teamBColor
+      >
         <MainLayout teamAName={blueTeamName} onTeamANameChange={() => {}} teamBName={redTeamName} onTeamBNameChange={() => {}} teamAColor="#1abc9c" teamBColor="#ff6666" mode={draftState.mode} setMode={(newMode) => updateDoc(doc(db, 'drafts', draftId!), { mode: newMode })} />
-        
+
         {!isUserInDraft && <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"><JoinTeamButtons draftId={draftId} draftData={draftState} user={user} /></div>}
-        
+
       </DraftProvider>
     </AudioProvider>
   );
@@ -106,6 +124,20 @@ function App() {
       <Route path="/local" element={<LocalDraft />} />
       <Route path="/online" element={<OnlineDraftLobby />} />
       <Route path="/draft/:draftId" element={<RealtimeDraft />} />
+      {/* Wrap FinalTeamsDisplay with AudioProvider and DraftProvider to ensure all contexts are available */}
+      <Route path="/final-teams" element={
+        <AudioProvider> {/* Add AudioProvider here */}
+          <DraftProvider
+            mode="standard"
+            teamAName="ORDER"
+            teamBName="CHAOS"
+            teamAColor="#1abc9c"
+            teamBColor="#ff6666"
+          >
+            <FinalTeamsDisplay />
+          </DraftProvider>
+        </AudioProvider>
+      } />
     </Routes>
   );
 }
