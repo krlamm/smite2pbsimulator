@@ -12,12 +12,13 @@ import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; /
 import './index.css';
 import LoginPage from './features/auth/LoginPage';
 import SignUpPage from './features/auth/SignUpPage';
+import ProfilePage from './features/profile/ProfilePage';
 
 const LocalDraft = () => {
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
   const [teamAName, setTeamAName] = useState('ORDER');
   const [teamBName, setTeamBName] = useState('CHAOS');
-
+  
   return (
     <AudioProvider>
       <DraftProvider
@@ -128,6 +129,7 @@ function App() {
       <Route path="/draft/:draftId" element={<RealtimeDraft />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
       {/* Wrap FinalTeamsDisplay with AudioProvider and DraftProvider to ensure all contexts are available */}
       <Route path="/final-teams" element={
         <AudioProvider> {/* Add AudioProvider here */}

@@ -1,115 +1,160 @@
-import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot, getDoc, setDoc } from 'firebase/firestore';
+import { useState, useEffect, useCallback } from 'react';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  onSnapshot,
+  writeBatch,
+  serverTimestamp,
+  deleteDoc,
+  setDoc,
+} from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { db, auth } from '../../../firebase';
-import { UserProfile } from '../../../types';
+import { UserProfile, FriendRequest } from '../../../types';
 
 export const useFriends = () => {
   const [user] = useAuthState(auth);
   const [friends, setFriends] = useState<UserProfile[]>([]);
+  const [incomingRequests, setIncomingRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user) {
-      setFriends([]);
-      setLoading(false);
-      return;
-    }
-
-    const userDocRef = doc(db, 'users', user.uid);
-
-    const unsubscribe = onSnapshot(userDocRef, async (userDoc) => {
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const friendUids = userData.friends || [];
-
-        if (friendUids.length > 0) {
-          const friendsQuery = query(collection(db, 'users'), where('uid', 'in', friendUids));
-          const friendsSnapshot = await getDocs(friendsQuery);
-          const friendsData = friendsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as UserProfile));
-          setFriends(friendsData);
-        } else {
-          setFriends([]);
-        }
-      }
-      setLoading(false);
-    }, (err) => {
-      setError('Failed to fetch friends.');
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
-
-  const addFriend = async (email: string) => {
-    console.log('Attempting to add friend with email:', email);
-    console.log('Current user object:', user);
-
-    if (!user) {
-      console.error('Add friend failed: User is not logged in.');
-      setError('You must be logged in to add friends.');
-      return;
-    }
-    if (user.email === email) {
-      console.error("Add friend failed: User tried to add themselves.", {userEmail: user.email, friendEmail: email});
-      setError("You can't add yourself as a friend.");
-      return;
-    }
-
-    setError(null);
-    console.log('Pre-flight checks passed. Proceeding to query Firestore.');
-
-    try {
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('email', '==', email));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        setError('User not found.');
+  // Fetches the user's friends list using the 'friends' collection
+  const fetchFriends = useCallback((currentUser) => {
+    const friendsQuery = query(collection(db, 'friends'), where('members', 'array-contains', currentUser.uid));
+    
+    return onSnapshot(friendsQuery, async (snapshot) => {
+      setLoading(true);
+      if (snapshot.empty) {
+        setFriends([]);
+        setLoading(false);
         return;
       }
 
-      const friendDoc = querySnapshot.docs[0];
-      const friendData = friendDoc.data();
-      
-      const userDocRef = doc(db, 'users', user.uid);
+      const friendUids = snapshot.docs
+        .map(doc => doc.data().members)
+        .flat()
+        .filter(uid => uid !== currentUser.uid);
 
-      // Ensure the user's own document exists before trying to update it
-      const userDoc = await getDoc(userDocRef);
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          uid: user.uid,
-          email: user.email,
-          friends: []
-        });
+      if (friendUids.length > 0) {
+        const usersQuery = query(collection(db, 'users'), where('uid', 'in', friendUids));
+        const usersSnapshot = await getDocs(usersQuery);
+        const friendsData = usersSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as UserProfile));
+        setFriends(friendsData);
+      } else {
+        setFriends([]);
       }
+      setLoading(false);
+    }, () => {
+      setError('Failed to fetch friends.');
+      setLoading(false);
+    });
+  }, []);
 
-      await updateDoc(userDocRef, {
-        friends: arrayUnion(friendData.uid)
+  // Listens for incoming friend requests
+  const listenForIncomingRequests = useCallback((currentUser) => {
+    const requestsRef = collection(db, 'friendRequests');
+    const q = query(requestsRef, where('recipientId', '==', currentUser.uid), where('status', '==', 'pending'));
+    return onSnapshot(q, (snapshot) => {
+      setIncomingRequests(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as FriendRequest)));
+    }, () => setError('Failed to fetch friend requests.'));
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const unsubFriends = fetchFriends(user);
+      const unsubIncoming = listenForIncomingRequests(user);
+      
+      return () => {
+        unsubFriends();
+        unsubIncoming();
+      };
+    } else {
+      setFriends([]);
+      setIncomingRequests([]);
+      setLoading(false);
+    }
+  }, [user, fetchFriends, listenForIncomingRequests]);
+
+  const sendFriendRequest = async (recipientEmail: string) => {
+    if (!user) return setError('You must be logged in.');
+    if (user.email === recipientEmail) return setError("You can't send a request to yourself.");
+
+    setError(null);
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('email', '==', recipientEmail));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return setError('User not found.');
+      
+      const recipientDoc = querySnapshot.docs[0];
+      const recipientId = recipientDoc.id;
+
+      const sortedIds = [user.uid, recipientId].sort();
+      const requestId = sortedIds.join('_');
+      
+      const requestDocRef = doc(db, 'friendRequests', requestId);
+
+      await setDoc(requestDocRef, {
+        id: requestId,
+        senderId: user.uid,
+        senderEmail: user.email,
+        recipientId: recipientId,
+        recipientEmail,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      setError('Failed to send friend request.');
+    }
+  };
+
+  const acceptFriendRequest = async (requestId: string, senderId: string) => {
+    if (!user) return;
+    try {
+      const batch = writeBatch(db);
+
+      // Create a new document in the 'friends' collection
+      const friendshipId = [user.uid, senderId].sort().join('_');
+      const friendDocRef = doc(db, 'friends', friendshipId);
+      batch.set(friendDocRef, {
+        members: [user.uid, senderId],
+        createdAt: serverTimestamp(),
       });
 
+      // Delete the original friend request
+      const requestDocRef = doc(db, 'friendRequests', requestId);
+      batch.delete(requestDocRef);
+
+      await batch.commit();
     } catch (err) {
-      console.error('An error occurred during the add friend process:', err);
-      setError('Failed to add friend.');
+      console.error("Error accepting friend request:", err);
+      setError('Failed to accept friend request.');
+    }
+  };
+
+  const declineFriendRequest = async (requestId: string) => {
+    try {
+      await deleteDoc(doc(db, 'friendRequests', requestId));
+    } catch (err) {
+      setError('Failed to decline friend request.');
     }
   };
 
   const removeFriend = async (friendUid: string) => {
-    if (!user) {
-      setError('You must be logged in to remove friends.');
-      return;
-    }
-
+    if (!user) return setError('You must be logged in.');
     try {
-      const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, {
-        friends: arrayRemove(friendUid)
-      });
+      const friendshipId = [user.uid, friendUid].sort().join('_');
+      const friendDocRef = doc(db, 'friends', friendshipId);
+      await deleteDoc(friendDocRef);
     } catch (err) {
       setError('Failed to remove friend.');
     }
   };
 
-  return { friends, addFriend, removeFriend, loading, error };
+  return { friends, incomingRequests, sendFriendRequest, acceptFriendRequest, declineFriendRequest, removeFriend, loading, error };
 };

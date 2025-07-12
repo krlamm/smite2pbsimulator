@@ -15,6 +15,17 @@ export interface UserProfile {
   id: string;
   uid: string;
   email: string;
+  displayName?: string;
   friends?: string[];
+}
+
+export interface FriendRequest {
+  id: string;
+  senderId: string;
+  senderEmail: string;
+  recipientId: string;
+  recipientEmail: string;
+  status: 'pending' | 'accepted' | 'declined';
+  createdAt: any; // Firestore timestamp
 }
  

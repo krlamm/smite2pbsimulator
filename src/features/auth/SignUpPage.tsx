@@ -6,6 +6,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -13,6 +14,10 @@ const SignUpPage = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!displayName.trim()) {
+      setError("Display name is required.");
+      return;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -26,6 +31,7 @@ const SignUpPage = () => {
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         email: user.email,
+        displayName: displayName.trim(),
         friends: []
       });
 
@@ -40,6 +46,16 @@ const SignUpPage = () => {
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-900 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-center text-gold">Create Account</h1>
         <form onSubmit={handleSignUp} className="space-y-6">
+          <div>
+            <label className="block mb-2 text-sm font-bold text-gray-400">Display Name</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="w-full px-4 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gold"
+              required
+            />
+          </div>
           <div>
             <label className="block mb-2 text-sm font-bold text-gray-400">Email</label>
             <input

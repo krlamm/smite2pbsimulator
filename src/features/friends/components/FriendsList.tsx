@@ -1,22 +1,36 @@
 import React from 'react';
-import { UserProfile } from '../../../types';
+import { UserProfile, FriendRequest } from '../../../types';
+import { useFriends } from '../hooks/useFriends';
+import { AddFriendForm } from './AddFriendForm';
+import { IncomingFriendRequests } from './IncomingFriendRequests';
 
-interface FriendsListProps {
-  friends: UserProfile[];
-  removeFriend: (friendId: string) => Promise<void>;
-  loading: boolean;
-}
+export const FriendsList: React.FC = () => {
+  const {
+    friends,
+    incomingRequests,
+    sendFriendRequest,
+    acceptFriendRequest,
+    declineFriendRequest,
+    removeFriend,
+    loading,
+    error,
+  } = useFriends();
 
-export const FriendsList: React.FC<FriendsListProps> = ({ friends, removeFriend, loading }) => {
   if (loading) {
     return <p className="text-white">Loading friends...</p>;
   }
 
   return (
     <div className="mt-6 w-full max-w-md">
-      <h2 className="text-2xl text-gold mb-4">Friends List</h2>
+      <AddFriendForm sendFriendRequest={sendFriendRequest} error={error} />
+      <IncomingFriendRequests
+        requests={incomingRequests}
+        acceptFriendRequest={acceptFriendRequest}
+        declineFriendRequest={declineFriendRequest}
+      />
+      <h2 className="text-2xl text-gold mb-4 mt-6">Friends List</h2>
       {friends.length === 0 ? (
-        <p className="text-gray-400">You have no friends yet. Add one above!</p>
+        <p className="text-gray-400">You have no friends yet. Send a request to add one!</p>
       ) : (
         <ul className="bg-gray-900 p-4 rounded">
           {friends.map((friend) => (

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 
 interface AddFriendFormProps {
-  addFriend: (email: string) => Promise<void>;
+  sendFriendRequest: (email: string) => Promise<void>;
   error: string | null;
 }
 
-export const AddFriendForm: React.FC<AddFriendFormProps> = ({ addFriend, error }) => {
+export const AddFriendForm: React.FC<AddFriendFormProps> = ({ sendFriendRequest, error }) => {
   const [email, setEmail] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      addFriend(email.trim());
+      sendFriendRequest(email.trim());
       setEmail('');
     }
   };
@@ -22,12 +22,12 @@ export const AddFriendForm: React.FC<AddFriendFormProps> = ({ addFriend, error }
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Enter friend's email"
+        placeholder="Enter friend's email to send request"
         className="p-2 rounded bg-gray-700 text-white border border-gray-600"
         required
       />
       <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add Friend
+        Send Friend Request
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </form>

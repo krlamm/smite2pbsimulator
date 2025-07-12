@@ -1,16 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useUserProfile } from '../auth/hooks/useUserProfile';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
-import { useFriends } from '../friends/hooks/useFriends';
 import { FriendsList } from '../friends/components/FriendsList';
-import { AddFriendForm } from '../friends/components/AddFriendForm';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [user] = useAuthState(auth);
-  const { friends, addFriend, removeFriend, loading, error } = useFriends();
+  const { user, userProfile } = useUserProfile();
 
   const handleLogout = () => {
     signOut(auth);
@@ -21,7 +18,13 @@ const LandingPage = () => {
       <div className="absolute top-4 right-4">
         {user ? (
           <div className="flex items-center gap-4">
-            <span className="text-white">{user.email}</span>
+            <span className="text-white">{userProfile?.displayName || user.email}</span>
+            <button
+              onClick={() => navigate('/profile')}
+              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Profile
+            </button>
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
@@ -64,8 +67,7 @@ const LandingPage = () => {
 
       {user && (
         <div className="mt-8 w-full max-w-md">
-          <AddFriendForm addFriend={addFriend} error={error} />
-          <FriendsList friends={friends} removeFriend={removeFriend} loading={loading} />
+          <FriendsList />
         </div>
       )}
     </div>
