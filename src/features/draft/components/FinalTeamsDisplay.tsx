@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
-import { God } from '../../../types';
+import { Character } from '../../../types';
 
 interface TeamDisplayProps {
   teamName: string;
   teamColor: string;
-  picks: God[];
-  bans: God[];
+  picks: Character[];
+  bans: Character[];
 }
 
 const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, picks, bans }) => (
@@ -71,14 +71,14 @@ const FinalTeamsDisplay: React.FC = () => {
         <TeamDisplay
           teamName={teamAName}
           teamColor={teamAColor}
-          picks={picks.A.map(p => p && p.character ? p.character as God : null).filter(Boolean)}
-          bans={bans.A.map(b => b && b.character ? b.character as God : null).filter(Boolean)}
+          picks={picks.A.map(p => p).filter(Boolean)}
+          bans={bans.A.map(b => b).filter(Boolean)}
         />
         <TeamDisplay
           teamName={teamBName}
           teamColor={teamBColor}
-          picks={picks.B.map(p => p && p.character ? p.character as God : null).filter(Boolean)}
-          bans={bans.B.map(b => b && b.character ? b.character as God : null).filter(Boolean)}
+          picks={picks.B.map(p => p).filter(Boolean)}
+          bans={bans.B.map(b => b).filter(Boolean)}
         />
       </div>
     </div>

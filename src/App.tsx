@@ -10,6 +10,8 @@ import LandingPage from './features/landing/LandingPage';
 import OnlineDraftLobby from './features/draft/components/OnlineDraftLobby';
 import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; // Add this import
 import './index.css';
+import LoginPage from './features/auth/LoginPage';
+import SignUpPage from './features/auth/SignUpPage';
 
 const LocalDraft = () => {
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
@@ -124,6 +126,8 @@ function App() {
       <Route path="/local" element={<LocalDraft />} />
       <Route path="/online" element={<OnlineDraftLobby />} />
       <Route path="/draft/:draftId" element={<RealtimeDraft />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       {/* Wrap FinalTeamsDisplay with AudioProvider and DraftProvider to ensure all contexts are available */}
       <Route path="/final-teams" element={
         <AudioProvider> {/* Add AudioProvider here */}

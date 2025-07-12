@@ -9,4 +9,12 @@ export interface Character {
 export interface TeamState {
   A: Character[];
   B: Character[];
-} 
+}
+
+export interface UserProfile {
+  id: string;
+  uid: string;
+  email: string;
+  friends?: string[];
+}
+ 

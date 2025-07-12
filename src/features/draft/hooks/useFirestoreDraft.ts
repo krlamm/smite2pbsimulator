@@ -44,12 +44,12 @@ export const useFirestoreDraft = ({ mode, initialState, draftId, currentUser }: 
     };
 
     setPicks({
-      A: mapNamesToCharacters(initialState.bluePicks || [], 5),
-      B: mapNamesToCharacters(initialState.redPicks || [], 5),
+      A: mapNamesToCharacters(initialState.bluePicks || [], 5) as Character[],
+      B: mapNamesToCharacters(initialState.redPicks || [], 5) as Character[],
     });
     setBans({
-      A: mapNamesToCharacters(initialState.blueBans || [], 3),
-      B: mapNamesToCharacters(initialState.redBans || [], 3),
+      A: mapNamesToCharacters(initialState.blueBans || [], 3) as Character[],
+      B: mapNamesToCharacters(initialState.redBans || [], 3) as Character[],
     });
 
     // --- Audio Playback Logic ---

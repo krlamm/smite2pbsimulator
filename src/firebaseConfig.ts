@@ -8,3 +8,5 @@ const firebaseConfig = {
     measurementId: "G-21N494VBGR"
   };
   
+  export {};
+  

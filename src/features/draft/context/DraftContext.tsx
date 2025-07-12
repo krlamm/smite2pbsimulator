@@ -12,11 +12,21 @@ interface DraftContextValue {
   currentTeam: 'A' | 'B' | '';
   picks: TeamState;
   bans: TeamState;
+  teamAName: string;
+  teamBName: string;
+  teamAColor: string;
+  teamBColor: string;
+  isMyTurn?: boolean;
   handleCharacterSelect: (character: any) => void;
   handleUndo: () => void;
   handleClear: () => void;
   handleReset?: () => void;
   handleLeave?: () => Promise<void>;
+  handleDragStart: (e: React.DragEvent, character: any) => void;
+  handleDragOver: (e: React.DragEvent) => void;
+  handleDragLeave: (e: React.DragEvent) => void;
+  handleDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
+  handleStandardDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
   // Add other shared functions/state if necessary
 }
 
@@ -34,6 +44,10 @@ export const useDraftContext = () => {
 interface DraftProviderProps {
   children: React.ReactNode;
   mode: 'standard' | 'freedom';
+  teamAName: string;
+  teamBName: string;
+  teamAColor: string;
+  teamBColor: string;
   // These are optional and only used for real-time mode
   initialState?: any; 
   draftId?: string;

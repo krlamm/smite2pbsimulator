@@ -22,17 +22,13 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// Sign in the user anonymously
-signInAnonymously(auth).catch((error) => {
-  console.error("Anonymous sign-in failed:", error);
-});
-
 // You can also listen to auth state changes to get the user object
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in anonymously.
+    // User is signed in.
     console.log("User signed in with UID:", user.uid);
   } else {
     // User is signed out.
+    console.log("User is signed out.");
   }
 });
