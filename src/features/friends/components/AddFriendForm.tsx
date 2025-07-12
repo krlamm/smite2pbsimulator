@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 
 interface AddFriendFormProps {
-  sendFriendRequest: (email: string) => Promise<void>;
+  sendFriendRequest: (playerId: string) => Promise<void>;
   error: string | null;
 }
 
 export const AddFriendForm: React.FC<AddFriendFormProps> = ({ sendFriendRequest, error }) => {
-  const [email, setEmail] = useState('');
+  const [playerId, setPlayerId] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      sendFriendRequest(email.trim());
-      setEmail('');
+    if (playerId.trim()) {
+      sendFriendRequest(playerId.trim());
+      setPlayerId('');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mt-4">
       <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Enter friend's email to send request"
+        type="text"
+        value={playerId}
+        onChange={(e) => setPlayerId(e.target.value)}
+        placeholder="Enter friend's Player ID to send request"
         className="p-2 rounded bg-gray-700 text-white border border-gray-600"
         required
       />

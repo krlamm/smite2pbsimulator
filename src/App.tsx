@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db, auth } from './firebase';
+import { useUserProfile } from './features/auth/hooks/useUserProfile';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { DraftProvider } from './features/draft/context/DraftContext';
 import { AudioProvider } from './features/layout/context/AudioContext';
@@ -34,11 +35,14 @@ const LocalDraft = () => {
   );
 };
 
-const JoinTeamButtons = ({ draftId, draftData, user }: any) => {
+const JoinTeamButtons = ({ draftId, draftData, user, userProfile }: any) => {
   const joinTeam = async (team: 'blue' | 'red') => {
-    if (!user) return;
-    const displayName = prompt(`Please enter your display name to join the ${team} team:`);
-    if (!displayName) return;
+    if (!user || !userProfile) return;
+    const displayName = userProfile.displayName;
+    if (!displayName) {
+      alert("Please set a display name in your profile before joining a draft.");
+      return;
+    }
 
     const field = team === 'blue' ? 'blueTeamUser' : 'redTeamUser';
     await updateDoc(doc(db, 'drafts', draftId), { [field]: { uid: user.uid, name: displayName } });
@@ -55,7 +59,7 @@ const JoinTeamButtons = ({ draftId, draftData, user }: any) => {
 const RealtimeDraft = () => {
   const { draftId } = useParams<{ draftId: string }>();
   const [draftState, setDraftState] = useState<any>(null);
-  const [user] = useAuthState(auth);
+  const { user, userProfile } = useUserProfile();
   const navigate = useNavigate();
   const prevDraftStateRef = React.useRef<any>();
 
@@ -113,7 +117,7 @@ const RealtimeDraft = () => {
       >
         <MainLayout teamAName={blueTeamName} onTeamANameChange={() => {}} teamBName={redTeamName} onTeamBNameChange={() => {}} teamAColor="#1abc9c" teamBColor="#ff6666" mode={draftState.mode} setMode={(newMode) => updateDoc(doc(db, 'drafts', draftId!), { mode: newMode })} />
 
-        {!isUserInDraft && <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"><JoinTeamButtons draftId={draftId} draftData={draftState} user={user} /></div>}
+        {!isUserInDraft && <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"><JoinTeamButtons draftId={draftId} draftData={draftState} user={user} userProfile={userProfile} /></div>}
 
       </DraftProvider>
     </AudioProvider>

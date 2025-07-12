@@ -1,37 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserProfile } from '../auth/hooks/useUserProfile';
-import { auth } from '../../firebase';
-import { signOut } from 'firebase/auth';
+import { useFriends } from '../friends/hooks/useFriends';
 import { FriendsList } from '../friends/components/FriendsList';
+import { IncomingFriendRequests } from '../friends/components/IncomingFriendRequests';
+import ProfileDropdown from '../layout/components/ProfileDropdown';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useUserProfile();
-
-  const handleLogout = () => {
-    signOut(auth);
-  };
+  const { incomingRequests, acceptFriendRequest, declineFriendRequest } = useFriends();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 p-4">
       <div className="absolute top-4 right-4">
-        {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-white">{userProfile?.displayName || user.email}</span>
-            <button
-              onClick={() => navigate('/profile')}
-              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Profile
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Logout
-            </button>
-          </div>
+        {user && userProfile ? (
+          <ProfileDropdown user={user} userProfile={userProfile} />
         ) : (
           <button
             onClick={() => navigate('/login')}
@@ -67,6 +51,11 @@ const LandingPage = () => {
 
       {user && (
         <div className="mt-8 w-full max-w-md">
+          <IncomingFriendRequests
+            requests={incomingRequests}
+            acceptFriendRequest={acceptFriendRequest}
+            declineFriendRequest={declineFriendRequest}
+          />
           <FriendsList />
         </div>
       )}

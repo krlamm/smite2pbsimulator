@@ -79,21 +79,18 @@ export const useFriends = () => {
     }
   }, [user, fetchFriends, listenForIncomingRequests]);
 
-  const sendFriendRequest = async (recipientEmail: string) => {
+  const sendFriendRequest = async (recipientId: string) => {
     if (!user) return setError('You must be logged in.');
-    if (user.email === recipientEmail) return setError("You can't send a request to yourself.");
+    if (user.uid === recipientId) return setError("You can't send a request to yourself.");
 
     setError(null);
     try {
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('email', '==', recipientEmail));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) return setError('User not found.');
+      // Optional: Check if the user exists
+      const userDoc = await getDocs(query(collection(db, 'users'), where('uid', '==', recipientId)));
+      if (userDoc.empty) {
+        return setError('User not found.');
+      }
       
-      const recipientDoc = querySnapshot.docs[0];
-      const recipientId = recipientDoc.id;
-
       const sortedIds = [user.uid, recipientId].sort();
       const requestId = sortedIds.join('_');
       
@@ -102,9 +99,8 @@ export const useFriends = () => {
       await setDoc(requestDocRef, {
         id: requestId,
         senderId: user.uid,
-        senderEmail: user.email,
+        senderEmail: user.email, // Keep senderEmail for display purposes in the request
         recipientId: recipientId,
-        recipientEmail,
         status: 'pending',
         createdAt: serverTimestamp(),
       });
