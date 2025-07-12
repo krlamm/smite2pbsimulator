@@ -1,9 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow users to read the public profile of any user
     match /users/{userId} {
-      allow read: if request.auth != null;
+      // Allow authenticated users to read and list user profiles
+      allow read, list: if request.auth != null;
       // Allow users to create their own profile
       allow create: if request.auth.uid == userId;
       // Allow users to update their own profile (e.g., friends list)

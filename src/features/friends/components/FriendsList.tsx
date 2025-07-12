@@ -23,7 +23,7 @@ export const FriendsList: React.FC<FriendsListProps> = ({ friends, removeFriend,
             <li key={friend.id} className="flex justify-between items-center p-2 border-b border-gray-700">
               <span className="text-white">{friend.email}</span>
               <button
-                onClick={() => removeFriend(friend.id)}
+                onClick={() => removeFriend(friend.uid)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
               >
                 Remove
