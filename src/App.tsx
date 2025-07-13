@@ -8,7 +8,6 @@ import { DraftProvider } from './features/draft/context/DraftContext';
 import { AudioProvider } from './features/layout/context/AudioContext';
 import MainLayout from './features/layout/components/MainLayout';
 import LandingPage from './features/landing/LandingPage';
-import OnlineDraftLobby from './features/draft/components/OnlineDraftLobby';
 import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; // Add this import
 import './index.css';
 import LoginPage from './features/auth/LoginPage';
@@ -129,7 +128,6 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/local" element={<LocalDraft />} />
-      <Route path="/online" element={<OnlineDraftLobby />} />
       <Route path="/draft/:draftId" element={<RealtimeDraft />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -32,7 +32,8 @@ const SignUpPage = () => {
         uid: user.uid,
         email: user.email,
         displayName: displayName.trim(),
-        friends: []
+        friends: [],
+        createdAt: serverTimestamp()
       });
 
       navigate('/'); // Redirect to home on successful sign-up

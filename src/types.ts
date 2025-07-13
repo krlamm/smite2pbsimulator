@@ -28,4 +28,23 @@ export interface FriendRequest {
   status: 'pending' | 'accepted' | 'declined';
   createdAt: any; // Firestore timestamp
 }
+
+export interface Draft {
+    id: string;
+    draftName: string;
+    blueTeamUser: { uid: string; name: string; };
+    redTeamUser: { uid: string; name: string; } | null;
+    mode: 'standard' | 'freedom';
+    phase: string;
+    activeTeam: 'blue' | 'red';
+    blueBans: string[];
+    redBans: string[];
+    bluePicks: string[];
+    redPicks: string[];
+    availableGods: string[];
+    timer: number;
+    teamAName: string;
+    teamBName: string;
+    createdAt: any; // Firestore timestamp
+}
  

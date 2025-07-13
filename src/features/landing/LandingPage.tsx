@@ -4,12 +4,57 @@ import { useUserProfile } from '../auth/hooks/useUserProfile';
 import { useFriends } from '../friends/hooks/useFriends';
 import { FriendsList } from '../friends/components/FriendsList';
 import { IncomingFriendRequests } from '../friends/components/IncomingFriendRequests';
+import { UserDraftsList } from '../friends/components/UserDraftsList';
+import { FriendDraftsList } from '../friends/components/FriendDraftsList';
 import ProfileDropdown from '../layout/components/ProfileDropdown';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { gods } from '../../constants/gods';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useUserProfile();
   const { incomingRequests, acceptFriendRequest, declineFriendRequest } = useFriends();
+
+  const handleCreateOnlineDraft = async () => {
+    if (!user || !userProfile) {
+      alert('You must be logged in and have a profile to create an online draft.');
+      return;
+    }
+    if (!userProfile.displayName) {
+      alert('Please set a display name in your profile before creating a draft.');
+      navigate('/profile');
+      return;
+    }
+
+    const draftName = prompt("Enter a name for your draft lobby:", `${userProfile.displayName}'s Draft`);
+    if (!draftName) return; // User cancelled the prompt
+
+    try {
+      const newDraft = {
+        draftName: draftName,
+        phase: 'BAN',
+        activeTeam: 'blue',
+        blueBans: [],
+        redBans: [],
+        bluePicks: [],
+        redPicks: [],
+        availableGods: gods.map(g => g.name),
+        timer: 30,
+        teamAName: 'ORDER',
+        teamBName: 'CHAOS',
+        mode: 'standard',
+        blueTeamUser: { uid: user.uid, name: userProfile.displayName },
+        redTeamUser: null,
+        createdAt: serverTimestamp()
+      };
+      const docRef = await addDoc(collection(db, 'drafts'), newDraft);
+      navigate(`/draft/${docRef.id}`);
+    } catch (e) {
+      console.error('Error creating online draft: ', e);
+      alert('Failed to create online draft. Please try again.');
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 p-4">
@@ -41,7 +86,7 @@ const LandingPage = () => {
             1-Player Draft
           </button>
           <button
-            onClick={() => navigate('/online')}
+            onClick={handleCreateOnlineDraft}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded"
           >
             2-Player Draft
@@ -51,6 +96,8 @@ const LandingPage = () => {
 
       {user && (
         <div className="mt-8 w-full max-w-md">
+          <UserDraftsList />
+          <FriendDraftsList />
           <IncomingFriendRequests
             requests={incomingRequests}
             acceptFriendRequest={acceptFriendRequest}
