@@ -6,6 +6,13 @@ export interface Character {
   position?: string;
 }
 
+export interface Player {
+  uid: string;
+  displayName: string;
+  pick: string | null;
+  hasPicked: boolean;
+}
+
 export interface TeamState {
   A: Character[];
   B: Character[];
@@ -30,21 +37,27 @@ export interface FriendRequest {
 }
 
 export interface Draft {
-    id: string;
-    draftName: string;
-    blueTeamUser: { uid: string; name: string; };
-    redTeamUser: { uid: string; name: string; } | null;
-    mode: 'standard' | 'freedom';
-    phase: string;
-    activeTeam: 'blue' | 'red';
-    blueBans: string[];
-    redBans: string[];
-    bluePicks: string[];
-    redPicks: string[];
-    availableGods: string[];
-    timer: number;
-    teamAName: string;
-    teamBName: string;
-    createdAt: any; // Firestore timestamp
+  id: string;
+  draftName: string;
+  status: 'lobby' | 'banning' | 'picking' | 'complete';
+  pickOrder: { type: 'ban' | 'pick'; team: 'teamA' | 'teamB'; uid: string }[];
+  currentPickIndex: number;
+  teamA: {
+    name: string;
+    captain: string | null;
+    players: { [uid: string]: Player };
+  };
+  teamB: {
+    name: string;
+    captain: string | null;
+    players: { [uid: string]: Player };
+  };
+  bans: {
+    A: string[];
+    B: string[];
+  };
+  availableGods: string[];
+  createdAt: any; // Firestore timestamp
+  hostId: string;
 }
  

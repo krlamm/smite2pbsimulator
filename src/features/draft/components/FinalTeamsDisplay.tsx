@@ -1,25 +1,51 @@
 import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { Character } from '../../../types';
+import { getGodImageUrl } from '../../../utils/imageUtils';
+
+interface PlayerDisplayProps {
+  player: {
+    displayName: string;
+    pick: string;
+  };
+  teamColor: string;
+}
+
+const PlayerDisplay: React.FC<PlayerDisplayProps> = ({ player, teamColor }) => (
+  <div className="text-center">
+    <img 
+      src={getGodImageUrl({ name: player.pick } as Character)} 
+      alt={player.pick} 
+      className="w-24 h-24 rounded-full object-cover border-4" 
+      style={{ borderColor: teamColor }} 
+    />
+    <p className="text-lg font-semibold mt-2">{player.pick}</p>
+    <p className="text-md text-gray-400">{player.displayName}</p>
+  </div>
+);
 
 interface TeamDisplayProps {
   teamName: string;
   teamColor: string;
-  picks: Character[];
-  bans: Character[];
+  players: any[]; // Simplified for this example
+  bans: string[];
 }
 
-const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, picks, bans }) => (
+const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players, bans }) => (
   <div className="w-1/2 p-4">
-    <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: teamColor }}>{teamName}</h2>
-    <div className="mb-6">
-      <h3 className="text-xl font-semibold mb-2">Bans:</h3>
-      <div className="flex flex-wrap gap-2 justify-center">
+    <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: teamColor }}>{teamName}</h2>
+    <div className="mb-8">
+      <h3 className="text-xl font-semibold mb-4 text-center">BANS</h3>
+      <div className="flex flex-wrap gap-4 justify-center">
         {bans.length > 0 ? (
-          bans.map((god) => (
-            <div key={god.name} className="text-center">
-              <img src={god.image} alt={god.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: teamColor }} />
-              <p className="text-sm">{god.name}</p>
+          bans.map((banName) => (
+            <div key={banName} className="text-center">
+              <img 
+                src={getGodImageUrl({ name: banName } as Character)} 
+                alt={banName} 
+                className="w-16 h-16 rounded-md object-cover grayscale" 
+              />
+              <p className="text-sm">{banName}</p>
             </div>
           ))
         ) : (
@@ -28,14 +54,11 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, picks, b
       </div>
     </div>
     <div>
-      <h3 className="text-xl font-semibold mb-2">Picks:</h3>
-      <div className="flex flex-wrap gap-2 justify-center">
-        {picks.length > 0 ? (
-          picks.map((god) => (
-            <div key={god.name} className="text-center">
-              <img src={god.image} alt={god.name} className="w-16 h-16 rounded-full object-cover border-2" style={{ borderColor: teamColor }} />
-              <p className="text-sm">{god.name}</p>
-            </div>
+      <h3 className="text-xl font-semibold mb-4 text-center">PICKS</h3>
+      <div className="flex flex-wrap gap-6 justify-center">
+        {players.length > 0 ? (
+          players.map((player) => (
+            <PlayerDisplay key={player.uid} player={player} teamColor={teamColor} />
           ))
         ) : (
           <p>No picks.</p>
@@ -46,17 +69,9 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, picks, b
 );
 
 const FinalTeamsDisplay: React.FC = () => {
-  const { picks, bans, teamAName, teamBName, teamAColor, teamBColor } = useDraftContext();
+  const { initialState } = useDraftContext();
 
-  console.log("FinalTeamsDisplay - Picks:", picks);
-  console.log("FinalTeamsDisplay - Bans:", bans);
-  console.log("FinalTeamsDisplay - Team A Name:", teamAName);
-  console.log("FinalTeamsDisplay - Team B Name:", teamBName);
-  console.log("FinalTeamsDisplay - Team A Color:", teamAColor);
-  console.log("FinalTeamsDisplay - Team B Color:", teamBColor);
-
-  if (!picks || !bans) {
-    console.log("Picks or Bans are not available in context. Showing loading message.");
+  if (!initialState) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         Loading Final Teams Data...
@@ -64,21 +79,26 @@ const FinalTeamsDisplay: React.FC = () => {
     );
   }
 
+  const { teamA, teamB, bans } = initialState;
+  const teamAPlayers = Object.entries(teamA.players).map(([uid, player]) => ({ uid, ...(player as object) }));
+  const teamBPlayers = Object.entries(teamB.players).map(([uid, player]) => ({ uid, ...(player as object) }));
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
-      <h1 className="text-4xl font-bold mb-8">Final Teams</h1>
-      <div className="flex w-full max-w-4xl bg-gray-800 rounded-lg shadow-lg p-6">
+      <h1 className="text-5xl font-bold mb-10">Final Rosters</h1>
+      <div className="flex w-full max-w-6xl bg-gray-800 rounded-lg shadow-lg p-8">
         <TeamDisplay
-          teamName={teamAName}
-          teamColor={teamAColor}
-          picks={picks.A.map(p => p).filter(Boolean)}
-          bans={bans.A.map(b => b).filter(Boolean)}
+          teamName={teamA.name || 'Team A'}
+          teamColor="#1abc9c"
+          players={teamAPlayers}
+          bans={bans.A}
         />
+        <div className="border-l-2 border-gray-600 mx-4"></div>
         <TeamDisplay
-          teamName={teamBName}
-          teamColor={teamBColor}
-          picks={picks.B.map(p => p).filter(Boolean)}
-          bans={bans.B.map(b => b).filter(Boolean)}
+          teamName={teamB.name || 'Team B'}
+          teamColor="#ff6666"
+          players={teamBPlayers}
+          bans={bans.B}
         />
       </div>
     </div>

@@ -33,23 +33,27 @@ const LandingPage = () => {
     try {
       const newDraft = {
         draftName: draftName,
-        phase: 'BAN',
-        activeTeam: 'blue',
-        blueBans: [],
-        redBans: [],
-        bluePicks: [],
-        redPicks: [],
+        status: 'lobby', // 'lobby', 'banning', 'picking', 'complete'
+        pickOrder: [], // Will be populated when the draft starts
+        currentPickIndex: 0,
+        teamA: {
+          name: 'Team A',
+          captain: null, // uid of the captain
+          players: {} // { uid: { displayName, pick, hasPicked } }
+        },
+        teamB: {
+          name: 'Team B',
+          captain: null,
+          players: {}
+        },
+        bans: { A: [], B: [] },
+        picks: { A: [], B: [] }, // Still useful for a quick overview
         availableGods: gods.map(g => g.name),
-        timer: 30,
-        teamAName: 'ORDER',
-        teamBName: 'CHAOS',
-        mode: 'standard',
-        blueTeamUser: { uid: user.uid, name: userProfile.displayName },
-        redTeamUser: null,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        hostId: user.uid
       };
       const docRef = await addDoc(collection(db, 'drafts'), newDraft);
-      navigate(`/draft/${docRef.id}`);
+      navigate(`/lobby/${docRef.id}`);
     } catch (e) {
       console.error('Error creating online draft: ', e);
       alert('Failed to create online draft. Please try again.');
@@ -83,13 +87,13 @@ const LandingPage = () => {
             onClick={() => navigate('/local')}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded"
           >
-            1-Player Draft
+            Local Draft
           </button>
           <button
             onClick={handleCreateOnlineDraft}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded"
           >
-            2-Player Draft
+            Create Online Draft
           </button>
         </div>
       </div>

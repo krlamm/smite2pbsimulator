@@ -1,9 +1,8 @@
 import React, { createContext, useContext } from 'react';
 import { useDraft } from '../hooks/useDraft';
 import { useFirestoreDraft } from '../hooks/useFirestoreDraft';
-import { TeamState } from '../../../types';
+import { TeamState, Draft } from '../../../types';
 
-// Define a unified type for the context value, covering both hooks
 interface DraftContextValue {
   draftId?: string;
   mode: 'standard' | 'freedom';
@@ -27,7 +26,8 @@ interface DraftContextValue {
   handleDragLeave: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
   handleStandardDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
-  // Add other shared functions/state if necessary
+  initialState?: Draft | null;
+  currentUser?: any;
 }
 
 const DraftContext = createContext<DraftContextValue | null>(null);
@@ -49,7 +49,7 @@ interface DraftProviderProps {
   teamAColor: string;
   teamBColor: string;
   // These are optional and only used for real-time mode
-  initialState?: any; 
+  initialState?: Draft | null; 
   draftId?: string;
   currentUser?: any;
 }
@@ -63,11 +63,13 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, in
   const contextValue = {
     ...draft,
     draftId,
+    initialState, // Expose initialState
+    currentUser,  // Expose currentUser
     teamAName,
     teamBName,
     teamAColor,
     teamBColor,
-  }; // This is the corrected closing brace for contextValue
+  };
 
   return <DraftContext.Provider value={contextValue as any}>{children}</DraftContext.Provider>;
 };
