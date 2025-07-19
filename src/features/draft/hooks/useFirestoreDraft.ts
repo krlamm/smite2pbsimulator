@@ -39,22 +39,21 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
       const currentTurnInfo = pickOrder[currentPickIndex];
       const currentTeam = currentTurnInfo.team;
   
-      // Check for consecutive picks by the same team
       let consecutivePicks = 0;
-      for (let i = currentPickIndex; i < pickOrder.length; i++) {
-        if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
-          consecutivePicks++;
-        } else {
-          break;
+      if (status === 'picking') {
+        for (let i = currentPickIndex; i < pickOrder.length; i++) {
+          if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+            consecutivePicks++;
+          } else {
+            break;
+          }
         }
       }
   
       if (consecutivePicks > 1) {
-        // Simultaneous picking logic
         const teamPlayers = initialState[currentTeam].players;
         const isMyTeam = Object.keys(teamPlayers).includes(currentUser.uid);
         
-        // Check if I have a pick in this window that I haven't made yet
         let myTurnToPick = false;
         for (let i = 0; i < consecutivePicks; i++) {
           const pickIndex = currentPickIndex + i;
@@ -67,7 +66,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         setIsMyTurn(isMyTeam && myTurnToPick);
 
       } else {
-        // Standard turn logic
         const currentPlayerTurn = pickOrder[currentPickIndex];
         setActivePlayer(currentPlayerTurn);
   
@@ -88,7 +86,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   }, [initialState, currentUser]);
 
   const handleCharacterSelect = async (character: Character) => {
-    if (!isMyTurn || !draftId || !initialState) return;
+    if (!isMyTurn || !draftId || !initialState || !currentUser) return;
   
     const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
     const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
@@ -110,7 +108,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
       updates[`bans.${teamKey}`] = [...currentBans, character.name];
       updates.currentPickIndex = currentPickIndex + 1;
     } else if (status === 'picking') {
-      // Find the user's pick slot
       let userPickIndex = -1;
       for (let i = currentPickIndex; i < pickOrder.length; i++) {
         if (pickOrder[i].uid === currentUser.uid && !picks[i]) {
@@ -121,37 +118,41 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   
       if (userPickIndex !== -1) {
         updates[`picks.${userPickIndex}`] = { uid: currentUser.uid, character: character.name };
-  
-        // Check if all consecutive picks are now filled
-        let allPicksMade = true;
+        
+        const newPicks = { ...picks, [userPickIndex]: { uid: currentUser.uid, character: character.name } };
+        
+        let windowSize = 0;
         const currentTeam = pickOrder[currentPickIndex].team;
         for (let i = currentPickIndex; i < pickOrder.length; i++) {
           if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
-            if (!picks[i] && i !== userPickIndex) {
-              allPicksMade = false;
-              break;
-            }
+            windowSize++;
           } else {
             break;
           }
         }
-  
-        if (allPicksMade) {
-          let nextPickIndex = currentPickIndex;
-          while(nextPickIndex < pickOrder.length && pickOrder[nextPickIndex].team === currentTeam) {
-            nextPickIndex++;
+        
+        let picksInWindow = 0;
+        for (let i = 0; i < windowSize; i++) {
+          if (newPicks[currentPickIndex + i]) {
+            picksInWindow++;
           }
-          updates.currentPickIndex = nextPickIndex;
+        }
+        
+        if (picksInWindow === windowSize) {
+          updates.currentPickIndex = currentPickIndex + windowSize;
         }
       }
     }
   
-    const nextPickIndex = updates.currentPickIndex || currentPickIndex;
-    const nextAction = pickOrder[nextPickIndex];
-    if (status === 'banning' && nextAction?.type === 'pick') {
-      updates.status = 'picking';
-    } else if (status === 'picking' && nextPickIndex >= pickOrder.length) {
-      updates.status = 'complete';
+    const nextPickIndexAfterUpdate = updates.currentPickIndex !== undefined ? updates.currentPickIndex : currentPickIndex + 1;
+
+    if (updates.currentPickIndex !== undefined || status === 'banning') {
+        const nextAction = pickOrder[nextPickIndexAfterUpdate];
+        if (status === 'banning' && nextAction?.type === 'pick') {
+            updates.status = 'picking';
+        } else if (nextPickIndexAfterUpdate >= pickOrder.length) {
+            updates.status = 'complete';
+        }
     }
   
     if (Object.keys(updates).length > 0) {
@@ -159,7 +160,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     }
   };
 
-  // ... (rest of the hook is the same)
   const handleReset = async () => {
     if (!draftId) return;
     const draftDocRef = doc(db, 'drafts', draftId);
@@ -207,7 +207,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     mode: 'standard',
     characters,
     phase,
-    picks: { A: [], B: [] }, // Simplified, as rendering is handled elsewhere
+    picks: { A: [], B: [] }, 
     bans,
     isMyTurn,
     handleCharacterSelect,
