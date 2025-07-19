@@ -49,6 +49,30 @@ const DraftControls: React.FC<DraftControlsProps> = ({
       const currentTurn = pickOrder[currentPickIndex];
       if (!currentTurn) return <span>Waiting...</span>;
 
+      // Check for consecutive picks
+      let consecutivePicks = 0;
+      if (status === 'picking') {
+        const currentTeam = pickOrder[currentPickIndex].team;
+        for (let i = currentPickIndex; i < pickOrder.length; i++) {
+          if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+            consecutivePicks++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      if (consecutivePicks > 1) {
+        const teamName = currentTurn.team === 'teamA' ? teamAName : teamBName;
+        const teamColor = currentTurn.team === 'teamA' ? teamAColor : teamBColor;
+        return (
+          <>
+            <span style={{ color: teamColor }}>{teamName.toUpperCase()}</span>
+            <span>&nbsp;TO PICK ({consecutivePicks})</span>
+          </>
+        );
+      }
+
       const currentTeamData = currentTurn.team === 'teamA' ? teamA : teamB;
       const currentPlayer = currentTeamData.players[currentTurn.uid];
       const teamColor = currentTurn.team === 'teamA' ? teamAColor : teamBColor;
