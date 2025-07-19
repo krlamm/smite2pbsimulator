@@ -67,26 +67,25 @@ const LobbyPage = () => {
     const teamBPicks = generateTeamPicks(teamBPlayers, 5);
 
     const pickOrder = [
-      // Ban Phase 1 (2 bans each)
+      // Ban Phase (3 bans each, alternating)
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
-      // Pick Phase 1 (2 picks each)
-      { type: 'pick', team: 'teamA', uid: teamAPicks[0] },
-      { type: 'pick', team: 'teamB', uid: teamBPicks[0] },
+      { type: 'ban', team: 'teamA', uid: captainA },
+      { type: 'ban', team: 'teamB', uid: captainB },
+
+      // Pick Phase (1-2-2-2-2-1)
+      { type: 'pick', team: 'teamA', uid: teamAPicks[0] }, // A picks 1
+      { type: 'pick', team: 'teamB', uid: teamBPicks[0] }, // B picks 2
       { type: 'pick', team: 'teamB', uid: teamBPicks[1] },
-      { type: 'pick', team: 'teamA', uid: teamAPicks[1] },
-      // Ban Phase 2 (1 ban each)
-      { type: 'ban', team: 'teamA', uid: captainA },
-      { type: 'ban', team: 'teamB', uid: captainB },
-      // Pick Phase 2 (3 picks each)
-      { type: 'pick', team: 'teamB', uid: teamBPicks[2] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[1] }, // A picks 2
       { type: 'pick', team: 'teamA', uid: teamAPicks[2] },
-      { type: 'pick', team: 'teamA', uid: teamAPicks[3] },
+      { type: 'pick', team: 'teamB', uid: teamBPicks[2] }, // B picks 2
       { type: 'pick', team: 'teamB', uid: teamBPicks[3] },
-      { type: 'pick', team: 'teamB', uid: teamBPicks[4] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[3] }, // A picks 2
       { type: 'pick', team: 'teamA', uid: teamAPicks[4] },
+      { type: 'pick', team: 'teamB', uid: teamBPicks[4] }, // B picks 1
     ];
 
     const draftDocRef = doc(db, 'drafts', draftId);
