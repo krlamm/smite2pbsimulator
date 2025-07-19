@@ -32,11 +32,13 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     };
     setBans({ A: mapNamesToCharacters(teamABans), B: mapNamesToCharacters(teamBBans) });
   
-    const { pickOrder, currentPickIndex, status, picks } = initialState;
+    const { pickOrder, currentPickIndex, status, picks, teamA, teamB } = initialState;
   
     if ((status === 'banning' || status === 'picking') && currentPickIndex < pickOrder.length) {
       const currentTurnInfo = pickOrder[currentPickIndex];
       const currentTeam = currentTurnInfo.team;
+      const currentTeamData = currentTeam === 'teamA' ? teamA : teamB;
+      const isCaptain = currentTeamData.captain === currentUser.uid;
   
       let consecutivePicks = 0;
       if (status === 'picking') {
@@ -54,20 +56,30 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         const isMyTeam = Object.keys(teamPlayers).includes(currentUser.uid);
         
         let myTurnToPick = false;
-        // Check if any of the user's assigned picks in this window are available
-        for (let i = 0; i < consecutivePicks; i++) {
-          const pickIndex = currentPickIndex + i;
-          if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
-            myTurnToPick = true;
-            break;
-          }
+        // If user is captain, they can pick as long as there's an empty slot in the window.
+        if (isCaptain) {
+            for (let i = 0; i < consecutivePicks; i++) {
+                const pickIndex = currentPickIndex + i;
+                if (!picks[pickIndex]) {
+                    myTurnToPick = true;
+                    break;
+                }
+            }
+        } else { // Otherwise, check if any of the user's assigned picks are available
+            for (let i = 0; i < consecutivePicks; i++) {
+              const pickIndex = currentPickIndex + i;
+              if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
+                myTurnToPick = true;
+                break;
+              }
+            }
         }
         setIsMyTurn(isMyTeam && myTurnToPick);
 
       } else {
         const currentPlayerTurn = pickOrder[currentPickIndex];
         const isMyDesignatedTurn = currentUser?.uid === currentPlayerTurn.uid;
-        setIsMyTurn(isMyDesignatedTurn);
+        setIsMyTurn(isMyDesignatedTurn || isCaptain);
       }
     } else {
       setIsMyTurn(false);
@@ -90,14 +102,21 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         }
 
         const draftData = draftDoc.data() as Draft;
-        const { status, pickOrder, currentPickIndex, bans, picks } = draftData;
+        const { status, pickOrder, currentPickIndex, bans, picks, teamA, teamB } = draftData;
 
         // --- Verify Turn and Character Availability ---
         let myTurn = false;
         let userPickIndex = -1;
         
+        const currentTurnInfo = pickOrder[currentPickIndex];
+        if (!currentTurnInfo) return; 
+
+        const currentTeamName = currentTurnInfo.team;
+        const currentTeamInfo = currentTeamName === 'teamA' ? teamA : teamB;
+        const isCaptain = currentTeamInfo.captain === currentUser.uid;
+
         if (status === 'banning') {
-          myTurn = pickOrder[currentPickIndex].uid === currentUser.uid;
+          myTurn = pickOrder[currentPickIndex].uid === currentUser.uid || isCaptain;
           userPickIndex = currentPickIndex;
         } else if (status === 'picking') {
           const currentTeam = pickOrder[currentPickIndex].team;
@@ -111,17 +130,29 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
           }
 
           if (consecutivePicks > 0) {
-            for (let i = 0; i < consecutivePicks; i++) {
-              const pickIndex = currentPickIndex + i;
-              if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
-                myTurn = true;
-                userPickIndex = pickIndex;
-                break;
+            // Captain can pick for any empty slot in the window
+            if (isCaptain) {
+              for (let i = 0; i < consecutivePicks; i++) {
+                const pickIndex = currentPickIndex + i;
+                if (!picks[pickIndex]) {
+                  myTurn = true;
+                  userPickIndex = pickIndex;
+                  break;
+                }
+              }
+            } else { // Player can only pick for their assigned, empty slot
+              for (let i = 0; i < consecutivePicks; i++) {
+                const pickIndex = currentPickIndex + i;
+                if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
+                  myTurn = true;
+                  userPickIndex = pickIndex;
+                  break;
+                }
               }
             }
           } else {
             // Fallback for single picks
-            if (pickOrder[currentPickIndex].uid === currentUser.uid) {
+            if (pickOrder[currentPickIndex].uid === currentUser.uid || isCaptain) {
               myTurn = true;
               userPickIndex = currentPickIndex;
             }
@@ -152,9 +183,10 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
             updates.status = 'picking';
           }
         } else if (status === 'picking') {
-          updates[`picks.${userPickIndex}`] = { uid: currentUser.uid, character: character.name };
+          const assignedUid = pickOrder[userPickIndex].uid;
+          updates[`picks.${userPickIndex}`] = { uid: assignedUid, character: character.name };
           
-          const newPicks = { ...picks, [userPickIndex]: { uid: currentUser.uid, character: character.name } };
+          const newPicks = { ...picks, [userPickIndex]: { uid: assignedUid, character: character.name } };
           
           const currentTeam = pickOrder[currentPickIndex].team;
           let consecutivePicks = 0;
