@@ -54,10 +54,10 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         const isMyTeam = Object.keys(teamPlayers).includes(currentUser.uid);
         
         let myTurnToPick = false;
+        // Check if any of the user's assigned picks in this window are available
         for (let i = 0; i < consecutivePicks; i++) {
           const pickIndex = currentPickIndex + i;
-          const turn = pickOrder[pickIndex];
-          if (turn.uid === currentUser.uid && !picks[pickIndex]) {
+          if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
             myTurnToPick = true;
             break;
           }
@@ -101,16 +101,29 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
           userPickIndex = currentPickIndex;
         } else if (status === 'picking') {
           const currentTeam = pickOrder[currentPickIndex].team;
+          let consecutivePicks = 0;
           for (let i = currentPickIndex; i < pickOrder.length; i++) {
-            const turn = pickOrder[i];
-            if (turn.team === currentTeam && turn.type === 'pick') {
-              if (turn.uid === currentUser.uid && !picks[i]) {
-                myTurn = true;
-                userPickIndex = i;
-                break;
-              }
+            if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+              consecutivePicks++;
             } else {
               break;
+            }
+          }
+
+          if (consecutivePicks > 0) {
+            for (let i = 0; i < consecutivePicks; i++) {
+              const pickIndex = currentPickIndex + i;
+              if (pickOrder[pickIndex]?.uid === currentUser.uid && !picks[pickIndex]) {
+                myTurn = true;
+                userPickIndex = pickIndex;
+                break;
+              }
+            }
+          } else {
+            // Fallback for single picks
+            if (pickOrder[currentPickIndex].uid === currentUser.uid) {
+              myTurn = true;
+              userPickIndex = currentPickIndex;
             }
           }
         }
@@ -153,6 +166,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
             }
           }
           
+          // Correctly count filled picks within the entire window
           let picksInWindow = 0;
           for (let i = 0; i < consecutivePicks; i++) {
             if (newPicks[currentPickIndex + i]) {
