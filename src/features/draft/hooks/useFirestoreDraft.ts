@@ -50,12 +50,19 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     setBans({ A: mapNamesToCharacters(teamAState.bans), B: mapNamesToCharacters(teamBState.bans) });
 
     // Determine whose turn it is
-    const { pickOrder, currentPickIndex } = initialState;
+    const { pickOrder, currentPickIndex, teamA, teamB } = initialState;
     if (initialState.status === 'banning' || initialState.status === 'picking') {
       if (currentPickIndex < pickOrder.length) {
         const currentPlayerTurn = pickOrder[currentPickIndex];
         setActivePlayer(currentPlayerTurn);
-        setIsMyTurn(currentUser.uid === currentPlayerTurn.uid);
+
+        const isMyDesignatedTurn = currentUser.uid === currentPlayerTurn.uid;
+        
+        const currentTeamKey = currentPlayerTurn.team; // 'teamA' or 'teamB'
+        const captainId = initialState[currentTeamKey].captain;
+        const iAmCaptainOfCurrentTeam = currentUser.uid === captainId;
+
+        setIsMyTurn(isMyDesignatedTurn || iAmCaptainOfCurrentTeam);
       } else {
         setIsMyTurn(false);
         setActivePlayer(null);

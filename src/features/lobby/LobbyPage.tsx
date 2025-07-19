@@ -47,17 +47,50 @@ const LobbyPage = () => {
       return;
     }
 
-    // Define the pick and ban order
+    const teamAPlayers = Object.keys(teamA.players);
+    const teamBPlayers = Object.keys(teamB.players);
+
+    if (teamAPlayers.length === 0 || teamBPlayers.length === 0) {
+      alert("Both teams must have at least one player to start the draft.");
+      return;
+    }
+
+    const generateTeamPicks = (players: string[], count: number) => {
+      const picks = [];
+      for (let i = 0; i < count; i++) {
+        picks.push(players[i % players.length]);
+      }
+      return picks;
+    };
+
+    const teamAPicks = generateTeamPicks(teamAPlayers, 5);
+    const teamBPicks = generateTeamPicks(teamBPlayers, 5);
+
     const pickOrder = [
+      // Ban Phase 1
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
+      // Pick Phase 1
+      { type: 'pick', team: 'teamA', uid: teamAPicks[0] },
+      { type: 'pick', team: 'teamB', uid: teamBPicks[0] },
+      { type: 'pick', team: 'teamB', uid: teamBPicks[1] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[1] },
+      // Ban Phase 2
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
-      { type: 'pick', team: 'teamA', uid: captainA },
-      { type: 'pick', team: 'teamB', uid: captainB },
-      // Add the rest of the pick order here, this is just an example
+      // Pick Phase 2
+      { type: 'pick', team: 'teamB', uid: teamBPicks[2] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[2] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[3] },
+      { type: 'pick', team: 'teamB', uid: teamBPicks[3] },
+      // Ban Phase 3
+      { type: 'ban', team: 'teamB', uid: captainB },
+      { type: 'ban', team: 'teamA', uid: captainA },
+      // Pick Phase 3
+      { type: 'pick', team: 'teamB', uid: teamBPicks[4] },
+      { type: 'pick', team: 'teamA', uid: teamAPicks[4] },
     ];
 
     const draftDocRef = doc(db, 'drafts', draftId);
