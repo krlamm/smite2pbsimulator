@@ -20,14 +20,15 @@ const getRoleTextColor = (role: string) => {
 };
 
 function CharacterGrid() {
-  const { characters, picks, bans, mode, handleCharacterSelect, handleDragStart, isMyTurn } = useDraftContext();
+  const { characters, initialState, mode, handleCharacterSelect, handleDragStart, isMyTurn } = useDraftContext();
   const [selectedRole, setSelectedRole] = useState<string | null>('All');
 
   const isCharacterAvailable = (character: Character): boolean => {
-    const allPicks = [...picks.A, ...picks.B];
-    const allBans = [...bans.A, ...bans.B];
-    return !allPicks.some(pick => pick?.id === character.id) &&
-      !allBans.some(ban => ban?.id === character.id);
+    if (!initialState) return true;
+    const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
+    const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
+    const isTaken = allBans.includes(character.name) || allPicks.includes(character.name);
+    return !isTaken;
   };
 
   const filteredCharacters = characters.filter(character => {
