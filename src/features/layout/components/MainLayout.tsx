@@ -4,6 +4,7 @@ import DraftControls from '../../draft/components/DraftControls';
 import CharacterGrid from '../../draft/components/CharacterGrid';
 import BanArea from '../../draft/components/BanArea';
 import EsportsTeamDisplay from '../../teams/components/EsportsTeamDisplay';
+import LocalTeamDisplay from '../../teams/components/LocalTeamDisplay';
 import TradeNotifications from '../../teams/components/TradeNotifications';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { useAudioContext } from '../context/AudioContext';
@@ -29,8 +30,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   mode,
   setMode,
 }) => {
-  const { bans, picks } = useDraftContext();
+  const { bans, picks, draftId } = useDraftContext();
   const { unlockAudio } = useAudioContext();
+  const isOnlineMode = !!draftId;
 
   useEffect(() => {
     const handleFirstClick = () => {
@@ -60,14 +62,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         setMode={setMode}
       />
       <div className="flex overflow-y-auto px-4 gap-4 h-full w-full relative">
-        <EsportsTeamDisplay team="A" />
+        {isOnlineMode ? (
+          <EsportsTeamDisplay team="A" />
+        ) : (
+          <LocalTeamDisplay team="A" picks={picks.A} />
+        )}
         <div className="flex-1 flex flex-col">
           <BanArea bansA={bans.A} bansB={bans.B} />
           <div className="flex-1 bg-black/30 rounded-md overflow-y-auto flex flex-col border-2 border-light-blue shadow-[0_0_10px_rgba(0,204,255,0.3)] p-2.5 lg:p-4">
             <CharacterGrid />
           </div>
         </div>
-        <EsportsTeamDisplay team="B" />
+        {isOnlineMode ? (
+          <EsportsTeamDisplay team="B" />
+        ) : (
+          <LocalTeamDisplay team="B" picks={picks.B} />
+        )}
       </div>
     </div>
   );

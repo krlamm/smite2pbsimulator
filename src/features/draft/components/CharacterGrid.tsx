@@ -20,14 +20,21 @@ const getRoleTextColor = (role: string) => {
 };
 
 function CharacterGrid() {
-  const { characters, initialState, mode, handleCharacterSelect, handleDragStart, isMyTurn } = useDraftContext();
+  const { characters, initialState, picks, bans, handleCharacterSelect, handleDragStart, isMyTurn } = useDraftContext();
   const [selectedRole, setSelectedRole] = useState<string | null>('All');
 
   const isCharacterAvailable = (character: Character): boolean => {
-    if (!initialState) return true;
-    const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
-    const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
-    const isTaken = allBans.includes(character.name) || allPicks.includes(character.name);
+    if (initialState) { // Online mode
+      const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
+      const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
+      const isTaken = allBans.includes(character.name) || allPicks.includes(character.name);
+      return !isTaken;
+    }
+    
+    // Local mode
+    const localBans = [...(bans?.A || []), ...(bans?.B || [])].filter(Boolean).map(c => c!.name);
+    const localPicks = [...(picks?.A || []), ...(picks?.B || [])].filter(Boolean).map(c => c!.name);
+    const isTaken = localBans.includes(character.name) || localPicks.includes(character.name);
     return !isTaken;
   };
 
@@ -74,12 +81,13 @@ function CharacterGrid() {
         {displayCharacters.map(character => {
           const displayedCardRole = selectedRole === 'All' ? character.roles[0] : (selectedRole || character.roles[0]);
           const isSelectable = canSelectCharacter(character);
+          const available = isCharacterAvailable(character);
           return (
             <div
               key={character.id}
               className={`bg-gray-700 rounded-md overflow-hidden transition-transform duration-200 flex flex-col border-3 ${getRoleBorderColor(
                 displayedCardRole
-              )} ${!isCharacterAvailable(character) ? 'opacity-30 cursor-not-allowed' : ''} ${isSelectable ? 'cursor-pointer hover:transform hover:-translate-y-px hover:scale-105' : 'cursor-not-allowed grayscale'}`}
+              )} ${!available ? 'opacity-30 cursor-not-allowed' : ''} ${isSelectable ? 'cursor-pointer hover:transform hover:-translate-y-px hover:scale-105' : 'cursor-not-allowed grayscale'}`}
               onClick={() => isSelectable && handleCharacterSelect(character)}
               draggable={isSelectable}
               onDragStart={(e) => isSelectable && handleDragStart(e, character)}
