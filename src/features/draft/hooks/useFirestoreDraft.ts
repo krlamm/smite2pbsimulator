@@ -33,8 +33,19 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
     // Derive picks and bans from the new structure for UI compatibility
     const deriveTeamState = (team: 'A' | 'B') => {
-      const teamData = initialState[team === 'A' ? 'teamA' : 'teamB'];
-      const teamPicks = Object.values(teamData.players).map((p: any) => p.pick).filter(Boolean);
+      const teamKey = team === 'A' ? 'teamA' : 'teamB';
+      const teamData = initialState[teamKey];
+      
+      // Create a stable order of players if it doesn't exist.
+      // This is a simplified approach. A more robust solution might store
+      // the player order explicitly in Firestore when they join the lobby.
+      const playerUIDs = Object.keys(teamData.players);
+
+      const teamPicks = playerUIDs.map(uid => {
+        const player = teamData.players[uid];
+        return player.pick || null; // Use null for empty slots
+      });
+
       const teamBans = initialState.bans[team];
       return { picks: teamPicks, bans: teamBans };
     };
