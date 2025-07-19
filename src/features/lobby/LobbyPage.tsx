@@ -71,15 +71,14 @@ const LobbyPage = () => {
       { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
       { type: 'ban', team: 'teamA', uid: captainA },
-      { type: 'ban', team: 'teamB', uid: captainB },
       // Pick Phase 1
       { type: 'pick', team: 'teamA', uid: teamAPicks[0] },
       { type: 'pick', team: 'teamB', uid: teamBPicks[0] },
       { type: 'pick', team: 'teamB', uid: teamBPicks[1] },
       { type: 'pick', team: 'teamA', uid: teamAPicks[1] },
       // Ban Phase 2
-      { type: 'ban', team: 'teamA', uid: captainA },
       { type: 'ban', team: 'teamB', uid: captainB },
+      { type: 'ban', team: 'teamA', uid: captainA },
       // Pick Phase 2
       { type: 'pick', team: 'teamB', uid: teamBPicks[2] },
       { type: 'pick', team: 'teamA', uid: teamAPicks[2] },
@@ -87,7 +86,6 @@ const LobbyPage = () => {
       { type: 'pick', team: 'teamB', uid: teamBPicks[3] },
       // Ban Phase 3
       { type: 'ban', team: 'teamB', uid: captainB },
-      { type: 'ban', team: 'teamA', uid: captainA },
       // Pick Phase 3
       { type: 'pick', team: 'teamB', uid: teamBPicks[4] },
       { type: 'pick', team: 'teamA', uid: teamAPicks[4] },

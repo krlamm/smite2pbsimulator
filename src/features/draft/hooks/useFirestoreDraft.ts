@@ -104,7 +104,8 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     updates.currentPickIndex = nextPickIndex;
 
     // Check for phase transitions
-    if (status === 'banning' && nextPickIndex >= pickOrder.filter((p: any) => p.type === 'ban').length) {
+    const nextAction = pickOrder[nextPickIndex];
+    if (status === 'banning' && nextAction && nextAction.type === 'pick') {
       updates.status = 'picking';
     } else if (status === 'picking' && nextPickIndex >= pickOrder.length) {
       updates.status = 'complete';
