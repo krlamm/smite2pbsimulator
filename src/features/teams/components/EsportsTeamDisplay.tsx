@@ -18,111 +18,52 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
     return <div className="w-1/5">Loading Team...</div>;
   }
 
-  const handleTrade = async (targetPlayerId: string) => {
-    if (!currentUser || !draftId || !initialState) return;
-
-    const teamData = initialState[teamKey];
-    const fromPlayer = teamData.players[currentUser.uid];
-    const toPlayer = teamData.players[targetPlayerId];
-
-    if (!fromPlayer || !toPlayer || !fromPlayer.pick || !toPlayer.pick) {
-      console.error("Both players must have picked a character to trade.");
-      return;
-    }
-
-    const tradeRequest = {
-      from: currentUser.uid,
-      fromName: fromPlayer.displayName,
-      fromPick: fromPlayer.pick,
-      to: targetPlayerId,
-      toName: toPlayer.displayName,
-      toPick: toPlayer.pick,
-      status: 'pending', // pending, accepted, declined
-    };
-
-    await addDoc(collection(db, 'drafts', draftId, 'tradeRequests'), tradeRequest);
-  };
-
   const teamKey = team === 'A' ? 'teamA' : 'teamB';
   const teamData = initialState[teamKey];
   const teamColor = team === 'A' ? 'border-order' : 'border-chaos';
 
   if (!teamData) {
-    // Fallback for old data structure or loading states
-    return (
-      <div className={`flex flex-col w-1/5 gap-2 py-2`}>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}>
-             <div className="text-center p-1 bg-black/50">
-              <p className="font-bold text-white truncate">Empty Slot</p>
-            </div>
-            <div className="flex-grow flex items-center justify-center">
-              <div className="text-4xl text-gray-500">?</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <div className="w-1/5">Loading Team Data...</div>;
   }
 
   const captainId = teamData.captain;
 
-  // Get the UIDs of players for this team in their correct picking order
-  const teamPickOrderUIDs = initialState.pickOrder
+  // Get the original indices of the pick actions for this team.
+  // These indices correspond to the keys in the `initialState.picks` map.
+  const teamPickOrderIndices = initialState.pickOrder
+    .map((p, index) => ({ ...p, originalIndex: index }))
     .filter(p => p.type === 'pick' && p.team === teamKey)
-    .map(p => p.uid);
+    .map(p => p.originalIndex);
 
-  // Create a unique, ordered list of player slots for the 5 picks
-  const uniquePlayerSlots = [...new Set(teamPickOrderUIDs)];
-
-  // If the pick order isn't fully populated yet (e.g., draft just started),
-  // fall back to the players currently on the team to avoid empty display.
-  const playerUIDsToRender = uniquePlayerSlots.length > 0 
-    ? uniquePlayerSlots 
-    : Object.keys(teamData.players);
-  
-  // Pad the slots to ensure there are always 5
-  while (playerUIDsToRender.length < 5) {
-    playerUIDsToRender.push(null);
+  // Ensure we always render 5 slots, even if pickOrder is not fully populated.
+  while (teamPickOrderIndices.length < 5) {
+    teamPickOrderIndices.push(-1); // Use -1 or another indicator for an empty slot
   }
-
-  const currentUserPlayer = teamData.players[currentUser?.uid];
 
   return (
     <div className={`flex flex-col w-1/5 gap-2 py-2`}>
-      {playerUIDsToRender.slice(0, 5).map((uid, index) => {
-        const player = uid ? teamData.players[uid] : null;
-
-        if (!player) {
-          return (
-            <div key={index} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}>
-              <div className="flex-grow flex items-center justify-center">
-                <div className="text-4xl text-gray-500">?</div>
-              </div>
-            </div>
-          );
+      {teamPickOrderIndices.map((pickIndex, slotIndex) => {
+        if (pickIndex === -1) {
+          // Render an empty slot if pickOrder isn't populated for this slot
+          return <div key={`empty-${slotIndex}`} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}></div>;
         }
-        
-        const pick = player.pick ? { name: player.pick, image: getGodImageUrl({ name: player.pick } as Character) } : null;
-        const isCaptain = player.uid === captainId;
-        const isActiveTurn = initialState.pickOrder[initialState.currentPickIndex]?.uid === player.uid;
-        const canTradeWith = currentUserPlayer?.pick && pick && currentUserPlayer.uid !== player.uid;
+
+        const playerForSlotUID = initialState.pickOrder[pickIndex].uid;
+        const playerInfo = teamData.players[playerForSlotUID];
+        const pickData = initialState.picks?.[pickIndex];
+
+        const pick = pickData ? { name: pickData.character, image: getGodImageUrl({ name: pickData.character } as Character) } : null;
+        const isCaptain = playerInfo?.uid === captainId;
+        const isActiveTurn = initialState.currentPickIndex === pickIndex;
 
         return (
           <div
-            key={uid || index}
+            key={pickIndex}
             className={`border-2 rounded-md flex flex-col h-full justify-between overflow-hidden bg-black/30 relative ${teamColor} ${isActiveTurn ? 'shadow-[0_0_15px_5px_#ffdf00]' : ''}`}
           >
             <div className="text-center p-1 bg-black/50 flex justify-between items-center">
-              <div>
-                <p className="font-bold text-white truncate">{player.displayName}</p>
-                {isCaptain && <p className="text-xs text-yellow-400">Captain</p>}
-              </div>
-              {canTradeWith && (
-                <button onClick={() => handleTrade(player.uid)} className="text-xs bg-gray-600 hover:bg-gray-500 text-white font-bold py-1 px-2 rounded">
-                  Trade
-                </button>
-              )}
+              <p className="font-bold text-white truncate">{playerInfo?.displayName || 'Empty Slot'}</p>
+              {isCaptain && <p className="text-xs text-yellow-400">Captain</p>}
             </div>
             <div className="flex-grow flex items-center justify-center">
               {pick ? (

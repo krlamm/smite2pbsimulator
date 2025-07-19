@@ -9,13 +9,11 @@ export interface Character {
 export interface Player {
   uid: string;
   displayName: string;
-  pick: string | null;
-  hasPicked: boolean;
 }
 
 export interface TeamState {
-  A: Character[];
-  B: Character[];
+  A: (Character | null)[];
+  B: (Character | null)[];
 }
 
 export interface UserProfile {
@@ -27,7 +25,7 @@ export interface UserProfile {
 }
 
 export interface FriendRequest {
-  id: string;
+  id:string;
   senderId: string;
   senderEmail: string;
   recipientId: string;
@@ -55,6 +53,12 @@ export interface Draft {
   bans: {
     A: string[];
     B: string[];
+  };
+  picks: {
+    [pickOrderIndex: number]: {
+      uid: string;
+      character: string;
+    }
   };
   availableGods: string[];
   createdAt: any; // Firestore timestamp

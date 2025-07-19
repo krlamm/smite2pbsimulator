@@ -31,37 +31,22 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
     setPhase(initialState.status);
 
-    // Derive picks and bans from the new structure for UI compatibility
-    const deriveTeamState = (team: 'A' | 'B') => {
-      const teamKey = team === 'A' ? 'teamA' : 'teamB';
-      const teamData = initialState[teamKey];
-      
-      // Create a stable order of players if it doesn't exist.
-      // This is a simplified approach. A more robust solution might store
-      // the player order explicitly in Firestore when they join the lobby.
-      const playerUIDs = Object.keys(teamData.players);
-
-      const teamPicks = playerUIDs.map(uid => {
-        const player = teamData.players[uid];
-        return player.pick || null; // Use null for empty slots
-      });
-
-      const teamBans = initialState.bans[team];
-      return { picks: teamPicks, bans: teamBans };
-    };
-    
-    const teamAState = deriveTeamState('A');
-    const teamBState = deriveTeamState('B');
+    // Derive bans from the new structure for UI compatibility
+    const teamABans = initialState.bans?.A || [];
+    const teamBBans = initialState.bans?.B || [];
 
     const mapNamesToCharacters = (names: string[]): (Character | null)[] => {
       return names.map(name => gods.find(g => g.name === name) || null);
     };
 
-    setPicks({ A: mapNamesToCharacters(teamAState.picks), B: mapNamesToCharacters(teamBState.picks) });
-    setBans({ A: mapNamesToCharacters(teamAState.bans), B: mapNamesToCharacters(teamBState.bans) });
+    setBans({ A: mapNamesToCharacters(teamABans), B: mapNamesToCharacters(teamBBans) });
+
+    // The 'picks' state is now more complex and will be handled directly by the rendering component (EsportsTeamDisplay)
+    // We can set a simplified version here if needed by other components, but the primary logic moves to the view layer.
+    setPicks({ A: [], B: [] }); // Reset or update based on new logic if necessary
 
     // Determine whose turn it is
-    const { pickOrder, currentPickIndex, teamA, teamB } = initialState;
+    const { pickOrder, currentPickIndex } = initialState;
     if (initialState.status === 'banning' || initialState.status === 'picking') {
       if (currentPickIndex < pickOrder.length) {
         const currentPlayerTurn = pickOrder[currentPickIndex];
@@ -73,7 +58,19 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         const captainId = initialState[currentTeamKey].captain;
         const iAmCaptainOfCurrentTeam = currentUser.uid === captainId;
 
-        setIsMyTurn(isMyDesignatedTurn || iAmCaptainOfCurrentTeam);
+        // Captains can only pick/ban if the designated player slot is empty or for their turn
+        const designatedPlayerUID = currentPlayerTurn.uid;
+        const isPlayerInTeam = initialState[currentTeamKey].players[designatedPlayerUID];
+
+        if (isMyDesignatedTurn) {
+          setIsMyTurn(true);
+        } else if (iAmCaptainOfCurrentTeam && !isPlayerInTeam) {
+          // Allow captain to act if the slot is for a player not in the lobby
+          setIsMyTurn(true);
+        } else {
+          setIsMyTurn(false);
+        }
+
       } else {
         setIsMyTurn(false);
         setActivePlayer(null);
@@ -83,9 +80,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
       setActivePlayer(null);
     }
 
-    // Audio playback logic (simplified for brevity)
-    // ...
-
     prevInitialStateRef.current = initialState;
 
   }, [initialState, currentUser, playAudio]);
@@ -94,20 +88,21 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     if (!isMyTurn || !draftId || !activePlayer) return;
 
     const draftDocRef = doc(db, 'drafts', draftId);
-    const { status, pickOrder, currentPickIndex } = initialState;
+    const { status, pickOrder, currentPickIndex, bans } = initialState;
     const currentPlayerTurn = pickOrder[currentPickIndex];
     
     const updates: any = {};
 
     if (status === 'banning') {
-      const teamKey = currentPlayerTurn.team; // 'teamA' or 'teamB'
-      const banKey = teamKey === 'teamA' ? 'bans.A' : 'bans.B';
-      updates[banKey] = [...initialState.bans[teamKey.slice(-1)], character.name];
+      const teamKey = currentPlayerTurn.team.slice(-1); // 'A' or 'B'
+      const currentBans = bans[teamKey] || [];
+      updates[`bans.${teamKey}`] = [...currentBans, character.name];
     } else if (status === 'picking') {
-      const teamKey = currentPlayerTurn.team;
-      const playerKey = `${teamKey}.players.${currentPlayerTurn.uid}`;
-      updates[`${playerKey}.pick`] = character.name;
-      updates[`${playerKey}.hasPicked`] = true;
+      const pickData = {
+        uid: currentPlayerTurn.uid,
+        character: character.name,
+      };
+      updates[`picks.${currentPickIndex}`] = pickData;
     }
 
     // Advance to next turn
@@ -116,7 +111,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
     // Check for phase transitions
     const nextAction = pickOrder[nextPickIndex];
-    if (status === 'banning' && nextAction && nextAction.type === 'pick') {
+    if (status === 'banning' && nextAction?.type === 'pick') {
       updates.status = 'picking';
     } else if (status === 'picking' && nextPickIndex >= pickOrder.length) {
       updates.status = 'complete';
