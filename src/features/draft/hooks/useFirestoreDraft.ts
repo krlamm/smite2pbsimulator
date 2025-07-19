@@ -24,24 +24,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   useEffect(() => {
     if (!initialState) return;
 
-    // Play audio on new action
-    if (prevInitialStateRef.current && initialState.lastActionTimestamp &&
-        initialState.lastActionTimestamp !== prevInitialStateRef.current.lastActionTimestamp) {
-      
-      const lastEventIndex = initialState.currentPickIndex - 1;
-      const lastEvent = initialState.pickOrder[lastEventIndex];
-      
-      if (lastEvent.type === 'pick') {
-        const characterName = initialState.picks?.[lastEventIndex]?.character;
-        if (characterName) playAudio(characterName);
-      } else { // ban
-        const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
-        const oldBans = [...(prevInitialStateRef.current.bans?.A || []), ...(prevInitialStateRef.current.bans?.B || [])];
-        const newBan = allBans.find(b => !oldBans.includes(b));
-        if (newBan) playAudio(newBan);
-      }
-    }
-
     setPhase(initialState.status);
 
     const teamABans = initialState.bans?.A || [];
@@ -69,7 +51,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     }
 
     prevInitialStateRef.current = initialState;
-  }, [initialState, currentUser, playAudio]);
+  }, [initialState, currentUser]);
 
   const handleCharacterSelect = async (character: Character) => {
     if (!isMyTurn || !draftId || !activePlayer) return;
@@ -79,14 +61,14 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     if (allBans.includes(character.name) || allPicks.includes(character.name)) {
       return;
     }
+    
+    playAudio(character.name);
 
     const draftDocRef = doc(db, 'drafts', draftId);
     const { status, pickOrder, currentPickIndex, bans } = initialState;
     const currentPlayerTurn = pickOrder[currentPickIndex];
     
-    const updates: any = {
-      lastActionTimestamp: serverTimestamp()
-    };
+    const updates: any = {};
 
     if (status === 'banning') {
       const teamKey = currentPlayerTurn.team.slice(-1);
