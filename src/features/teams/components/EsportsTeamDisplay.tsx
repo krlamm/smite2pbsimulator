@@ -2,17 +2,14 @@ import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { getGodImageUrl } from '../../../utils/imageUtils';
 import { Character } from '../../../types';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../../firebase';
-
-import { Player } from '../../../types';
+import { gods } from '../../../constants/gods'; // Import the gods constant
 
 interface EsportsTeamDisplayProps {
   team: 'A' | 'B';
 }
 
 const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
-  const { initialState, currentUser, draftId } = useDraftContext();
+  const { initialState } = useDraftContext();
 
   if (!initialState) {
     return <div className="w-1/5">Loading Team...</div>;
@@ -28,23 +25,19 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
 
   const captainId = teamData.captain;
 
-  // Get the original indices of the pick actions for this team.
-  // These indices correspond to the keys in the `initialState.picks` map.
   const teamPickOrderIndices = initialState.pickOrder
     .map((p, index) => ({ ...p, originalIndex: index }))
     .filter(p => p.type === 'pick' && p.team === teamKey)
     .map(p => p.originalIndex);
 
-  // Ensure we always render 5 slots, even if pickOrder is not fully populated.
   while (teamPickOrderIndices.length < 5) {
-    teamPickOrderIndices.push(-1); // Use -1 or another indicator for an empty slot
+    teamPickOrderIndices.push(-1);
   }
 
   return (
     <div className={`flex flex-col w-1/5 gap-2 py-2`}>
       {teamPickOrderIndices.map((pickIndex, slotIndex) => {
         if (pickIndex === -1) {
-          // Render an empty slot if pickOrder isn't populated for this slot
           return <div key={`empty-${slotIndex}`} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}></div>;
         }
 
@@ -52,7 +45,9 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
         const playerInfo = teamData.players[playerForSlotUID];
         const pickData = initialState.picks?.[pickIndex];
 
-        const pick = pickData ? { name: pickData.character, image: getGodImageUrl({ name: pickData.character } as Character) } : null;
+        const character = pickData ? gods.find(g => g.name === pickData.character) : null;
+        const pick = character ? { name: character.name, image: getGodImageUrl(character) } : null;
+        
         const isCaptain = playerInfo?.uid === captainId;
         const isActiveTurn = initialState.currentPickIndex === pickIndex;
 
