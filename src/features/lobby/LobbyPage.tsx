@@ -168,27 +168,38 @@ const LobbyPage = () => {
 
   const renderTeam = (team: 'teamA' | 'teamB') => {
     const teamData = draft[team];
-    const players = Object.entries(teamData.players).map(([uid, player]: [string, any]) => ({ uid, ...player }));
-    const isUserInThisTeam = players.some(p => p.uid === user.uid);
+    const teamPickSlots = draft.pickOrder
+      .filter((p: any) => p.type === 'pick' && p.team === team)
+      .map((p: any) => p.uid);
+
+    const uniquePlayerUIDs = [...new Set(teamPickSlots)];
+    
+    const playersToRender = uniquePlayerUIDs.length > 0 ? uniquePlayerUIDs : Object.keys(teamData.players);
+
+    const isUserInThisTeam = Object.keys(teamData.players).some(p => p === user.uid);
     const isUserInAnyTeam = (user.uid in draft.teamA.players) || (user.uid in draft.teamB.players);
     const isCaptain = teamData.captain === user.uid;
 
     return (
       <div className="w-1/2 p-4">
         <h2 className="text-2xl font-bold mb-2">{teamData.name}</h2>
-        {players.map(p => (
-          <div key={p.uid} className="flex items-center gap-2">
-            <p>{p.displayName}</p>
-            {teamData.captain === p.uid && <span className="text-yellow-400">(Captain)</span>}
-          </div>
-        ))}
+        {playersToRender.map(uid => {
+          const player = teamData.players[uid];
+          if (!player) return null;
+          return (
+            <div key={uid} className="flex items-center gap-2">
+              <p>{player.displayName}</p>
+              {teamData.captain === uid && <span className="text-yellow-400">(Captain)</span>}
+            </div>
+          );
+        })}
         {!isUserInAnyTeam && Object.keys(teamData.players).length < 5 && (
           <button onClick={() => handleJoinTeam(team)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Join Team</button>
         )}
         {isUserInThisTeam && (
           <button onClick={() => handleSwitchTeam(team)} className="mt-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded">Switch Team</button>
         )}
-        {isUserInThisTeam && !isCaptain && (
+        {isUserInThisTeam && !isCaptain && !teamData.captain && (
           <button onClick={() => handleBecomeCaptain(team)} className="mt-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Become Captain</button>
         )}
         {isCaptain && (
