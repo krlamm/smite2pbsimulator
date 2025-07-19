@@ -63,5 +63,6 @@ export interface Draft {
   availableGods: string[];
   createdAt: any; // Firestore timestamp
   hostId: string;
+  lastActionTimestamp?: any; // Firestore server timestamp
 }
  
