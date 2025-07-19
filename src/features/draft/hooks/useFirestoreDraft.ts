@@ -19,7 +19,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   const [phase, setPhase] = useState<'lobby' | 'banning' | 'picking' | 'complete'>(initialState?.status || 'lobby');
   const [bans, setBans] = useState<TeamState>({ A: [], B: [] });
   const [isMyTurn, setIsMyTurn] = useState(false);
-  const [activePlayer, setActivePlayer] = useState(null);
 
   useEffect(() => {
     if (!initialState || !currentUser) return;
@@ -67,19 +66,11 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
       } else {
         const currentPlayerTurn = pickOrder[currentPickIndex];
-        setActivePlayer(currentPlayerTurn);
-  
         const isMyDesignatedTurn = currentUser?.uid === currentPlayerTurn.uid;
-        const currentTeamKey = currentPlayerTurn.team;
-        const captainId = initialState[currentTeamKey].captain;
-        const iAmCaptainOfCurrentTeam = currentUser?.uid === captainId;
-        const isPlayerInTeam = initialState[currentTeamKey].players[currentPlayerTurn.uid];
-  
-        setIsMyTurn(isMyDesignatedTurn || (iAmCaptainOfCurrentTeam && !isPlayerInTeam));
+        setIsMyTurn(isMyDesignatedTurn);
       }
     } else {
       setIsMyTurn(false);
-      setActivePlayer(null);
     }
   
     prevInitialStateRef.current = initialState;
@@ -104,32 +95,28 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         // --- Verify Turn and Character Availability ---
         let myTurn = false;
         let userPickIndex = -1;
-        let consecutivePicks = 0;
-
-        if (status === 'picking') {
+        
+        if (status === 'banning') {
+          myTurn = pickOrder[currentPickIndex].uid === currentUser.uid;
+          userPickIndex = currentPickIndex;
+        } else if (status === 'picking') {
           const currentTeam = pickOrder[currentPickIndex].team;
           for (let i = currentPickIndex; i < pickOrder.length; i++) {
-            if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
-              consecutivePicks++;
+            const turn = pickOrder[i];
+            if (turn.team === currentTeam && turn.type === 'pick') {
+              if (turn.uid === currentUser.uid && !picks[i]) {
+                myTurn = true;
+                userPickIndex = i;
+                break;
+              }
             } else {
               break;
             }
           }
-
-          for (let i = currentPickIndex; i < currentPickIndex + consecutivePicks; i++) {
-            if (pickOrder[i].uid === currentUser.uid && !picks[i]) {
-              myTurn = true;
-              userPickIndex = i;
-              break;
-            }
-          }
-        } else if (status === 'banning') {
-          // Simplified logic for banning phase
-          myTurn = pickOrder[currentPickIndex].uid === currentUser.uid;
         }
 
         if (!myTurn) {
-          console.warn("Not your turn.");
+          console.warn("Not your turn or you have already picked.");
           return;
         }
 
@@ -155,6 +142,16 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
           updates[`picks.${userPickIndex}`] = { uid: currentUser.uid, character: character.name };
           
           const newPicks = { ...picks, [userPickIndex]: { uid: currentUser.uid, character: character.name } };
+          
+          const currentTeam = pickOrder[currentPickIndex].team;
+          let consecutivePicks = 0;
+          for (let i = currentPickIndex; i < pickOrder.length; i++) {
+            if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+              consecutivePicks++;
+            } else {
+              break;
+            }
+          }
           
           let picksInWindow = 0;
           for (let i = 0; i < consecutivePicks; i++) {
