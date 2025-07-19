@@ -67,20 +67,40 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
 
   const captainId = teamData.captain;
 
-  const players: Player[] = Object.entries(teamData.players)
-    .map(([uid, player]) => ({ uid, ...(player as Omit<Player, 'uid'>) }))
-    .sort((a, b) => a.displayName.localeCompare(b.displayName));
-  const currentUserPlayer = players.find(p => p.uid === currentUser?.uid);
+  // Get the UIDs of players for this team in their correct picking order
+  const teamPickOrderUIDs = initialState.pickOrder
+    .filter(p => p.type === 'pick' && p.team === teamKey)
+    .map(p => p.uid);
 
-  const slots = Array.from({ length: 5 }).map((_, index) => {
-    return players[index] || null;
-  });
+  // Create a unique, ordered list of player slots for the 5 picks
+  const uniquePlayerSlots = [...new Set(teamPickOrderUIDs)];
+
+  // If the pick order isn't fully populated yet (e.g., draft just started),
+  // fall back to the players currently on the team to avoid empty display.
+  const playerUIDsToRender = uniquePlayerSlots.length > 0 
+    ? uniquePlayerSlots 
+    : Object.keys(teamData.players);
+  
+  // Pad the slots to ensure there are always 5
+  while (playerUIDsToRender.length < 5) {
+    playerUIDsToRender.push(null);
+  }
+
+  const currentUserPlayer = teamData.players[currentUser?.uid];
 
   return (
     <div className={`flex flex-col w-1/5 gap-2 py-2`}>
-      {slots.map((player, index) => {
+      {playerUIDsToRender.slice(0, 5).map((uid, index) => {
+        const player = uid ? teamData.players[uid] : null;
+
         if (!player) {
-          return <div key={index} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}></div>;
+          return (
+            <div key={index} className={`border-2 rounded-md h-full bg-black/30 ${teamColor}`}>
+              <div className="flex-grow flex items-center justify-center">
+                <div className="text-4xl text-gray-500">?</div>
+              </div>
+            </div>
+          );
         }
         
         const pick = player.pick ? { name: player.pick, image: getGodImageUrl({ name: player.pick } as Character) } : null;
@@ -90,7 +110,7 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
 
         return (
           <div
-            key={index}
+            key={uid || index}
             className={`border-2 rounded-md flex flex-col h-full justify-between overflow-hidden bg-black/30 relative ${teamColor} ${isActiveTurn ? 'shadow-[0_0_15px_5px_#ffdf00]' : ''}`}
           >
             <div className="text-center p-1 bg-black/50 flex justify-between items-center">
