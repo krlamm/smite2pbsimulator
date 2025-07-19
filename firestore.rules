@@ -27,28 +27,53 @@ service cloud.firestore {
 
       // Allow updates under specific conditions
       allow update: if request.auth != null && (
-        // The host can always update the draft (e.g., start it, change name)
+        // The host can always update the draft
         request.auth.uid == resource.data.hostId ||
 
-        // Any authenticated user can join a team if it's not full
-        (request.resource.data.teamA.players[request.auth.uid] != resource.data.teamA.players[request.auth.uid] && resource.data.teamA.players.size() < 5) ||
-        (request.resource.data.teamB.players[request.auth.uid] != resource.data.teamB.players[request.auth.uid] && resource.data.teamB.players.size() < 5) ||
-        
+        // A player can join a team if it's not full and they are not on the other team
+        (
+          !(request.auth.uid in resource.data.teamA.players) &&
+          !(request.auth.uid in resource.data.teamB.players) &&
+          request.auth.uid in request.resource.data.teamA.players &&
+          resource.data.teamA.players.size() < 5
+        ) ||
+        (
+          !(request.auth.uid in resource.data.teamB.players) &&
+          !(request.auth.uid in resource.data.teamA.players) &&
+          request.auth.uid in request.resource.data.teamB.players &&
+          resource.data.teamB.players.size() < 5
+        ) ||
+
+        // A player can leave a team
+        (
+          request.auth.uid in resource.data.teamA.players &&
+          !(request.auth.uid in request.resource.data.teamA.players)
+        ) ||
+        (
+          request.auth.uid in resource.data.teamB.players &&
+          !(request.auth.uid in request.resource.data.teamB.players)
+        ) ||
+
         // A player can become captain of their team
-        (request.resource.data.teamA.captain != resource.data.teamA.captain && request.auth.uid in resource.data.teamA.players) ||
-        (request.resource.data.teamB.captain != resource.data.teamB.captain && request.auth.uid in resource.data.teamB.players) ||
+        (
+          request.resource.data.teamA.captain != resource.data.teamA.captain &&
+          request.auth.uid in resource.data.teamA.players
+        ) ||
+        (
+          request.resource.data.teamB.captain != resource.data.teamB.captain &&
+          request.auth.uid in resource.data.teamB.players
+        ) ||
 
         // During the draft, the current player can make their pick/ban
-        isPlayerTurn(resource.data)
+        (
+          resource.data.status != 'lobby' &&
+          resource.data.status != 'complete' &&
+          resource.data.pickOrder.size() > 0 &&
+          request.auth.uid == resource.data.pickOrder[resource.data.currentPickIndex].uid
+        )
       );
     }
 
-    // Helper function to determine if it's the requesting user's turn
-    function isPlayerTurn(draft) {
-      let currentTurn = draft.pickOrder[draft.currentPickIndex];
-      return draft.status != 'lobby' &&
-             draft.status != 'complete' &&
-             request.auth.uid == currentTurn.uid;
-    }
+    
   }
 }

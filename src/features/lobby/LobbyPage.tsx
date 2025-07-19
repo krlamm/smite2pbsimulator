@@ -90,6 +90,14 @@ const LobbyPage = () => {
     });
   };
 
+  const handleRelinquishCaptain = async (team: 'teamA' | 'teamB') => {
+    if (!draftId || !user) return;
+    const captainKey = `${team}.captain`;
+    await updateDoc(doc(db, 'drafts', draftId), {
+      [captainKey]: null
+    });
+  };
+
   if (!draft || !user || !userProfile) {
     return <div>Loading Lobby...</div>;
   }
@@ -97,7 +105,9 @@ const LobbyPage = () => {
   const renderTeam = (team: 'teamA' | 'teamB') => {
     const teamData = draft[team];
     const players = Object.entries(teamData.players).map(([uid, player]: [string, any]) => ({ uid, ...player }));
-    const isUserInTeam = players.some(p => p.uid === user.uid);
+    const isUserInThisTeam = players.some(p => p.uid === user.uid);
+    const isUserInAnyTeam = (user.uid in draft.teamA.players) || (user.uid in draft.teamB.players);
+    const isCaptain = teamData.captain === user.uid;
 
     return (
       <div className="w-1/2 p-4">
@@ -108,11 +118,14 @@ const LobbyPage = () => {
             {teamData.captain === p.uid && <span className="text-yellow-400">(Captain)</span>}
           </div>
         ))}
-        {!isUserInTeam && Object.keys(teamData.players).length < 5 && (
+        {!isUserInAnyTeam && Object.keys(teamData.players).length < 5 && (
           <button onClick={() => handleJoinTeam(team)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Join Team</button>
         )}
-        {isUserInTeam && !teamData.captain && (
+        {isUserInThisTeam && !teamData.captain && (
           <button onClick={() => handleBecomeCaptain(team)} className="mt-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Become Captain</button>
+        )}
+        {isCaptain && (
+          <button onClick={() => handleRelinquishCaptain(team)} className="mt-2 bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Relinquish Captain</button>
         )}
       </div>
     );
