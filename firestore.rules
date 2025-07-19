@@ -54,14 +54,14 @@ service cloud.firestore {
           !(request.auth.uid in request.resource.data.teamB.players)
         ) ||
 
-        // A player can become captain of their team
+        // A player can become or relinquish captain of their team
         (
           request.resource.data.teamA.captain != resource.data.teamA.captain &&
-          request.auth.uid in resource.data.teamA.players
+          (request.auth.uid in resource.data.teamA.players || resource.data.teamA.captain == request.auth.uid)
         ) ||
         (
           request.resource.data.teamB.captain != resource.data.teamB.captain &&
-          request.auth.uid in resource.data.teamB.players
+          (request.auth.uid in resource.data.teamB.players || resource.data.teamB.captain == request.auth.uid)
         ) ||
 
         // During the draft, the current player can make their pick/ban
