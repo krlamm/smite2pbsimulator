@@ -100,7 +100,6 @@ const LandingPage = () => {
 
       {user && (
         <div className="mt-8 w-full max-w-md">
-          <UserDraftsList />
           <FriendDraftsList />
           <IncomingFriendRequests
             requests={incomingRequests}

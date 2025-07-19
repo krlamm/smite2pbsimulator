@@ -23,20 +23,32 @@ service cloud.firestore {
 
     match /drafts/{draftId} {
       allow create: if request.auth != null;
-      allow read: if true;
+      allow read: if true; // Anyone can read a draft lobby/state
+
+      // Allow updates under specific conditions
       allow update: if request.auth != null && (
-        (
-          (request.resource.data.blueTeamUser.uid == request.auth.uid && resource.data.blueTeamUser == null) ||
-          (request.resource.data.redTeamUser.uid == request.auth.uid && resource.data.redTeamUser == null)
-        ) ||
-        (
-          (resource.data.activeTeam == 'blue' && request.auth.uid == resource.data.blueTeamUser.uid) ||
-          (resource.data.activeTeam == 'red' && request.auth.uid == resource.data.redTeamUser.uid)
-        ) ||
-        (
-          request.auth.uid == resource.data.blueTeamUser.uid || request.auth.uid == resource.data.redTeamUser.uid
-        )
+        // The host can always update the draft (e.g., start it, change name)
+        request.auth.uid == resource.data.hostId ||
+
+        // Any authenticated user can join a team if it's not full
+        (request.resource.data.teamA.players[request.auth.uid] != resource.data.teamA.players[request.auth.uid] && resource.data.teamA.players.size() < 5) ||
+        (request.resource.data.teamB.players[request.auth.uid] != resource.data.teamB.players[request.auth.uid] && resource.data.teamB.players.size() < 5) ||
+        
+        // A player can become captain of their team
+        (request.resource.data.teamA.captain != resource.data.teamA.captain && request.auth.uid in resource.data.teamA.players) ||
+        (request.resource.data.teamB.captain != resource.data.teamB.captain && request.auth.uid in resource.data.teamB.players) ||
+
+        // During the draft, the current player can make their pick/ban
+        isPlayerTurn(resource.data)
       );
+    }
+
+    // Helper function to determine if it's the requesting user's turn
+    function isPlayerTurn(draft) {
+      let currentTurn = draft.pickOrder[draft.currentPickIndex];
+      return draft.status != 'lobby' &&
+             draft.status != 'complete' &&
+             request.auth.uid == currentTurn.uid;
     }
   }
 }
