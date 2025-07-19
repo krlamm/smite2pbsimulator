@@ -87,6 +87,14 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   const handleCharacterSelect = async (character: Character) => {
     if (!isMyTurn || !draftId || !activePlayer) return;
 
+    // Check if character is already picked or banned
+    const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
+    const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
+    if (allBans.includes(character.name) || allPicks.includes(character.name)) {
+      console.log("This character is already selected.");
+      return; // Character is already taken
+    }
+
     const draftDocRef = doc(db, 'drafts', draftId);
     const { status, pickOrder, currentPickIndex, bans } = initialState;
     const currentPlayerTurn = pickOrder[currentPickIndex];
