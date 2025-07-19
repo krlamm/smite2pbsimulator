@@ -87,7 +87,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
       updates[banKey] = [...initialState.bans[teamKey.slice(-1)], character.name];
     } else if (status === 'picking') {
       const teamKey = currentPlayerTurn.team;
-      const playerKey = `teamA.players.${currentPlayerTurn.uid}`;
+      const playerKey = `${teamKey}.players.${currentPlayerTurn.uid}`;
       updates[`${playerKey}.pick`] = character.name;
       updates[`${playerKey}.hasPicked`] = true;
     }

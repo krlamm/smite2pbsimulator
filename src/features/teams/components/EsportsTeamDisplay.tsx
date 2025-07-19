@@ -67,7 +67,9 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
 
   const captainId = teamData.captain;
 
-  const players: Player[] = Object.entries(teamData.players).map(([uid, player]) => ({ uid, ...(player as Omit<Player, 'uid'>) }));
+  const players: Player[] = Object.entries(teamData.players)
+    .map(([uid, player]) => ({ uid, ...(player as Omit<Player, 'uid'>) }))
+    .sort((a, b) => a.displayName.localeCompare(b.displayName));
   const currentUserPlayer = players.find(p => p.uid === currentUser?.uid);
 
   const slots = Array.from({ length: 5 }).map((_, index) => {
