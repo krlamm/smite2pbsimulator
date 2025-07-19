@@ -34,6 +34,25 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
     teamPickOrderIndices.push(-1);
   }
 
+  // Determine the active pick window
+  const { pickOrder, currentPickIndex, status } = initialState;
+  let activePickWindow: number[] = [];
+  if (status === 'picking' && currentPickIndex < pickOrder.length) {
+    const currentTeam = pickOrder[currentPickIndex].team;
+    if (teamKey === currentTeam) {
+      for (let i = currentPickIndex; i < pickOrder.length; i++) {
+        if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+          activePickWindow.push(i);
+        } else {
+          break;
+        }
+      }
+    }
+  } else if (status === 'banning' && pickOrder[currentPickIndex]?.team === teamKey) {
+    activePickWindow.push(currentPickIndex);
+  }
+
+
   return (
     <div className={`flex flex-col w-1/5 gap-2 py-2`}>
       {teamPickOrderIndices.map((pickIndex, slotIndex) => {
@@ -49,7 +68,7 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
         const pick = character ? { name: character.name, image: getGodImageUrl(character) } : null;
         
         const isCaptain = playerInfo?.uid === captainId;
-        const isActiveTurn = initialState.currentPickIndex === pickIndex;
+        const isActiveTurn = activePickWindow.includes(pickIndex) && !pickData;
 
         return (
           <div
