@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { Character, TeamState, Draft } from '../../../types';
 import { gods } from '../../../constants/gods';
@@ -86,77 +86,99 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   }, [initialState, currentUser]);
 
   const handleCharacterSelect = async (character: Character) => {
-    if (!isMyTurn || !draftId || !initialState || !currentUser) return;
-  
-    const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
-    const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
-    if (allBans.includes(character.name) || allPicks.includes(character.name)) {
-      return;
-    }
-  
-    playAudio(character.name);
-  
-    const draftDocRef = doc(db, 'drafts', draftId);
-    const { status, pickOrder, currentPickIndex, bans, picks } = initialState;
-  
-    const updates: any = {};
-  
-    if (status === 'banning') {
-      const currentPlayerTurn = pickOrder[currentPickIndex];
-      const teamKey = currentPlayerTurn.team.slice(-1);
-      const currentBans = bans[teamKey] || [];
-      updates[`bans.${teamKey}`] = [...currentBans, character.name];
-      updates.currentPickIndex = currentPickIndex + 1;
-    } else if (status === 'picking') {
-      let userPickIndex = -1;
-      for (let i = currentPickIndex; i < pickOrder.length; i++) {
-        if (pickOrder[i].uid === currentUser.uid && !picks[i]) {
-          userPickIndex = i;
-          break;
-        }
-      }
-  
-      if (userPickIndex !== -1) {
-        updates[`picks.${userPickIndex}`] = { uid: currentUser.uid, character: character.name };
-        
-        const newPicks = { ...picks, [userPickIndex]: { uid: currentUser.uid, character: character.name } };
-        
-        let windowSize = 0;
-        const currentTeam = pickOrder[currentPickIndex].team;
-        for (let i = currentPickIndex; i < pickOrder.length; i++) {
-          if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
-            windowSize++;
-          } else {
-            break;
-          }
-        }
-        
-        let picksInWindow = 0;
-        for (let i = 0; i < windowSize; i++) {
-          if (newPicks[currentPickIndex + i]) {
-            picksInWindow++;
-          }
-        }
-        
-        if (picksInWindow === windowSize) {
-          updates.currentPickIndex = currentPickIndex + windowSize;
-        }
-      }
-    }
-  
-    const nextPickIndexAfterUpdate = updates.currentPickIndex !== undefined ? updates.currentPickIndex : currentPickIndex + 1;
+    if (!draftId || !currentUser) return;
 
-    if (updates.currentPickIndex !== undefined || status === 'banning') {
-        const nextAction = pickOrder[nextPickIndexAfterUpdate];
-        if (status === 'banning' && nextAction?.type === 'pick') {
-            updates.status = 'picking';
-        } else if (nextPickIndexAfterUpdate >= pickOrder.length) {
-            updates.status = 'complete';
+    const draftDocRef = doc(db, 'drafts', draftId);
+    playAudio(character.name);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const draftDoc = await transaction.get(draftDocRef);
+        if (!draftDoc.exists()) {
+          throw new Error("Draft document does not exist!");
         }
-    }
-  
-    if (Object.keys(updates).length > 0) {
-      await updateDoc(draftDocRef, updates);
+
+        const draftData = draftDoc.data() as Draft;
+        const { status, pickOrder, currentPickIndex, bans, picks } = draftData;
+
+        // --- Verify Turn and Character Availability ---
+        let myTurn = false;
+        let userPickIndex = -1;
+        let consecutivePicks = 0;
+
+        if (status === 'picking') {
+          const currentTeam = pickOrder[currentPickIndex].team;
+          for (let i = currentPickIndex; i < pickOrder.length; i++) {
+            if (pickOrder[i].team === currentTeam && pickOrder[i].type === 'pick') {
+              consecutivePicks++;
+            } else {
+              break;
+            }
+          }
+
+          for (let i = currentPickIndex; i < currentPickIndex + consecutivePicks; i++) {
+            if (pickOrder[i].uid === currentUser.uid && !picks[i]) {
+              myTurn = true;
+              userPickIndex = i;
+              break;
+            }
+          }
+        } else if (status === 'banning') {
+          // Simplified logic for banning phase
+          myTurn = pickOrder[currentPickIndex].uid === currentUser.uid;
+        }
+
+        if (!myTurn) {
+          console.warn("Not your turn.");
+          return;
+        }
+
+        const allBans = [...(bans?.A || []), ...(bans?.B || [])];
+        const allPicks = Object.values(picks || {}).map(p => p.character);
+        if (allBans.includes(character.name) || allPicks.includes(character.name)) {
+          console.warn("Character already taken.");
+          return;
+        }
+
+        // --- Prepare Updates ---
+        const updates: any = {};
+
+        if (status === 'banning') {
+          const teamKey = pickOrder[currentPickIndex].team.slice(-1);
+          const currentBans = bans[teamKey] || [];
+          updates[`bans.${teamKey}`] = [...currentBans, character.name];
+          updates.currentPickIndex = currentPickIndex + 1;
+          if (pickOrder[updates.currentPickIndex]?.type === 'pick') {
+            updates.status = 'picking';
+          }
+        } else if (status === 'picking') {
+          updates[`picks.${userPickIndex}`] = { uid: currentUser.uid, character: character.name };
+          
+          const newPicks = { ...picks, [userPickIndex]: { uid: currentUser.uid, character: character.name } };
+          
+          let picksInWindow = 0;
+          for (let i = 0; i < consecutivePicks; i++) {
+            if (newPicks[currentPickIndex + i]) {
+              picksInWindow++;
+            }
+          }
+
+          if (picksInWindow === consecutivePicks) {
+            const newPickIndex = currentPickIndex + consecutivePicks;
+            updates.currentPickIndex = newPickIndex;
+            if (newPickIndex >= pickOrder.length) {
+              updates.status = 'complete';
+            }
+          }
+        }
+
+        // --- Commit Transaction ---
+        if (Object.keys(updates).length > 0) {
+          transaction.update(draftDocRef, updates);
+        }
+      });
+    } catch (e) {
+      console.error("Draft transaction failed: ", e);
     }
   };
 
