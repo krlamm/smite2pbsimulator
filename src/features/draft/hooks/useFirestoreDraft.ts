@@ -16,7 +16,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
   const { playAudio } = useAudioContext();
   const prevInitialStateRef = useRef(initialState);
 
-  const [phase, setPhase] = useState<'lobby' | 'banning' | 'picking' | 'complete'>(initialState?.status || 'lobby');
+  const [phase, setPhase] = useState<'lobby' | 'banning' | 'picking' | 'complete' | 'archived'>(initialState?.status || 'lobby');
   const [bans, setBans] = useState<TeamState>({ A: [], B: [] });
   const [isMyTurn, setIsMyTurn] = useState(false);
 
@@ -175,7 +175,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
         const updates: any = {};
 
         if (status === 'banning') {
-          const teamKey = pickOrder[currentPickIndex].team.slice(-1);
+          const teamKey = pickOrder[currentPickIndex].team.slice(-1) as 'A' | 'B';
           const currentBans = bans[teamKey] || [];
           updates[`bans.${teamKey}`] = [...currentBans, character.name];
           updates.currentPickIndex = currentPickIndex + 1;
@@ -217,6 +217,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
         // --- Commit Transaction ---
         if (Object.keys(updates).length > 0) {
+          updates.lastActionTimestamp = serverTimestamp();
           transaction.update(draftDocRef, updates);
         }
       });
@@ -237,36 +238,65 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
       bans: { A: [], B: [] },
       picks: {},
       availableGods: gods.map(g => g.name),
-      lastActionTimestamp: null,
+      lastActionTimestamp: serverTimestamp(),
     });
   };
 
   const handleLeave = async () => {
     if (!draftId || !currentUser) return;
     const draftDocRef = doc(db, 'drafts', draftId);
-    const draftSnap = await getDoc(draftDocRef);
-    if (!draftSnap.exists()) return;
-    const draftData = draftSnap.data();
 
-    const updates: any = {};
-    if (draftData.teamA.players[currentUser.uid]) {
-      delete draftData.teamA.players[currentUser.uid];
-      updates['teamA.players'] = draftData.teamA.players;
-      if (draftData.teamA.captain === currentUser.uid) {
-        updates['teamA.captain'] = null;
-      }
-    } else if (draftData.teamB.players[currentUser.uid]) {
-      delete draftData.teamB.players[currentUser.uid];
-      updates['teamB.players'] = draftData.teamB.players;
-       if (draftData.teamB.captain === currentUser.uid) {
-        updates['teamB.captain'] = null;
-      }
-    }
+    try {
+        await runTransaction(db, async (transaction) => {
+            const draftSnap = await transaction.get(draftDocRef);
+            if (!draftSnap.exists()) return;
 
-    if (Object.keys(updates).length > 0) {
-      await updateDoc(draftDocRef, updates);
+            const draftData = draftSnap.data() as Draft;
+            const updates: any = {};
+            const currentUid = currentUser.uid;
+
+            let teamKey: 'teamA' | 'teamB' | null = null;
+            if (draftData.teamA.players[currentUid]) {
+                teamKey = 'teamA';
+            } else if (draftData.teamB.players[currentUid]) {
+                teamKey = 'teamB';
+            }
+
+            if (teamKey) {
+                // Add user to leftPlayers list
+                const leftPlayers = draftData.leftPlayers || [];
+                if (!leftPlayers.includes(currentUid)) {
+                    updates.leftPlayers = [...leftPlayers, currentUid];
+                }
+
+                // Remove player from their team
+                const teamPlayers = { ...draftData[teamKey].players };
+                delete teamPlayers[currentUid];
+                updates[`${teamKey}.players`] = teamPlayers;
+
+                // If the leaving player was captain, reassign
+                if (draftData[teamKey].captain === currentUid) {
+                    const remainingPlayers = Object.keys(teamPlayers);
+                    updates[`${teamKey}.captain`] = remainingPlayers.length > 0 ? remainingPlayers[0] : null;
+                }
+
+                // Check if room should be archived
+                const otherTeamKey = teamKey === 'teamA' ? 'teamB' : 'teamA';
+                const teamAPlayerCount = teamKey === 'teamA' ? Object.keys(updates['teamA.players']).length : Object.keys(draftData.teamA.players).length;
+                const teamBPlayerCount = teamKey === 'teamB' ? Object.keys(updates['teamB.players']).length : Object.keys(draftData.teamB.players).length;
+
+                if (teamAPlayerCount === 0 && teamBPlayerCount === 0) {
+                    updates.status = 'archived';
+                }
+
+                updates.lastActionTimestamp = serverTimestamp();
+                transaction.update(draftDocRef, updates);
+            }
+        });
+    } catch (e) {
+        console.error("Failed to leave draft: ", e);
     }
-  };
+};
 
   return {
     mode: 'standard',

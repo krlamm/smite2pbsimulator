@@ -37,7 +37,7 @@ export interface FriendRequest {
 export interface Draft {
   id: string;
   draftName: string;
-  status: 'lobby' | 'banning' | 'picking' | 'complete';
+  status: 'lobby' | 'banning' | 'picking' | 'complete' | 'archived';
   pickOrder: { type: 'ban' | 'pick'; team: 'teamA' | 'teamB'; uid: string }[];
   currentPickIndex: number;
   teamA: {
@@ -64,5 +64,5 @@ export interface Draft {
   createdAt: any; // Firestore timestamp
   hostId: string;
   lastActionTimestamp?: any; // Firestore server timestamp
+  leftPlayers?: string[];
 }
- 

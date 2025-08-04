@@ -1,0 +1,18 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "drafts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "hostId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ]
+}

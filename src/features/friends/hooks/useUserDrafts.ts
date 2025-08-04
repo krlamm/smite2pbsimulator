@@ -22,12 +22,13 @@ export const useUserDrafts = () => {
 
     const q = query(
       draftsRef,
-      where('blueTeamUser.uid', '==', user.uid),
-      where('redTeamUser', '==', null)
+      where('hostId', '==', user.uid),
+      where('status', '!=', 'archived'),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Draft));
+      const drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Draft))
+        .filter(draft => !draft.leftPlayers?.includes(user.uid));
       setUserDrafts(drafts);
       setLoading(false);
     }, (err) => {

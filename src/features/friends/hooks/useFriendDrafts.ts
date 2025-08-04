@@ -36,12 +36,13 @@ export const useFriendDrafts = () => {
 
     const lobbiesQuery = query(
       draftsRef,
-      where('status', '==', 'lobby'),
-      where('hostId', 'in', friendUids)
+      where('hostId', 'in', friendUids),
+      where('status', '!=', 'archived')
     );
 
     const unsubscribe = onSnapshot(lobbiesQuery, (snapshot) => {
-      const drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Draft));
+      const drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Draft))
+        .filter(draft => !draft.leftPlayers?.includes(user.uid));
       setFriendDrafts(drafts);
       setLoading(false);
     }, (err) => {

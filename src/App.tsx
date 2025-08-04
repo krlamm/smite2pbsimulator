@@ -5,6 +5,7 @@ import { db } from './firebase';
 import { useUserProfile } from './features/auth/hooks/useUserProfile';
 import { DraftProvider } from './features/draft/context/DraftContext';
 import { AudioProvider } from './features/layout/context/AudioContext';
+import { Draft } from './types';
 import MainLayout from './features/layout/components/MainLayout';
 import LandingPage from './features/landing/LandingPage';
 import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; // Add this import
@@ -41,11 +42,19 @@ const RealtimeDraft = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!draftId) return;
+    if (!draftId || !user) return;
     const draftDocRef = doc(db, "drafts", draftId);
     const unsubscribe = onSnapshot(draftDocRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data() as Draft;
+        
+        // Redirect if user has left this draft
+        if (data.leftPlayers?.includes(user.uid)) {
+          console.log("Redirecting user who has left the draft.");
+          navigate("/");
+          return;
+        }
+
         if (data.status === 'lobby') {
           navigate(`/lobby/${draftId}`);
         } else {
@@ -57,7 +66,7 @@ const RealtimeDraft = () => {
       }
     });
     return () => unsubscribe();
-  }, [draftId, navigate]);
+  }, [draftId, navigate, user]);
 
   if (!draftState || !user) {
     return <div className="flex items-center justify-center h-screen bg-gray-800 text-white">Loading Online Draft...</div>;
