@@ -142,14 +142,15 @@ const LandingPage = () => {
         </div>
 
         {/* Recent Activity */}
-        <div>
+        {/* <div>
           <h2 className="text-3xl font-bold text-yellow-400 mb-4">Recent Activity</h2>
           <div className="bg-[#1a2430] p-6 rounded-lg border border-gray-700 text-center text-gray-500">
             <FaHistory className="mx-auto text-4xl mb-4" />
             <p>No recent activity to display</p>
             <p className="text-sm">Your draft history will appear here</p>
           </div>
-        </div>
+        </div> */}
+
       </div>
 
       <footer className="bg-[#1a2430] border-t border-gray-700 mt-12 py-6">
@@ -158,12 +159,12 @@ const LandingPage = () => {
             <h3 className="font-bold text-yellow-400">SMITE 2 DRAFT SIMULATOR</h3>
             <p className="text-xs text-gray-500">&copy; 2023 All Rights Reserved</p>
           </div>
-          <div className="flex gap-6 text-sm">
+          {/* <div className="flex gap-6 text-sm">
             <a href="#" className="text-gray-400 hover:text-white">Terms</a>
             <a href="#" className="text-gray-400 hover:text-white">Privacy</a>
             <a href="#" className="text-gray-400 hover:text-white">Support</a>
             <a href="#" className="text-gray-400 hover:text-white">Contact</a>
-          </div>
+          </div> */}
         </div>
       </footer>
     </div>
