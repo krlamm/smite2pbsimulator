@@ -8,7 +8,7 @@ import { AudioProvider } from './features/layout/context/AudioContext';
 import { Draft } from './types';
 import MainLayout from './features/layout/components/MainLayout';
 import LandingPage from './features/landing/LandingPage';
-import FinalTeamsDisplay from './features/draft/components/FinalTeamsDisplay'; // Add this import
+import FinalTeamsWrapper from './features/draft/components/FinalTeamsWrapper';
 import './index.css';
 import LoginPage from './features/auth/LoginPage';
 import SignUpPage from './features/auth/SignUpPage';
@@ -114,20 +114,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      {/* Wrap FinalTeamsDisplay with AudioProvider and DraftProvider to ensure all contexts are available */}
-      <Route path="/final-teams" element={
-        <AudioProvider> {/* Add AudioProvider here */}
-          <DraftProvider
-            mode="standard"
-            teamAName="ORDER"
-            teamBName="CHAOS"
-            teamAColor="#1abc9c"
-            teamBColor="#ff6666"
-          >
-            <FinalTeamsDisplay />
-          </DraftProvider>
-        </AudioProvider>
-      } />
+      <Route path="/final-teams" element={<FinalTeamsWrapper />} />
     </Routes>
   );
 }

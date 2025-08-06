@@ -9,6 +9,7 @@ export interface Character {
 export interface Player {
   uid: string;
   displayName: string;
+  pick?: string;
 }
 
 export interface TeamState {

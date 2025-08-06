@@ -25,9 +25,89 @@ const DraftControls: React.FC<DraftControlsProps> = ({
   mode,
   setMode,
 }) => {
-  const { handleUndo, handleClear, currentTeam, phase, draftId, handleReset, handleLeave, initialState } = useDraftContext();
+  const { handleUndo, handleClear, currentTeam, phase, draftId, handleReset, handleLeave, initialState, picks, bans } = useDraftContext();
   const navigate = useNavigate();
   const isOnlineMode = !!draftId;
+
+  const handleFinalTeamsClick = () => {
+    let draftState;
+    if (isOnlineMode && initialState) {
+      const teamAPicks: any[] = [];
+      const teamBPicks: any[] = [];
+
+      // First, determine which team each pick belongs to
+      Object.entries(initialState.picks).forEach(([index, pick]) => {
+        const pickOrderEntry = initialState.pickOrder[parseInt(index, 10)];
+        if (pickOrderEntry?.team === 'teamA') {
+          teamAPicks.push(pick);
+        } else if (pickOrderEntry?.team === 'teamB') {
+          teamBPicks.push(pick);
+        }
+      });
+
+      // A lookup for all players in the draft to find their display names
+      const allPlayers = { ...initialState.teamA.players, ...initialState.teamB.players };
+
+      // Create a new players object for display purposes
+      const finalTeamAPlayers = teamAPicks.reduce((acc, pick, index) => {
+        const uid = `final-A-${index}`;
+        acc[uid] = {
+          uid,
+          displayName: allPlayers[pick.uid]?.displayName || 'Unknown Player',
+          pick: pick.character,
+        };
+        return acc;
+      }, {});
+
+      const finalTeamBPlayers = teamBPicks.reduce((acc, pick, index) => {
+        const uid = `final-B-${index}`;
+        acc[uid] = {
+          uid,
+          displayName: allPlayers[pick.uid]?.displayName || 'Unknown Player',
+          pick: pick.character,
+        };
+        return acc;
+      }, {});
+
+      draftState = {
+        ...initialState,
+        teamA: { ...initialState.teamA, players: finalTeamAPlayers },
+        teamB: { ...initialState.teamB, players: finalTeamBPlayers },
+      };
+    } else {
+      // Construct a draft state object for local mode
+      const teamAPlayers = picks.A.map((pick, index) => ({
+        uid: `local-A-${index}`,
+        displayName: `Player ${index + 1}`,
+        pick: pick ? pick.name : 'N/A',
+      }));
+      const teamBPlayers = picks.B.map((pick, index) => ({
+        uid: `local-B-${index}`,
+        displayName: `Player ${index + 6}`,
+        pick: pick ? pick.name : 'N/A',
+      }));
+
+      draftState = {
+        teamA: {
+          name: teamAName,
+          players: teamAPlayers.reduce((acc, player) => ({ ...acc, [player.uid]: player }), {}),
+        },
+        teamB: {
+          name: teamBName,
+          players: teamBPlayers.reduce((acc, player) => ({ ...acc, [player.uid]: player }), {}),
+        },
+        bans: {
+          A: bans.A.map(ban => ban ? ban.name : null).filter(Boolean) as string[],
+          B: bans.B.map(ban => ban ? ban.name : null).filter(Boolean) as string[],
+        },
+        // Add other required draft properties for consistency if needed
+        status: 'complete',
+        pickOrder: [],
+        currentPickIndex: 0,
+      };
+    }
+    navigate('/final-teams', { state: { draft: draftState } });
+  };
 
   const onLeaveClick = async () => {
     if (handleLeave) {
@@ -156,7 +236,7 @@ const DraftControls: React.FC<DraftControlsProps> = ({
         )}
         <button
           className="bg-blue-700 text-white border border-blue-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
-          onClick={() => navigate('/final-teams')}
+          onClick={handleFinalTeamsClick}
         >
           FINAL TEAMS
         </button>
