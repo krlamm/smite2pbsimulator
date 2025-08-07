@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useDraft } from '../hooks/useDraft';
 import { useFirestoreDraft } from '../hooks/useFirestoreDraft';
+import usePresence from '../hooks/usePresence';
 import { TeamState, Draft } from '../../../types';
 
 interface DraftContextValue {
@@ -60,6 +61,9 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, in
     ? useFirestoreDraft({ mode, initialState, draftId, currentUser })
     : useDraft({ mode });
 
+  // Initialize presence tracking for real-time drafts
+  usePresence(currentUser?.uid, draftId);
+
   const contextValue = {
     ...draft,
     draftId,
@@ -73,4 +77,3 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, in
 
   return <DraftContext.Provider value={contextValue as any}>{children}</DraftContext.Provider>;
 };
-

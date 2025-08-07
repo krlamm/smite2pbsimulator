@@ -65,5 +65,10 @@ export interface Draft {
   createdAt: any; // Firestore timestamp
   hostId: string;
   lastActionTimestamp?: any; // Firestore server timestamp
-  leftPlayers?: string[];
+  expiresAt?: any; // Firestore timestamp, for TTL policy
+  participants?: {
+    [uid: string]: {
+      status: 'online' | 'offline' | 'viewingFinalTeams';
+    }
+  };
 }

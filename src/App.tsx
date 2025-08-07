@@ -47,13 +47,6 @@ const RealtimeDraft = () => {
     const unsubscribe = onSnapshot(draftDocRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data() as Draft;
-        
-        // Redirect if user has left this draft
-        if (data.leftPlayers?.includes(user.uid)) {
-          console.log("Redirecting user who has left the draft.");
-          navigate("/");
-          return;
-        }
 
         if (data.status === 'lobby') {
           navigate(`/lobby/${draftId}`);

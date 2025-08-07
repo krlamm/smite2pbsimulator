@@ -1,7 +1,8 @@
 // src/firebase.ts
 import { initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 // This is a temporary solution to import the config.
 // Ideally, the original file would have an export statement.
@@ -21,6 +22,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const rtdb = getDatabase(app);
 
 // You can also listen to auth state changes to get the user object
 onAuthStateChanged(auth, (user) => {
