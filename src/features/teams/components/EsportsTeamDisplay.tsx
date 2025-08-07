@@ -84,7 +84,7 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
                 <img 
                   src={pick.image} 
                   alt={pick.name} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transform -translate-y-40"
                 />
               ) : (
                 <div className="text-4xl text-gray-500">?</div>
