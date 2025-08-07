@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile, FriendRequest } from '../../../types';
 import { useFriends } from '../hooks/useFriends';
+import { maskEmail } from '../../../utils/stringUtils';
 import { AddFriendForm } from './AddFriendForm';
 import { IncomingFriendRequests } from './IncomingFriendRequests';
 
@@ -35,7 +36,7 @@ export const FriendsList: React.FC = () => {
         <ul className="bg-gray-900 p-4 rounded">
           {friends.map((friend) => (
             <li key={friend.id} className="flex justify-between items-center p-2 border-b border-gray-700">
-              <span className="text-white">{friend.email}</span>
+              <span className="text-white">{friend.displayName || maskEmail(friend.email)}</span>
               <button
                 onClick={() => removeFriend(friend.uid)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
