@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import { auth } from '../../../firebase';
 import { signOut } from 'firebase/auth';
 import { User } from 'firebase/auth';
@@ -14,6 +15,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user, userProfile }) 
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     signOut(auth);
@@ -75,6 +77,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user, userProfile }) 
               className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600"
             >
               Logout
+            </button>
+            <div className="border-t border-gray-600 my-1"></div>
+            <button
+              onClick={toggleTheme}
+              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600"
+            >
+              Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
             </button>
           </div>
         </div>

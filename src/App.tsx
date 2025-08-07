@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { ThemeProvider } from './features/layout/context/ThemeContext';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { useUserProfile } from './features/auth/hooks/useUserProfile';
@@ -99,16 +100,18 @@ const RealtimeDraft = () => {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/local" element={<LocalDraft />} />
+    <ThemeProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/local" element={<LocalDraft />} />
       <Route path="/draft/:draftId" element={<RealtimeDraft />} />
       <Route path="/lobby/:draftId" element={<LobbyPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/final-teams" element={<FinalTeamsWrapper />} />
-    </Routes>
+      </Routes>
+    </ThemeProvider>
   );
 }
 
