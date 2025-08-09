@@ -165,9 +165,6 @@ const LandingPage = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className={`text-3xl font-bold ${currentTheme.headerText}`}>Friends List</h2>
-              <button className={`${currentTheme.subHeaderText} hover:text-white flex items-center`}>
-                <FaPlus className="mr-2" /> Add
-              </button>
             </div>
             <div className={`${currentTheme.cardBg} p-6 rounded-lg border ${currentTheme.cardBorder}`}>
               <FriendsList />
@@ -187,20 +184,6 @@ const LandingPage = () => {
 
       </div>
 
-      <footer className={`${currentTheme.footerBg} border-t ${currentTheme.footerBorder} mt-12 py-6`}>
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h3 className={`font-bold ${currentTheme.headerText}`}>SMITE 2 DRAFT SIMULATOR</h3>
-            <p className="text-xs text-gray-500">&copy; 2023 All Rights Reserved</p>
-          </div>
-          {/* <div className="flex gap-6 text-sm">
-            <a href="#" className="text-gray-400 hover:text-white">Terms</a>
-            <a href="#" className="text-gray-400 hover:text-white">Privacy</a>
-            <a href="#" className="text-gray-400 hover:text-white">Support</a>
-            <a href="#" className="text-gray-400 hover:text-white">Contact</a>
-          </div> */}
-        </div>
-      </footer>
     </div>
   );
 };
