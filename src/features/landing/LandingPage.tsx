@@ -85,7 +85,12 @@ const LandingPage = () => {
   return (
     <div
       className={`${currentTheme.bg} min-h-screen ${currentTheme.text} font-sans`}
-      style={{ backgroundImage: currentTheme.backgroundImage }}
+      style={{ 
+        backgroundImage: currentTheme.backgroundImage,
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       <div className="container mx-auto px-4 py-8 relative">
         <div className="absolute top-4 right-4 flex items-center gap-4">
