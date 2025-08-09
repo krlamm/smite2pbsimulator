@@ -4,6 +4,7 @@ import { Character } from '../../../types';
 import { useTheme } from '../../layout/context/ThemeContext';
 import ThemeToggleButton from '../../layout/components/ThemeToggleButton';
 import { getGodImageUrl } from '../../../utils/imageUtils';
+import { useNavigate } from 'react-router-dom';
 
 interface PlayerDisplayProps {
   player: {
@@ -79,7 +80,16 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players,
 
 const FinalTeamsDisplay: React.FC = () => {
   const { theme } = useTheme();
-  const { initialState, characters } = useDraftContext();
+  const { initialState, characters, draftId } = useDraftContext();
+  const navigate = useNavigate();
+
+  const handleReturnToDraft = () => {
+    if (draftId) {
+      navigate(`/draft/${draftId}`);
+    } else {
+      navigate('/local');
+    }
+  };
 
   if (!initialState) {
     return (
@@ -116,8 +126,14 @@ const FinalTeamsDisplay: React.FC = () => {
 
   return (
     <div className={`${theme} flex flex-col items-center justify-center h-screen overflow-hidden p-[2vmin]`}>
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-4">
         <ThemeToggleButton />
+        <button
+          onClick={handleReturnToDraft}
+          className="bg-blue-700 text-white border border-blue-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
+        >
+          Return to Draft
+        </button>
       </div>
       <h1 className="text-[5.5vmin] font-bold mb-[1.5vmin]">Final Rosters</h1>
       <div className="flex w-full max-w-[95vw] bg-card rounded-lg shadow-lg p-[2vmin] flex-grow">

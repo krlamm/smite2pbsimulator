@@ -207,6 +207,12 @@ const DraftControls: React.FC<DraftControlsProps> = ({
           <>
             <button
               className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
+              onClick={onLeaveClick}
+            >
+              LEAVE
+            </button>
+            <button
+              className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
               onClick={handleUndo}
             >
               UNDO
