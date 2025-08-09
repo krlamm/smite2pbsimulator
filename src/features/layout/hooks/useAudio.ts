@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export const useAudio = () => {
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(0.3);
+  const [volume, setVolume] = useState<number>(0.18);
   const [audioCache, setAudioCache] = useState<Map<string, HTMLAudioElement>>(new Map());
 
   const playAudio = (name: string) => {
