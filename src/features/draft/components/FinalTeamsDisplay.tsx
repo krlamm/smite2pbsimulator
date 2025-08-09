@@ -16,11 +16,11 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({ player, teamColor }) => (
     <img 
       src={getGodImageUrl(player.pick)} 
       alt={player.pick.name} 
-      className="w-40 h-40 rounded-full object-cover border-8" 
+      className="w-32 h-32 rounded-full object-cover border-8" 
       style={{ borderColor: teamColor }} 
     />
-    <p className="text-2xl font-semibold mt-3">{player.pick.name}</p>
-    <p className="text-xl text-gray-400">{player.displayName}</p>
+    <p className="text-xl font-semibold mt-3">{player.pick.name}</p>
+    <p className="text-lg text-gray-400">{player.displayName}</p>
   </div>
 );
 
@@ -32,20 +32,20 @@ interface TeamDisplayProps {
 }
 
 const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players, bans }) => (
-  <div className="w-full p-8">
-    <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: teamColor }}>{teamName}</h2>
-    <div className="mb-12">
-      <h3 className="text-3xl font-semibold mb-8 text-center">BANS</h3>
-      <div className="flex flex-wrap gap-8 justify-center">
+  <div className="w-full p-4">
+    <h2 className="text-4xl font-bold mb-6 text-center" style={{ color: teamColor }}>{teamName}</h2>
+    <div className="mb-8">
+      <h3 className="text-2xl font-semibold mb-4 text-center">BANS</h3>
+      <div className="flex flex-wrap gap-4 justify-center">
         {bans.length > 0 ? (
           bans.map((ban) => (
             <div key={ban.name} className="text-center">
               <img 
                 src={getGodImageUrl(ban)} 
                 alt={ban.name} 
-                className="w-24 h-24 rounded-md object-cover grayscale" 
+                className="w-20 h-20 rounded-md object-cover grayscale" 
               />
-              <p className="text-lg">{ban.name}</p>
+              <p className="text-md">{ban.name}</p>
             </div>
           ))
         ) : (
@@ -54,16 +54,23 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players,
       </div>
     </div>
     <div>
-      <h3 className="text-3xl font-semibold mb-8 text-center">PICKS</h3>
-      <div className="flex flex-wrap gap-8 justify-center">
-        {players.length > 0 ? (
-          players.map((player) => (
-            <PlayerDisplay key={player.uid} player={player} teamColor={teamColor} />
-          ))
-        ) : (
-          <p>No picks.</p>
-        )}
-      </div>
+      <h3 className="text-2xl font-semibold mb-4 text-center">PICKS</h3>
+      {players.length > 0 ? (
+        <>
+          <div className="flex justify-center gap-4 mb-4">
+            {players.slice(0, 3).map((player) => (
+              <PlayerDisplay key={player.uid} player={player} teamColor={teamColor} />
+            ))}
+          </div>
+          <div className="flex justify-center gap-4">
+            {players.slice(3, 5).map((player) => (
+              <PlayerDisplay key={player.uid} player={player} teamColor={teamColor} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <p>No picks.</p>
+      )}
     </div>
   </div>
 );
@@ -73,7 +80,7 @@ const FinalTeamsDisplay: React.FC = () => {
 
   if (!initialState) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         Loading Final Teams Data...
       </div>
     );
@@ -82,7 +89,7 @@ const FinalTeamsDisplay: React.FC = () => {
   const { teamA, teamB, bans } = initialState;
   if (!teamA || !teamB || !bans) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
         Error: Incomplete draft data.
       </div>
     );
@@ -105,10 +112,10 @@ const FinalTeamsDisplay: React.FC = () => {
   const teamBBans = bans.B.map(findCharacter).filter(Boolean) as Character[];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-7xl font-bold mb-16">Final Rosters</h1>
-      <div className="flex w-full max-w-screen-2xl bg-gray-800 rounded-lg shadow-lg p-12">
-        <div className="w-1/2 pr-6">
+    <div className="flex flex-col items-center justify-center h-screen overflow-hidden bg-gray-900 text-white p-4">
+      <h1 className="text-6xl font-bold mb-8">Final Rosters</h1>
+      <div className="flex w-full max-w-screen-2xl bg-gray-800 rounded-lg shadow-lg p-8">
+        <div className="w-1/2 pr-3">
           <TeamDisplay
             teamName={teamA.name || 'Team A'}
             teamColor="#1abc9c"
@@ -116,8 +123,8 @@ const FinalTeamsDisplay: React.FC = () => {
             bans={teamABans}
           />
         </div>
-        <div className="border-l-4 border-gray-600 mx-6"></div>
-        <div className="w-1/2 pl-6">
+        <div className="border-l-4 border-gray-600 mx-3"></div>
+        <div className="w-1/2 pl-3">
           <TeamDisplay
             teamName={teamB.name || 'Team B'}
             teamColor="#ff6666"
