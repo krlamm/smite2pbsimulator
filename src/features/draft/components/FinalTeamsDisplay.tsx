@@ -16,11 +16,11 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({ player, teamColor }) => (
     <img 
       src={getGodImageUrl(player.pick)} 
       alt={player.pick.name} 
-      className="w-[12vmin] h-[12vmin] rounded-full object-cover border-[0.5vmin]" 
+      className="w-[12vmin] h-[16vmin] rounded-lg object-cover border-[0.5vmin]" 
       style={{ borderColor: teamColor }} 
     />
-    <p className="text-[2.5vmin] font-semibold mt-[1vmin]">{player.pick.name}</p>
-    <p className="text-[2vmin] text-gray-400">{player.displayName}</p>
+    <p className="text-[2.2vmin] font-semibold mt-[0.8vmin]">{player.pick.name}</p>
+    <p className="text-[1.8vmin] text-gray-400">{player.displayName}</p>
   </div>
 );
 
@@ -33,28 +33,9 @@ interface TeamDisplayProps {
 
 const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players, bans }) => (
   <div className="w-full p-[1vmin]">
-    <h2 className="text-[5vmin] font-bold mb-[2vmin] text-center" style={{ color: teamColor }}>{teamName}</h2>
-    <div className="mb-[2.5vmin]">
-      <h3 className="text-[3.5vmin] font-semibold mb-[1.5vmin] text-center">BANS</h3>
-      <div className="flex flex-wrap gap-[1.5vmin] justify-center">
-        {bans.length > 0 ? (
-          bans.map((ban) => (
-            <div key={ban.name} className="text-center">
-              <img 
-                src={getGodImageUrl(ban)} 
-                alt={ban.name} 
-                className="w-[8vmin] h-[8vmin] rounded-md object-cover grayscale" 
-              />
-              <p className="text-[1.8vmin]">{ban.name}</p>
-            </div>
-          ))
-        ) : (
-          <p>No bans.</p>
-        )}
-      </div>
-    </div>
+    <h2 className="text-[4.5vmin] font-bold mb-[1.5vmin] text-center" style={{ color: teamColor }}>{teamName}</h2>
     <div>
-      <h3 className="text-[3.5vmin] font-semibold mb-[1.5vmin] text-center">PICKS</h3>
+      <h3 className="text-[3vmin] font-semibold mb-[1.5vmin] text-center">PICKS</h3>
       {players.length > 0 ? (
         <>
           <div className="flex justify-center gap-[1.5vmin] mb-[1.5vmin]">
@@ -71,6 +52,25 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players,
       ) : (
         <p>No picks.</p>
       )}
+    </div>
+    <div className="mt-[2.5vmin]">
+      <h3 className="text-[3vmin] font-semibold mb-[1.5vmin] text-center">BANS</h3>
+      <div className="flex flex-wrap gap-[1.5vmin] justify-center">
+        {bans.length > 0 ? (
+          bans.map((ban) => (
+            <div key={ban.name} className="text-center">
+              <img 
+                src={getGodImageUrl(ban)} 
+                alt={ban.name} 
+                className="w-[10vmin] h-[10vmin] rounded-md object-cover grayscale" 
+              />
+              <p className="text-[1.6vmin]">{ban.name}</p>
+            </div>
+          ))
+        ) : (
+          <p>No bans.</p>
+        )}
+      </div>
     </div>
   </div>
 );
@@ -113,8 +113,8 @@ const FinalTeamsDisplay: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen overflow-hidden bg-gray-900 text-white p-[2vmin]">
-      <h1 className="text-[7vmin] font-bold mb-[3vmin]">Final Rosters</h1>
-      <div className="flex w-full max-w-[90vw] bg-gray-800 rounded-lg shadow-lg p-[2vmin] flex-grow">
+      <h1 className="text-[5.5vmin] font-bold mb-[1.5vmin]">Final Rosters</h1>
+      <div className="flex w-full max-w-[95vw] bg-gray-800 rounded-lg shadow-lg p-[2vmin] flex-grow">
         <div className="w-1/2 pr-[1vmin]">
           <TeamDisplay
             teamName={teamA.name || 'Team A'}
