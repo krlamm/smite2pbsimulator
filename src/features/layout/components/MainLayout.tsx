@@ -8,6 +8,7 @@ import LocalTeamDisplay from '../../teams/components/LocalTeamDisplay';
 import TradeNotifications from '../../teams/components/TradeNotifications';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { useAudioContext } from '../context/AudioContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface MainLayoutProps {
   teamAName: string;
@@ -30,6 +31,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   mode,
   setMode,
 }) => {
+  const { theme } = useTheme();
   const { bans, picks, draftId } = useDraftContext();
   const { unlockAudio } = useAudioContext();
   const isOnlineMode = !!draftId;
@@ -48,7 +50,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   }, [unlockAudio]);
 
   return (
-    <div className={`bg-gradient-to-b from-dark-blue to-medium-blue text-white font-sans overflow-hidden flex flex-col h-screen ${mode}`}>
+    <div className={`${theme} font-sans overflow-hidden flex flex-col h-screen ${mode}`}>
       <Header />
       <TradeNotifications />
       <DraftControls

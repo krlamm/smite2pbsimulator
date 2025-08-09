@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { Character } from '../../../types';
+import { useTheme } from '../../layout/context/ThemeContext';
+import ThemeToggleButton from '../../layout/components/ThemeToggleButton';
 import { getGodImageUrl } from '../../../utils/imageUtils';
 
 interface PlayerDisplayProps {
@@ -20,7 +22,7 @@ const PlayerDisplay: React.FC<PlayerDisplayProps> = ({ player, teamColor }) => (
       style={{ borderColor: teamColor }} 
     />
     <p className="text-[2.2vmin] font-semibold mt-[0.8vmin]">{player.pick.name}</p>
-    <p className="text-[1.8vmin] text-gray-400">{player.displayName}</p>
+    <p className="text-[1.8vmin] text-secondary">{player.displayName}</p>
   </div>
 );
 
@@ -76,6 +78,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players,
 );
 
 const FinalTeamsDisplay: React.FC = () => {
+  const { theme } = useTheme();
   const { initialState, characters } = useDraftContext();
 
   if (!initialState) {
@@ -112,9 +115,12 @@ const FinalTeamsDisplay: React.FC = () => {
   const teamBBans = bans.B.map(findCharacter).filter(Boolean) as Character[];
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen overflow-hidden bg-gray-900 text-white p-[2vmin]">
+    <div className={`${theme} flex flex-col items-center justify-center h-screen overflow-hidden p-[2vmin]`}>
+      <div className="absolute top-4 right-4">
+        <ThemeToggleButton />
+      </div>
       <h1 className="text-[5.5vmin] font-bold mb-[1.5vmin]">Final Rosters</h1>
-      <div className="flex w-full max-w-[95vw] bg-gray-800 rounded-lg shadow-lg p-[2vmin] flex-grow">
+      <div className="flex w-full max-w-[95vw] bg-card rounded-lg shadow-lg p-[2vmin] flex-grow">
         <div className="w-1/2 pr-[1vmin]">
           <TeamDisplay
             teamName={teamA.name || 'Team A'}
@@ -123,7 +129,7 @@ const FinalTeamsDisplay: React.FC = () => {
             bans={teamABans}
           />
         </div>
-        <div className="border-l-[0.5vmin] border-gray-600 mx-[1vmin]"></div>
+        <div className="border-l-[0.5vmin] border-themed mx-[1vmin]"></div>
         <div className="w-1/2 pl-[1vmin]">
           <TeamDisplay
             teamName={teamB.name || 'Team B'}

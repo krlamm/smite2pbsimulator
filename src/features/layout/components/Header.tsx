@@ -1,5 +1,6 @@
 import React from 'react';
 import MuteButton from './MuteButton';
+import ThemeToggleButton from './ThemeToggleButton';
 import ProfileDropdown from './ProfileDropdown';
 import { useUserProfile } from '../../auth/hooks/useUserProfile';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,7 @@ const Header = () => {
         <div className="flex items-center gap-2.5">
           <div className="text-chaos text-2xl text-shadow-border-glow">BETA - NOT FINAL</div>
           <MuteButton />
+          <ThemeToggleButton />
         </div>
       </div>
       <div className="flex-1 flex justify-end">
