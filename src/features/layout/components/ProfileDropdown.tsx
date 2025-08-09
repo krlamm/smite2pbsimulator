@@ -78,13 +78,6 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user, userProfile }) 
             >
               Logout
             </button>
-            <div className="border-t border-gray-600 my-1"></div>
-            <button
-              onClick={toggleTheme}
-              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-600"
-            >
-              Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
-            </button>
           </div>
         </div>
       )}

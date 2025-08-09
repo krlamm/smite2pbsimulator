@@ -10,11 +10,12 @@ import { db } from '../../firebase';
 import { gods } from '../../constants/gods';
 import { FaUserFriends, FaPlus, FaSync, FaEye, FaRedo, FaPaperPlane, FaHistory, FaUser, FaUsers } from 'react-icons/fa';
 import ProfileDropdown from '../layout/components/ProfileDropdown';
+import ThemeToggleButton from '../layout/components/ThemeToggleButton';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useUserProfile();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   const themeClasses = {
     light: {
@@ -87,7 +88,8 @@ const LandingPage = () => {
       style={{ backgroundImage: currentTheme.backgroundImage }}
     >
       <div className="container mx-auto px-4 py-8 relative">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+          <ThemeToggleButton />
           {user && userProfile ? (
             <ProfileDropdown user={user} userProfile={userProfile} />
           ) : (
