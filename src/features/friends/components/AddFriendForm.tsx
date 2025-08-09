@@ -22,7 +22,7 @@ export const AddFriendForm: React.FC<AddFriendFormProps> = ({ sendFriendRequest,
         type="text"
         value={playerId}
         onChange={(e) => setPlayerId(e.target.value)}
-        placeholder="Enter friend's Player ID to send request"
+        placeholder="Enter friend's unique ID to send request"
         className="p-2 rounded bg-gray-700 text-white border border-gray-600"
         required
       />
