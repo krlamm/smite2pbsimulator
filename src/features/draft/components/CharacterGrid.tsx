@@ -55,8 +55,8 @@ function CharacterGrid() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5 scrollbar-custom">
-      <div className="flex justify-around mb-5">
+    <div className="flex flex-col h-full">
+        <div className="flex justify-around mb-5">
         <div className="flex justify-center gap-2.5 md:flex-wrap">
           {roles.map(role => {
             const roleInfo = roles.find(r => r.name === role.name);
@@ -77,6 +77,8 @@ function CharacterGrid() {
           })}
         </div>
       </div>
+    <div className="flex-1 overflow-y-auto p-4 scroll-pt-2.5 scrollbar-custom">
+    
       <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4 p-4 justify-center">
         {displayCharacters.map(character => {
           const displayedCardRole = selectedRole === 'All' ? character.roles[0] : (selectedRole || character.roles[0]);
@@ -101,6 +103,7 @@ function CharacterGrid() {
           )
         })}
       </div>
+    </div>
     </div>
   );
 }
