@@ -17,10 +17,10 @@ const LandingPage = () => {
 
   const themeClasses = {
     light: {
-      bg: 'bg-gray-100',
+      bg: 'bg-gray-200',
       text: 'text-gray-800',
-      cardBg: 'bg-white/80',
-      cardBorder: 'border-gray-200',
+      cardBg: 'bg-gray-50/70',
+      cardBorder: 'border-gray-300',
       buttonText: 'text-white',
       headerText: 'text-blue-600',
       subHeaderText: 'text-gray-600',
