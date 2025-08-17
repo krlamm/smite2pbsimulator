@@ -107,24 +107,21 @@ const LandingPage = () => {
         <div className="text-center mb-12">
           <h1 className={`text-5xl font-bold ${currentTheme.headerText} tracking-wider`}>SMITE 2 PICK/BAN SIMULATOR</h1>
           <p className="text-red-500 font-semibold mt-2">BETA - NOT FINAL</p>
-          <p className={`${currentTheme.subHeaderText} mt-4 max-w-2xl mx-auto`}>
-            Practice your draft strategies for SMITE 2. Create custom drafts, invite friends, and perfect your team compositions.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {/* Single Player Draft */}
           <div className={`${currentTheme.cardBg} p-6 rounded-lg border ${currentTheme.cardBorder}`}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Single Player Draft</h2>
+              <h2 className="text-2xl font-bold">Solo Draft</h2>
               <span className="text-xs font-semibold bg-gray-600 px-2 py-1 rounded">PRACTICE</span>
             </div>
-            <p className={`${currentTheme.subHeaderText} mb-6`}>Practice draft strategies on your own. Control both teams and experiment with different picks and bans.</p>
+            <p className={`${currentTheme.text} mb-6`}>Practice draft strategies on your own. Control both teams and experiment with different picks and bans.</p>
             <button
               onClick={() => navigate('/local')}
-              className={`w-full bg-blue-600 hover:bg-blue-700 ${currentTheme.buttonText} font-bold py-3 px-4 rounded-lg flex items-center justify-center`}
+              className={`w-full bg-green-600 hover:bg-green-700 ${currentTheme.buttonText} font-bold py-3 px-4 rounded-lg flex items-center justify-center`}
             >
-              <FaUser className="mr-2" /> 1-Player Draft
+              <FaUser className="mr-2" /> Solo Draft
             </button>
           </div>
 
@@ -134,12 +131,12 @@ const LandingPage = () => {
               <h2 className="text-2xl font-bold">Multiplayer Draft</h2>
               <span className="text-xs font-semibold bg-gray-600 px-2 py-1 rounded">WITH FRIENDS</span>
             </div>
-            <p className={`${currentTheme.subHeaderText} mb-6`}>Create a draft lobby and invite friends to join. Perfect for team practice or competitive preparation.</p>
+            <p className={`${currentTheme.text} mb-6`}>Create a draft lobby and invite friends to join. Perfect for team practice or competitive preparation.</p>
             <button
               onClick={handleCreateOnlineDraft}
-              className={`w-full bg-green-600 hover:bg-green-700 ${currentTheme.buttonText} font-bold py-3 px-4 rounded-lg flex items-center justify-center`}
+              className={`w-full bg-blue-600 hover:bg-blue-700 ${currentTheme.buttonText} font-bold py-3 px-4 rounded-lg flex items-center justify-center`}
             >
-              <FaUsers className="mr-2" /> 2-Player Draft
+              <FaUsers className="mr-2" /> Draft with Friends
             </button>
           </div>
         </div>
