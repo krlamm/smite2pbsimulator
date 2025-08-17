@@ -16,7 +16,7 @@ const BanArea: React.FC<BanAreaProps> = ({ bansA, bansB }) => {
       {bans.map((ban, index) => (
         <div
           key={index}
-          className="w-20 h-28 bg-black/50 border-2 border-gray-500 rounded-md flex items-center justify-center"
+          className="w-24 h-32 bg-black/50 border-2 border-gray-500 rounded-md flex items-center justify-center"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={(e) => mode === 'freedom' ? handleDrop(e, team, 'ban', index) : handleStandardDrop(e, team, 'ban', index)}
