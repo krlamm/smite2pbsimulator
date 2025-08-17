@@ -12,6 +12,7 @@ interface DraftContextValue {
   currentTeam: 'A' | 'B' | '';
   picks: TeamState;
   bans: TeamState;
+  aspects: TeamState;
   teamAName: string;
   teamBName: string;
   teamAColor: string;
@@ -27,6 +28,7 @@ interface DraftContextValue {
   handleDragLeave: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
   handleStandardDrop: (e: React.DragEvent, team: 'A' | 'B', type: 'pick' | 'ban', index: number) => void;
+  toggleAspect: (team: 'A' | 'B', index: number) => void;
   initialState?: Draft | null;
   currentUser?: any;
 }

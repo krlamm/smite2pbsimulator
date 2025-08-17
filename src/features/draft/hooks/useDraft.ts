@@ -16,6 +16,7 @@ export const useDraft = ({ mode }: UseDraftOptions) => {
   const [history, setHistory] = useState<{ picks: TeamState; bans: TeamState; phase: 'BAN' | 'PICK'; currentTeam: 'A' | 'B' }[]>([]);
   const [picks, setPicks] = useState<TeamState>({ A: Array(5).fill(null), B: Array(5).fill(null) });
   const [bans, setBans] = useState<TeamState>({ A: Array(3).fill(null), B: Array(3).fill(null) });
+  const [aspects, setAspects] = useState<TeamState>({ A: Array(5).fill(false), B: Array(5).fill(false) });
   const { playAudio } = useAudioContext();
 
   const handleCharacterSelect = (character: Character) => {
@@ -112,6 +113,15 @@ export const useDraft = ({ mode }: UseDraftOptions) => {
     }
   };
 
+  const toggleAspect = (team: 'A' | 'B', index: number) => {
+    setAspects(prev => {
+      const newAspects = { ...prev };
+      newAspects[team] = [...prev[team]];
+      newAspects[team][index] = !prev[team][index];
+      return newAspects;
+    });
+  };
+
   return {
     mode,
     characters,
@@ -119,11 +129,13 @@ export const useDraft = ({ mode }: UseDraftOptions) => {
     currentTeam,
     picks,
     bans,
+    aspects,
     handleCharacterSelect,
     handleDragStart,
     handleDragOver,
     handleDrop,
     handleUndo,
     handleClear,
+    toggleAspect,
   };
 };

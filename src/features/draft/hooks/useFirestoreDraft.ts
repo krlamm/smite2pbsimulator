@@ -18,6 +18,7 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
 
   const [phase, setPhase] = useState<'lobby' | 'banning' | 'picking' | 'complete' | 'archived'>(initialState?.status || 'lobby');
   const [bans, setBans] = useState<TeamState>({ A: [], B: [] });
+  const [aspects, setAspects] = useState<TeamState>({ A: Array(5).fill(false), B: Array(5).fill(false) });
   const [isMyTurn, setIsMyTurn] = useState(false);
 
   useEffect(() => {
@@ -298,12 +299,22 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     }
 };
 
+const toggleAspect = (team: 'A' | 'B', index: number) => {
+  setAspects(prev => {
+    const newAspects = { ...prev };
+    newAspects[team] = [...prev[team]];
+    newAspects[team][index] = !prev[team][index];
+    return newAspects;
+  });
+};
+
   return {
     mode: 'standard',
     characters,
     phase,
     picks: { A: [], B: [] }, 
     bans,
+    aspects,
     isMyTurn,
     handleCharacterSelect,
     handleReset,
@@ -315,5 +326,6 @@ export const useFirestoreDraft = ({ initialState, draftId, currentUser }: UseDra
     handleStandardDrop: () => {},
     handleUndo: () => {},
     handleClear: () => {},
+    toggleAspect,
   };
 };

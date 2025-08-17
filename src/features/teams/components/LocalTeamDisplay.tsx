@@ -2,6 +2,7 @@ import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { getGodImageUrl } from '../../../utils/imageUtils';
 import { Character } from '../../../types';
+import AspectToggle from './AspectToggle';
 
 interface LocalTeamDisplayProps {
   team: 'A' | 'B';
@@ -9,7 +10,7 @@ interface LocalTeamDisplayProps {
 }
 
 const LocalTeamDisplay: React.FC<LocalTeamDisplayProps> = ({ team, picks }) => {
-  const { currentTeam, phase } = useDraftContext();
+  const { currentTeam, phase, aspects, toggleAspect } = useDraftContext();
   const teamColor = team === 'A' ? 'border-order' : 'border-chaos';
 
   const pickOrder = team === 'A' ? [0, 3, 4, 7, 8] : [1, 2, 5, 6, 9];
@@ -49,6 +50,12 @@ const LocalTeamDisplay: React.FC<LocalTeamDisplayProps> = ({ team, picks }) => {
                 {pick.name}
               </div>
             )}
+            <AspectToggle
+              isActive={aspects[team]?.[slotIndex] || false}
+              isDisabled={!pick}
+              onClick={() => toggleAspect(team, slotIndex)}
+              position={team === 'A' ? 'right' : 'left'}
+            />
           </div>
         );
       })}

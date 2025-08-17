@@ -3,13 +3,14 @@ import { useDraftContext } from '../../draft/context/DraftContext';
 import { getGodImageUrl } from '../../../utils/imageUtils';
 import { Character } from '../../../types';
 import { gods } from '../../../constants/gods'; // Import the gods constant
+import AspectToggle from './AspectToggle';
 
 interface EsportsTeamDisplayProps {
   team: 'A' | 'B';
 }
 
 const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
-  const { initialState } = useDraftContext();
+  const { initialState, aspects, toggleAspect } = useDraftContext();
 
   if (!initialState) {
     return <div className="w-1/5">Loading Team...</div>;
@@ -95,6 +96,12 @@ const EsportsTeamDisplay: React.FC<EsportsTeamDisplayProps> = ({ team }) => {
                 {pick.name}
               </div>
             )}
+            <AspectToggle
+              isActive={aspects[team]?.[slotIndex] || false}
+              isDisabled={!pick}
+              onClick={() => toggleAspect(team, slotIndex)}
+              position={team === 'A' ? 'right' : 'left'}
+            />
           </div>
         );
       })}
