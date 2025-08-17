@@ -190,51 +190,67 @@ const DraftControls: React.FC<DraftControlsProps> = ({
   };
 
   return (
-    <div className="flex justify-center items-center py-2.5 px-5 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 flex-wrap gap-[30px]">
-      <div className="flex flex-col items-center w-1/6">
+    <div className="flex items-center py-3 px-4 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 min-h-[80px]">
+      
+      {/* Left Section - Team A (positioned to align with team column) */}
+      <div className="flex flex-col items-center flex-shrink-0" style={{ width: '20%' }}>
         <EditableTeamName initialName={teamAName} onNameChange={onTeamANameChange} team="A" />
-        <div className="text-sm font-bold uppercase tracking-wider text-order">1ST PICK</div>
+        <div className="text-xs lg:text-sm font-bold uppercase tracking-wider text-order mt-1">1ST PICK</div>
       </div>
-      {!isOnlineMode && <ModeToggle mode={mode} onModeChange={setMode} />}
-      <div className="flex justify-center items-center w-auto mx-auto relative z-10 gap-4">
+
+      {/* Left-Center - Mode Toggle (hidden on small screens) */}
+      <div className="flex-shrink-0 hidden md:flex justify-center px-2">
+        {!isOnlineMode && <ModeToggle mode={mode} onModeChange={setMode} />}
+      </div>
+
+      {/* Center Section - Action Buttons */}
+      <div className="flex items-center justify-center gap-2 lg:gap-3 flex-shrink-0 flex-1">
         {!isOnlineMode ? (
           <>
             <button
-              className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
+              className="bg-gray-700 text-white border border-gray-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
               onClick={handleUndo}
             >
-              UNDO
+              <span className="hidden sm:inline">UNDO</span>
+              <span className="sm:hidden">↶</span>
             </button>
             <button
-              className="bg-red-700 text-white border border-red-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
+              className="bg-red-700 text-white border border-red-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
               onClick={handleClear}
             >
-              CLEAR
+              <span className="hidden sm:inline">CLEAR</span>
+              <span className="sm:hidden">✕</span>
             </button>
           </>
         ) : (
-          <>
-            <button
-              className="bg-red-700 text-white border border-red-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
-              onClick={handleReset}
-            >
-              RESET
-            </button>
-          </>
+          <button
+            className="bg-red-700 text-white border border-red-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
+            onClick={handleReset}
+          >
+            <span className="hidden sm:inline">RESET</span>
+            <span className="sm:hidden">⟲</span>
+          </button>
         )}
         <button
-          className="bg-blue-700 text-white border border-blue-500 rounded-full py-2 px-5 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
+          className="bg-blue-700 text-white border border-blue-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
           onClick={handleFinalTeamsClick}
         >
-          FINAL TEAMS
+          <span className="hidden sm:inline">FINAL TEAMS</span>
+          <span className="sm:hidden">👥</span>
         </button>
       </div>
-      <div className="bg-black/70 p-4 rounded-full text-center border border-light-blue shadow-border-glow text-2xl flex justify-center items-center min-w-[300px]">
-        {renderTurnDisplay()}
+
+      {/* Center-Right - Current Phase Display */}
+      <div className="bg-black/70 px-3 py-2 lg:px-4 lg:py-3 rounded-full text-center border border-light-blue shadow-border-glow text-sm lg:text-xl flex justify-center items-center flex-shrink-0 max-w-xs mx-2">
+        <div className="truncate">
+          {renderTurnDisplay()}
+        </div>
       </div>
-      <div className="flex flex-col items-center w-1/6">
+
+      {/* Right Section - Team B (positioned to align with team column) */}
+      <div className="flex flex-col items-center flex-shrink-0" style={{ width: '20%' }}>
         <EditableTeamName initialName={teamBName} onNameChange={onTeamBNameChange} team="B" />
-        <div className="text-sm font-bold uppercase tracking-wider text-chaos">2ND PICK</div>
+        <div className="text-xs lg:text-sm font-bold uppercase tracking-wider text-chaos mt-1">2ND PICK</div>
       </div>
     </div>
   );
