@@ -5,6 +5,7 @@ import { useTheme } from '../../layout/context/ThemeContext';
 import ThemeToggleButton from '../../layout/components/ThemeToggleButton';
 import { getGodImageUrl } from '../../../utils/imageUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FaHome } from 'react-icons/fa';
 
 interface PlayerDisplayProps {
   player: {
@@ -84,6 +85,10 @@ const FinalTeamsDisplay: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleHomeClick = () => {
+    navigate('/');
+  };
+
   const handleReturnToDraft = () => {
     if (draftId) {
       // For multiplayer drafts, just navigate back - the context will persist
@@ -159,6 +164,19 @@ const FinalTeamsDisplay: React.FC = () => {
 
   return (
     <div className={`${theme} flex flex-col items-center justify-center h-screen overflow-hidden p-[2vmin]`}>
+      {/* Top Left - Home Button */}
+      <div className="absolute top-4 left-4">
+        <button
+          onClick={handleHomeClick}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors duration-200 shadow-md"
+          title="Return to Home"
+        >
+          <FaHome className="text-lg" />
+          <span className="hidden sm:inline">HOME</span>
+        </button>
+      </div>
+
+      {/* Top Right - Theme Toggle & Return to Draft */}
       <div className="absolute top-4 right-4 flex items-center gap-4">
         <ThemeToggleButton />
         <button

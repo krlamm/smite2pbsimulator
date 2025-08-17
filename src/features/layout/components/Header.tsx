@@ -164,7 +164,6 @@ const Header = () => {
         </button>
         <div className="flex items-center gap-2 flex-shrink-0">
           <MuteButton />
-          <ThemeToggleButton />
         </div>
       </div>
 
@@ -178,6 +177,7 @@ const Header = () => {
 
       {/* Right Section - Final Teams & Profile */}
       <div className="flex items-center gap-3 justify-end min-w-0 flex-1">
+        <ThemeToggleButton />
         {isDraftPage && (
           <button
             onClick={handleFinalTeamsClick}
