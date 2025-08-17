@@ -5,6 +5,7 @@ import { auth } from '../../../firebase';
 import { signOut } from 'firebase/auth';
 import { User } from 'firebase/auth';
 import { UserProfile } from '../../../types';
+import { maskEmail } from '../../../utils/stringUtils';
 
 interface ProfileDropdownProps {
   user: User;
@@ -34,7 +35,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ user, userProfile }) 
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 text-white font-bold py-2 px-4 rounded focus:outline-none"
       >
-        <span>{userProfile?.displayName || user.email}</span>
+        <span>{userProfile?.displayName || maskEmail(user.email || '')}</span>
         <svg
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
           fill="none"
