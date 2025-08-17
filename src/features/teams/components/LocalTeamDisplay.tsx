@@ -10,7 +10,7 @@ interface LocalTeamDisplayProps {
 }
 
 const LocalTeamDisplay: React.FC<LocalTeamDisplayProps> = ({ team, picks }) => {
-  const { currentTeam, phase, aspects, toggleAspect } = useDraftContext();
+  const { currentTeam, phase, aspects, toggleAspect, picks: allPicks } = useDraftContext();
   const teamColor = team === 'A' ? 'border-order' : 'border-chaos';
 
   const pickOrder = team === 'A' ? [0, 3, 4, 7, 8] : [1, 2, 5, 6, 9];
@@ -19,12 +19,31 @@ const LocalTeamDisplay: React.FC<LocalTeamDisplayProps> = ({ team, picks }) => {
     <div className={`flex flex-col w-1/5 gap-2 py-2`}>
       {Array.from({ length: 5 }).map((_, slotIndex) => {
         const pick = picks[slotIndex];
-        const pickTurn = pickOrder[slotIndex];
         
-        // This logic needs to be adapted from the useDraft hook's internal state
-        // For now, we'll base it on the context's phase and currentTeam
-        const currentPickTurn = 0; // This will need a more robust way to track turns locally
-        const isActiveTurn = phase === 'PICK' && currentTeam === team && pickTurn === currentPickTurn && !pick;
+        // Calculate which pick turn we're currently on
+        const totalPicks = [...(allPicks?.A || []), ...(allPicks?.B || [])].filter(Boolean).length;
+        
+        // Check if this is the active pick slot
+        let isActiveTurn = false;
+        if (phase === 'PICK' && !pick && currentTeam === team) {
+          // Count how many picks this team already has
+          const teamPickCount = picks.filter(Boolean).length;
+          
+          // Pick sequence: ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B']
+          // Determine how many consecutive picks this team should make
+          const pickSequence = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A', 'B'];
+          
+          // Find current position in the pick sequence
+          let consecutivePicksForThisTeam = 0;
+          for (let i = totalPicks; i < pickSequence.length && pickSequence[i] === currentTeam; i++) {
+            consecutivePicksForThisTeam++;
+          }
+          
+          // This slot should glow if it's one of the next empty slots for this team
+          if (slotIndex >= teamPickCount && slotIndex < teamPickCount + consecutivePicksForThisTeam) {
+            isActiveTurn = true;
+          }
+        }
 
         return (
           <div
