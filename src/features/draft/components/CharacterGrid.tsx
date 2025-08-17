@@ -29,12 +29,6 @@ function CharacterGrid() {
     const localPicks = [...(picks?.A || []), ...(picks?.B || [])].filter(Boolean).map(c => c!.name);
     const isTaken = localBans.includes(character.name) || localPicks.includes(character.name);
     
-    // Debug specific characters to reduce noise
-    const debugChar = character.name === 'Anubis' || character.name === 'Agni';
-    if (debugChar) {
-      console.log(`${character.name} isTaken:`, isTaken, 'localBans:', localBans, 'localPicks:', localPicks);
-    }
-    
     return !isTaken;
   };
 

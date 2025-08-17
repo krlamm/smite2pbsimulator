@@ -97,9 +97,6 @@ const FinalTeamsDisplay: React.FC = () => {
       // For local drafts, use the raw draft state passed from the Header
       const rawDraftState = location.state?.rawDraftState;
       
-      console.log('FinalTeamsDisplay: Raw draft state from Header:', rawDraftState);
-      console.log('FinalTeamsDisplay: Current picks from context:', picks);
-      console.log('FinalTeamsDisplay: Current bans from context:', currentBans);
       
       if (rawDraftState) {
         // Use the preserved raw state from when we navigated to final teams
