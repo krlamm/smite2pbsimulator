@@ -60,8 +60,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         onTeamBNameChange={onTeamBNameChange}
         teamAColor={teamAColor}
         teamBColor={teamBColor}
-        mode={mode}
-        setMode={setMode}
       />
       <div className="flex overflow-y-auto px-4 gap-4 h-full w-full relative">
         {isOnlineMode ? (

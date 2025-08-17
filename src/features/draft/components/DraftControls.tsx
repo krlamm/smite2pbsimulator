@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDraftContext } from '../context/DraftContext';
-import ModeToggle from './ModeToggle';
 import EditableTeamName from '../../teams/components/EditableTeamName';
 
 interface DraftControlsProps {
@@ -11,8 +10,6 @@ interface DraftControlsProps {
   onTeamBNameChange: (name: string) => void;
   teamAColor: string;
   teamBColor: string;
-  mode: 'standard' | 'freedom';
-  setMode: (mode: 'standard' | 'freedom') => void;
 }
 
 const DraftControls: React.FC<DraftControlsProps> = ({
@@ -22,10 +19,8 @@ const DraftControls: React.FC<DraftControlsProps> = ({
   onTeamBNameChange,
   teamAColor,
   teamBColor,
-  mode,
-  setMode,
 }) => {
-  const { handleUndo, handleClear, currentTeam, phase, draftId, handleReset, handleLeave, initialState, picks, bans } = useDraftContext();
+  const { handleUndo, handleClear, currentTeam, phase, draftId, handleReset, handleLeave, initialState, picks, bans, mode } = useDraftContext();
   const navigate = useNavigate();
   const isOnlineMode = !!draftId;
 
@@ -190,67 +185,56 @@ const DraftControls: React.FC<DraftControlsProps> = ({
   };
 
   return (
-    <div className="flex items-center py-3 px-4 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 min-h-[80px]">
+    <div className="flex items-center justify-between py-4 px-6 bg-black/50 border-b border-light-blue shadow-[0_2px_10px_rgba(0,204,255,0.3)] relative z-20 min-h-[80px]">
       
-      {/* Left Section - Team A (positioned to align with team column) */}
+      {/* Left Section - Team A */}
       <div className="flex flex-col items-center flex-shrink-0" style={{ width: '20%' }}>
         <EditableTeamName initialName={teamAName} onNameChange={onTeamANameChange} team="A" />
-        <div className="text-xs lg:text-sm font-bold uppercase tracking-wider text-order mt-1">1ST PICK</div>
+        <div className="text-sm font-bold uppercase tracking-wider text-order mt-1">1ST PICK</div>
       </div>
 
-      {/* Left-Center - Mode Toggle (hidden on small screens) */}
-      <div className="flex-shrink-0 hidden md:flex justify-center px-2">
-        {!isOnlineMode && <ModeToggle mode={mode} onModeChange={setMode} />}
-      </div>
-
-      {/* Center Section - Action Buttons */}
-      <div className="flex items-center justify-center gap-2 lg:gap-3 flex-shrink-0 flex-1">
-        {!isOnlineMode ? (
-          <>
-            <button
-              className="bg-gray-700 text-white border border-gray-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
-              onClick={handleUndo}
-            >
-              <span className="hidden sm:inline">UNDO</span>
-              <span className="sm:hidden">↶</span>
-            </button>
-            <button
-              className="bg-red-700 text-white border border-red-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
-              onClick={handleClear}
-            >
-              <span className="hidden sm:inline">CLEAR</span>
-              <span className="sm:hidden">✕</span>
-            </button>
-          </>
-        ) : (
+      {/* Center Section - UNDO + Current Phase + CLEAR */}
+      <div className="flex items-center justify-center gap-4 flex-shrink-0">
+        {/* UNDO Button */}
+        {!isOnlineMode && (
           <button
-            className="bg-red-700 text-white border border-red-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
-            onClick={handleReset}
+            className="bg-gray-700 text-white border border-gray-500 rounded-full py-2 px-4 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-gray-500 hover:border-gray-400"
+            onClick={handleUndo}
           >
-            <span className="hidden sm:inline">RESET</span>
-            <span className="sm:hidden">⟲</span>
+            UNDO
           </button>
         )}
-        <button
-          className="bg-blue-700 text-white border border-blue-500 rounded-full py-1.5 px-3 lg:py-2 lg:px-4 text-sm lg:text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:border-blue-400"
-          onClick={handleFinalTeamsClick}
-        >
-          <span className="hidden sm:inline">FINAL TEAMS</span>
-          <span className="sm:hidden">👥</span>
-        </button>
-      </div>
+        {isOnlineMode && (
+          <button
+            className="bg-red-700 text-white border border-red-500 rounded-full py-2 px-4 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
+            onClick={handleReset}
+          >
+            RESET
+          </button>
+        )}
 
-      {/* Center-Right - Current Phase Display */}
-      <div className="bg-black/70 px-3 py-2 lg:px-4 lg:py-3 rounded-full text-center border border-light-blue shadow-border-glow text-sm lg:text-xl flex justify-center items-center flex-shrink-0 max-w-xs mx-2">
-        <div className="truncate">
-          {renderTurnDisplay()}
+        {/* Current Phase Display - Center */}
+        <div className="bg-black/70 px-6 py-3 rounded-full text-center border border-light-blue shadow-border-glow text-lg lg:text-xl flex justify-center items-center min-w-[280px]">
+          <div className="truncate">
+            {renderTurnDisplay()}
+          </div>
         </div>
+
+        {/* CLEAR Button */}
+        {!isOnlineMode && (
+          <button
+            className="bg-red-700 text-white border border-red-500 rounded-full py-2 px-4 text-base font-bold cursor-pointer transition-colors duration-200 hover:bg-red-500 hover:border-red-400"
+            onClick={handleClear}
+          >
+            CLEAR
+          </button>
+        )}
       </div>
 
-      {/* Right Section - Team B (positioned to align with team column) */}
+      {/* Right Section - Team B */}
       <div className="flex flex-col items-center flex-shrink-0" style={{ width: '20%' }}>
         <EditableTeamName initialName={teamBName} onNameChange={onTeamBNameChange} team="B" />
-        <div className="text-xs lg:text-sm font-bold uppercase tracking-wider text-chaos mt-1">2ND PICK</div>
+        <div className="text-sm font-bold uppercase tracking-wider text-chaos mt-1">2ND PICK</div>
       </div>
     </div>
   );
