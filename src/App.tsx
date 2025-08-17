@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './features/layout/context/ThemeContext';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
@@ -17,18 +17,23 @@ import ProfilePage from './features/profile/ProfilePage';
 import LobbyPage from './features/lobby/LobbyPage';
 
 const LocalDraft = () => {
+  const location = useLocation();
   const [mode, setMode] = useState<'standard' | 'freedom'>('standard');
   const [teamAName, setTeamAName] = useState('ORDER');
   const [teamBName, setTeamBName] = useState('CHAOS');
+  
+  // Check if we're returning from final teams with preserved state
+  const preservedDraft = location.state?.preserveDraft ? location.state.draftState : null;
   
   return (
     <AudioProvider>
       <DraftProvider
         mode={mode}
+        initialState={preservedDraft}
         teamAName={teamAName}
         teamBName={teamBName}
-        teamAColor="#1abc9c" // Pass teamAColor
-        teamBColor="#ff6666" // Pass teamBColor
+        teamAColor="#1abc9c"
+        teamBColor="#ff6666"
       >
         <MainLayout teamAName={teamAName} onTeamANameChange={setTeamAName} teamBName={teamBName} onTeamBNameChange={setTeamBName} teamAColor="#1abc9c" teamBColor="#ff6666" mode={mode} setMode={setMode} />
       </DraftProvider>

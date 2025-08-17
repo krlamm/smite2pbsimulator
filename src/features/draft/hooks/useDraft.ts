@@ -7,16 +7,90 @@ const pickSequence: ('A' | 'B')[] = ['A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A'
 
 interface UseDraftOptions {
   mode: 'standard' | 'freedom';
+  initialState?: any; // Draft state to restore from
 }
 
-export const useDraft = ({ mode }: UseDraftOptions) => {
+export const useDraft = ({ mode, initialState }: UseDraftOptions) => {
   const [characters] = useState<Character[]>(gods);
-  const [phase, setPhase] = useState<'BAN' | 'PICK'>('BAN');
-  const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>('A');
+  
+  // Initialize state from preserved draft or defaults
+  const [phase, setPhase] = useState<'BAN' | 'PICK'>(initialState?.phase || 'BAN');
+  const [currentTeam, setCurrentTeam] = useState<'A' | 'B'>(initialState?.currentTeam || 'A');
   const [history, setHistory] = useState<{ picks: TeamState; bans: TeamState; phase: 'BAN' | 'PICK'; currentTeam: 'A' | 'B' }[]>([]);
-  const [picks, setPicks] = useState<TeamState>({ A: Array(5).fill(null), B: Array(5).fill(null) });
-  const [bans, setBans] = useState<TeamState>({ A: Array(3).fill(null), B: Array(3).fill(null) });
-  const [aspects, setAspects] = useState<TeamState>({ A: Array(5).fill(false), B: Array(5).fill(false) });
+  
+  // Debug logging
+  if (initialState) {
+    console.log('useDraft: Restoring from initialState:', initialState);
+  }
+  
+  // Convert preserved picks/bans back to Character objects
+  const getInitialPicks = () => {
+    if (!initialState?.picks) {
+      console.log('getInitialPicks: No picks in initialState, returning empty arrays');
+      return { A: Array(5).fill(null), B: Array(5).fill(null) };
+    }
+    
+    console.log('getInitialPicks: Converting picks:', initialState.picks);
+    console.log('getInitialPicks: picks.A:', initialState.picks.A);
+    console.log('getInitialPicks: picks.B:', initialState.picks.B);
+    
+    const convertTeamPicks = (teamPicks: any[]) => {
+      if (!teamPicks || !Array.isArray(teamPicks)) {
+        console.log('convertTeamPicks: Invalid teamPicks:', teamPicks);
+        return Array(5).fill(null);
+      }
+      
+      return teamPicks.map((pick, index) => {
+        if (!pick) return null;
+        // Find character by name if pick is a string, or return as-is if already a Character object
+        const converted = typeof pick === 'string' ? gods.find(god => god.name === pick) || null : pick;
+        console.log(`Converting pick[${index}]:`, pick, '→', converted);
+        return converted;
+      });
+    };
+    
+    const result = {
+      A: convertTeamPicks(initialState.picks.A),
+      B: convertTeamPicks(initialState.picks.B)
+    };
+    console.log('getInitialPicks result:', result);
+    return result;
+  };
+  
+  const getInitialBans = () => {
+    if (!initialState?.bans) return { A: Array(3).fill(null), B: Array(3).fill(null) };
+    
+    console.log('getInitialBans: Converting bans:', initialState.bans);
+    
+    const convertTeamBans = (teamBans: any[]) => {
+      return teamBans.map(ban => {
+        if (!ban) return null;
+        // Find character by name if ban is a string, or return as-is if already a Character object
+        const converted = typeof ban === 'string' ? gods.find(god => god.name === ban) || null : ban;
+        console.log('Converting ban:', ban, '→', converted);
+        return converted;
+      });
+    };
+    
+    const result = {
+      A: convertTeamBans(initialState.bans.A),
+      B: convertTeamBans(initialState.bans.B)
+    };
+    console.log('getInitialBans result:', result);
+    return result;
+  };
+  
+  const [picks, setPicks] = useState<TeamState>(() => {
+    const initialPicks = getInitialPicks();
+    console.log('useDraft: Initialized picks:', initialPicks);
+    return initialPicks;
+  });
+  const [bans, setBans] = useState<TeamState>(() => {
+    const initialBans = getInitialBans();
+    console.log('useDraft: Initialized bans:', initialBans);
+    return initialBans;
+  });
+  const [aspects, setAspects] = useState<TeamState>(initialState?.aspects || { A: Array(5).fill(false), B: Array(5).fill(false) });
   const { playAudio } = useAudioContext();
 
   const handleCharacterSelect = (character: Character) => {

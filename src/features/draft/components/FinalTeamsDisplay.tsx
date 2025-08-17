@@ -4,7 +4,7 @@ import { Character } from '../../../types';
 import { useTheme } from '../../layout/context/ThemeContext';
 import ThemeToggleButton from '../../layout/components/ThemeToggleButton';
 import { getGodImageUrl } from '../../../utils/imageUtils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface PlayerDisplayProps {
   player: {
@@ -80,14 +80,47 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({ teamName, teamColor, players,
 
 const FinalTeamsDisplay: React.FC = () => {
   const { theme } = useTheme();
-  const { initialState, characters, draftId } = useDraftContext();
+  const { initialState, characters, draftId, picks, bans: currentBans, phase, currentTeam, aspects } = useDraftContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleReturnToDraft = () => {
     if (draftId) {
+      // For multiplayer drafts, just navigate back - the context will persist
       navigate(`/draft/${draftId}`);
     } else {
-      navigate('/local');
+      // For local drafts, use the raw draft state passed from the Header
+      const rawDraftState = location.state?.rawDraftState;
+      
+      console.log('FinalTeamsDisplay: Raw draft state from Header:', rawDraftState);
+      console.log('FinalTeamsDisplay: Current picks from context:', picks);
+      console.log('FinalTeamsDisplay: Current bans from context:', currentBans);
+      
+      if (rawDraftState) {
+        // Use the preserved raw state from when we navigated to final teams
+        navigate('/local', { 
+          state: { 
+            preserveDraft: true,
+            draftState: rawDraftState 
+          } 
+        });
+      } else {
+        // Fallback to current context state
+        const preservedState = {
+          picks,
+          bans: currentBans,
+          phase,
+          currentTeam,
+          aspects
+        };
+        
+        navigate('/local', { 
+          state: { 
+            preserveDraft: true,
+            draftState: preservedState 
+          } 
+        });
+      }
     }
   };
 

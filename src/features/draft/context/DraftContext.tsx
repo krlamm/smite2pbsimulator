@@ -61,7 +61,7 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children, mode, in
   // Conditionally use the correct hook based on whether this is a real-time draft
   const draft = draftId
     ? useFirestoreDraft({ mode, initialState, draftId, currentUser })
-    : useDraft({ mode });
+    : useDraft({ mode, initialState });
 
   // Initialize presence tracking for real-time drafts
   usePresence(currentUser?.uid, draftId);

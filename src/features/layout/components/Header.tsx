@@ -46,7 +46,7 @@ const Header = () => {
       return;
     }
 
-    const { initialState, picks, bans, draftId } = draftContext;
+    const { initialState, picks, bans, draftId, phase, currentTeam, mode, aspects } = draftContext;
     const isOnlineMode = !!draftId;
     
     let draftState;
@@ -136,7 +136,18 @@ const Header = () => {
         currentPickIndex: 0,
       };
     }
-    navigate('/final-teams', { state: { draft: draftState } });
+    navigate('/final-teams', { state: { 
+      draft: draftState,
+      // Also preserve the raw draft context for returning to draft
+      rawDraftState: {
+        picks,
+        bans,
+        phase,
+        currentTeam,
+        mode,
+        aspects
+      }
+    } });
   };
 
   return (

@@ -24,17 +24,17 @@ function CharacterGrid() {
   const [selectedRole, setSelectedRole] = useState<string | null>('All');
 
   const isCharacterAvailable = (character: Character): boolean => {
-    if (initialState) { // Online mode
-      const allBans = [...(initialState.bans?.A || []), ...(initialState.bans?.B || [])];
-      const allPicks = Object.values(initialState.picks || {}).map(p => p.character);
-      const isTaken = allBans.includes(character.name) || allPicks.includes(character.name);
-      return !isTaken;
-    }
-    
-    // Local mode
+    // Always use local mode logic now - we don't distinguish between online/local for character availability
     const localBans = [...(bans?.A || []), ...(bans?.B || [])].filter(Boolean).map(c => c!.name);
     const localPicks = [...(picks?.A || []), ...(picks?.B || [])].filter(Boolean).map(c => c!.name);
     const isTaken = localBans.includes(character.name) || localPicks.includes(character.name);
+    
+    // Debug specific characters to reduce noise
+    const debugChar = character.name === 'Anubis' || character.name === 'Agni';
+    if (debugChar) {
+      console.log(`${character.name} isTaken:`, isTaken, 'localBans:', localBans, 'localPicks:', localPicks);
+    }
+    
     return !isTaken;
   };
 
