@@ -257,6 +257,15 @@ export const gods = [
         voiceLine: "",
         position: 'center 20%'
     },
+            {
+        id: 72,
+        name: 'Hou Yi',
+        image: 'https://wiki.smite2.com/images/thumb/SkinArt_Hou_YiS2_Default.png/720px-SkinArt_Hou_YiS2_Default.png?4b881',
+        roles: ['Carry', 'Mid'],
+        skins: [""],
+        voiceLine: "",
+        position: 'center 15%'
+    },
     {
         id: 32,
         name: 'Mulan',
@@ -283,6 +292,15 @@ export const gods = [
         skins: [""],
         voiceLine: "",
         position: 'center 25%'
+    },
+            {
+        id: 71,
+        name: 'Janus',
+        image: 'https://wiki.smite2.com/images/thumb/T_JanusS2_Default.png/720px-T_JanusS2_Default.png?c245f',
+        roles: ['Mid', 'Jungle'],
+        skins: [""],
+        voiceLine: "",
+        position: 'center 15%'
     },
     {
         id: 49,
@@ -476,7 +494,7 @@ export const gods = [
     {
         id: 59,
         name: 'Sun Wukong',
-        image: 'https://via.placeholder.com/100',
+        image: 'https://wiki.smite2.com/images/thumb/GodCard_SunWukong.png/720px-GodCard_SunWukong.png?13d5c',
         roles: ['Solo', 'Jungle'],
         skins: [""],
         voiceLine: "",
@@ -563,4 +581,6 @@ export const gods = [
         voiceLine: "",
         position: 'center 15%'
     }
+
+
 ]
