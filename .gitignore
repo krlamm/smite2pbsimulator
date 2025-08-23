@@ -1,2 +1,13 @@
 node_modules
 .env
+
+# Google Drive API credentials
+google_credentials.json
+*.json
+
+# Asset management files
+asset_cache/
+downloaded_assets/
+
+# OAuth tokens
+drive_tokens.json
