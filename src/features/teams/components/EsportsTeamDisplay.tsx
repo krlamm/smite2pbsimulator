@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDraftContext } from '../../draft/context/DraftContext';
 import { getGodImageUrl } from '../../../utils/imageUtils';
-import { Character } from '../../../types';
 import { gods } from '../../../constants/gods'; // Import the gods constant
 import AspectToggle from './AspectToggle';
 

@@ -26,8 +26,9 @@ const LoginPage = () => {
         <h1 className="text-2xl font-bold text-center text-gold">Login</h1>
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Email</label>
+            <label htmlFor="email" className="block mb-2 text-sm font-bold text-gray-400">Email</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -36,8 +37,9 @@ const LoginPage = () => {
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Password</label>
+            <label htmlFor="password" className="block mb-2 text-sm font-bold text-gray-400">Password</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

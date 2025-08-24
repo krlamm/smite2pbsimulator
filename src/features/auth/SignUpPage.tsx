@@ -48,8 +48,9 @@ const SignUpPage = () => {
         <h1 className="text-2xl font-bold text-center text-gold">Create Account</h1>
         <form onSubmit={handleSignUp} className="space-y-6">
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Display Name</label>
+            <label htmlFor="display-name" className="block mb-2 text-sm font-bold text-gray-400">Display Name</label>
             <input
+              id="display-name"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
@@ -58,8 +59,9 @@ const SignUpPage = () => {
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Email</label>
+            <label htmlFor="signup-email" className="block mb-2 text-sm font-bold text-gray-400">Email</label>
             <input
+              id="signup-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -68,8 +70,9 @@ const SignUpPage = () => {
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Password</label>
+            <label htmlFor="signup-password" className="block mb-2 text-sm font-bold text-gray-400">Password</label>
             <input
+              id="signup-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -78,8 +81,9 @@ const SignUpPage = () => {
             />
           </div>
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-400">Confirm Password</label>
+            <label htmlFor="confirm-password" className="block mb-2 text-sm font-bold text-gray-400">Confirm Password</label>
             <input
+              id="confirm-password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}

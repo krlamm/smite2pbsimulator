@@ -6,14 +6,14 @@ import { FriendDraftsList } from '../friends/components/FriendDraftsList';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { gods } from '../../constants/gods';
-import { FaUserFriends, FaPlus, FaSync, FaEye, FaRedo, FaPaperPlane, FaHistory, FaUser, FaUsers } from 'react-icons/fa';
+import { FaUser, FaUsers } from 'react-icons/fa';
 import ProfileDropdown from '../layout/components/ProfileDropdown';
 import ThemeToggleButton from '../layout/components/ThemeToggleButton';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useUserProfile();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   const themeClasses = {
     light: {

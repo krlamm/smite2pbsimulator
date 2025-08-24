@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './features/layout/context/ThemeContext';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { useUserProfile } from './features/auth/hooks/useUserProfile';
 import { DraftProvider } from './features/draft/context/DraftContext';
