@@ -3,6 +3,8 @@ import { Routes, Route, useNavigate, useParams, useLocation } from 'react-router
 import { ThemeProvider } from './features/layout/context/ThemeContext';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
+import './services/lobbyCleanupService'; // Initialize automatic cleanup service
+import './utils/testCleanup'; // Add test function to window for development
 import { useUserProfile } from './features/auth/hooks/useUserProfile';
 import { DraftProvider } from './features/draft/context/DraftContext';
 import { AudioProvider } from './features/layout/context/AudioContext';
